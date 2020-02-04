@@ -1,0 +1,12 @@
+#
+# Hello Robots
+#
+
+User-Agent: *
+
+Disallow: /b2b
+Disallow: /b2c
+Disallow: /license
+Disallow: /inventory
+Disallow: /manifest
+Disallow: /profile

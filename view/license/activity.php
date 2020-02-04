@@ -3,6 +3,8 @@
  * Show License Activity Per Quarter
  */
 
+$_ENV['title'] = 'License :: Activity';
+
 $res_activity = [];
 $l_list = [];
 $q_list = [];
@@ -155,7 +157,7 @@ if ('csv' == $_GET['o']) {
 ?>
 
 <div class="container-fluid mt-2">
-	<h2>Active Clients, By Type, By Quarter <small><a href="?o=csv">[csv]</a></small></h2>
+	<h2>Active Licenses, By Type, By Quarter <small><a href="?o=csv">[csv]</a></small></h2>
 	<div>
 		<div class="otd-chart" id="license-active-type-quarter-chart"></div>
 	</div>
@@ -178,7 +180,7 @@ if ('csv' == $_GET['o']) {
 foreach ($res_activity as $l) {
 
 	echo '<tr>';
-	echo sprintf('<td>%s</td>', $l['code']);
+	echo sprintf('<td><a href="/license?id=%s">%s</a></td>', $l['id'], $l['code']);
 	echo sprintf('<td>%s</td>', $l['name']);
 
 	foreach ($q_list as $q) {
@@ -266,7 +268,6 @@ google.charts.setOnLoadCallback(function() {
 			width: '84%',
 			height: '92%',
 		},
-		// title: 'Product Sales',
 		isStacked: 'percent',
 		hAxis: null,
 		vAxis: null,
