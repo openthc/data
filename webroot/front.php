@@ -1,8 +1,7 @@
 <?php
 /**
-    @see https://code.google.com/apis/console/#project:461993707506:access
-    http://stackoverflow.com/questions/3199489/meaning-of-ffmpeg-output-tbc-tbn-tbr
-*/
+ * Data Site Front Controller
+ */
 
 use Edoceo\Radix;
 use Edoceo\Radix\Session;
@@ -13,7 +12,6 @@ require_once(APP_ROOT . '/lib/App_Menu.php');
 Radix::init();
 
 // Session
-// Session::init(array('name' => 'openthc'));
 session_start();
 
 if (empty($_SESSION['geoip'])) {
@@ -34,22 +32,6 @@ App_Menu::addMenuItem('main', '/revenue', '<i class="fas fa-funnel-dollar"></i> 
 App_Menu::addMenuItem('main', '/b2b', '<i class="fas fa-truck-loading"></i> B2B');
 App_Menu::addMenuItem('main', '/lab', '<i class="fas fa-flask"></i> Lab');
 App_Menu::addMenuItem('main', '/b2c', '<i class="fas fa-users"></i> B2C');
-// App_Menu::addMenuItem('main', '/company', 'Companies', 100);
-// App_Menu::addMenuItem('main', '/license', 'Licenses', 110);
-// App_Menu::addMenuItem('main', '/counties', 'Counties', 200);
-// App_Menu::addMenuItem('main', '/cities', 'Cities', 300);
-//App_Menu::addMenuItem('main', '/extract', 'Extracts');
-////App_Menu::addMenuItem('main', '/producers', 'Producers');
-////App_Menu::addMenuItem('main', '/processors', 'Processors');
-////App_Menu::addMenuItem('main', '/inventory', 'Inventory', 70);
-//App_Menu::addMenuItem('main', '/qa', 'QA');
-////App_Menu::addMenuItem('main', '/retail', 'Retail', 60);
-////App_Menu::addMenuItem('main', '/wholesale', 'Wholesale', 50);
-////App_Menu::addMenuItem('main', '/retail', 'Retail', 60);
-////
-
-//App_Menu::addMenuItem('main', '/edibles', 'Edibles');
-// Cartridge 1/2g, Cartridge 1g, Wax/Shatter, Kief, Edibile/Liquid, Edible/Solid, Pre-Roll at 0.5, 0.75 and 1g
 
 Radix::view();
 
