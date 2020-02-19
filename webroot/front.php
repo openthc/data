@@ -14,9 +14,6 @@ Radix::init();
 // Session
 session_start();
 
-if (empty($_SESSION['geoip'])) {
-	$_SESSION['geoip'] = geoip_record_by_name($_SERVER['REMOTE_ADDR']);
-}
 if (empty($_SESSION['acl_subject'])) {
 	$_SESSION['acl_subject'] = 'free';
 }
