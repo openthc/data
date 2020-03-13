@@ -7,33 +7,83 @@
 require_once(dirname(dirname(dirname(__FILE__))) . '/boot.php');
 
 
-function _fopen_bom($f)
+class CSV_Reader
 {
-	$fh = fopen($f, 'r');
+	private $fh;
+	private $sep;
 
-	$bom = fread($fh, 3);
+	public $key_list;
+	public $key_size = 0;
 
-	$bom3 = bin2hex($bom);
-	if ('efbbbf' == $bom3) {
-		// UTF-8
-		return $fh;
+	function __construct($f)
+	{
+		$this->fh = fopen($f, 'r');
+		$this->sep = _fpeek_sep($this->fh);
+
+		// Header Row
+		$this->key_list = fgetcsv($this->fh, 0, $this->sep);
+		$this->key_size = count($this->key_list);
 	}
 
-	$bom2 = substr($bom3, 0, 2);
-	if ('ffee' == $bom2) {
-		echo "Adding UTF-16 to UTF-8 Filter\n";
-		stream_filter_append($fh, 'convert.iconv.UTF-16/UTF-8');
-		return $fh;
+	function fetch()
+	{
+		return fgetcsv($this->fh, 0, $this->sep);
 	}
 
-	// Hopfully it's ASCII
+	function rowEstimate()
+	{
+		$cur = ftell($this->fh);
 
-	// echo "rewind ('$bom')\n";
-	fseek($fh, 0, SEEK_SET);
+		$idx = 0;
+		$max = 1000;
 
-	return $fh;
+		while ($idx < $max) {
+			$idx++;
+			$row = fgets($this->fh);
+			$len += strlen($row);
+		}
 
+		$avg = $len / $idx;
+
+		$inf = fstat($this->fh);
+
+		$est = $inf['size'] / $avg;
+
+		fseek($this->fh, $cur);
+
+		return $est;
+
+	}
 }
+
+
+// function _fopen_bom($f)
+// {
+// 	$fh = fopen($f, 'r');
+
+// 	$bom = fread($fh, 3);
+
+// 	$bom3 = bin2hex($bom);
+// 	if ('efbbbf' == $bom3) {
+// 		// UTF-8
+// 		return $fh;
+// 	}
+
+// 	$bom2 = substr($bom3, 0, 2);
+// 	if ('ffee' == $bom2) {
+// 		echo "Adding UTF-16 to UTF-8 Filter\n";
+// 		stream_filter_append($fh, 'convert.iconv.UTF-16/UTF-8');
+// 		return $fh;
+// 	}
+
+// 	// Hopfully it's ASCII
+
+// 	// echo "rewind ('$bom')\n";
+// 	fseek($fh, 0, SEEK_SET);
+
+// 	return $fh;
+
+// }
 
 
 function _fpeek_sep($fh)
@@ -155,9 +205,86 @@ function _append_fail_log($idx, $why, $rec)
 
 }
 
+function _product_inflate($rec)
+{
+	$p = array(
+		':id' => $rec['global_id'],
+		':license_id' => $rec['mme_id'],
+		':product_type' => $rec['intermediate_type'],
+		':package_type' => null,
+		':package_unit' => $rec['uom'],
+		':package_size' => null,
+		':name' => trim($rec['name']),
+	);
+
+	switch ($p[':product_type']) {
+		case 'co2_concentrate':
+		case 'daily_plant_waste': // WTF?
+		case 'ethanol_concentrate':
+		case 'flower':
+		case 'flower_lots':
+		case 'food_grade_solvent_concentrate':
+		case 'hydrocarbon_concentrate':
+		case 'infused_cooking_medium':
+		case 'marijuana_mix':
+		case 'non-solvent_based_concentrate':
+		case 'other_material':
+		case 'other_material_lots':
+		case 'waste':
+		case '':
+			$p[':package_type'] = 'bulk';
+			$p[':package_unit'] = 'g';
+			break;
+		case 'clone': // Typo in LeafData
+		case 'clones':
+		case 'mature_plant':
+		case 'non_mandatory_plant_sample':
+		case 'plant': // Not even defined by their system, how did this happen?
+		case 'plant_tissue':
+		case 'tissue': // Another bogus
+		case 'seed':
+		case 'seeds':
+			$p[':package_type'] = 'each';
+			$p[':package_unit'] = 'ea';
+			break;
+		case 'capsules':
+		case 'concentrate_for_inhalation':
+		case 'infused_mix':
+		case 'liquid_edible':
+		case 'packaged_marijuana_mix':
+		case 'sample_jar':
+		case 'solid_edible':
+		case 'tinctures':
+		case 'topical':
+		case 'transdermal_patches':
+		case 'suppository':
+		case 'usable_marijuana':
+			$p[':package_type'] = 'each';
+			if (preg_match('/^(.+) \- ([\d\.]+)\s*(ea|g|gm|gr|gram|grams|mg|ml|oz)\b/i', $p[':name'], $m)) {
+				$p[':package_size'] = floatval($m[2]);
+				$p[':package_unit'] = $m[3];
+			} elseif (preg_match('/^(.+) ([\d\.]+)\s*(ea|g|gm|gr|gram|grams|mg|ml|oz)\b/i', $p[':name'], $m)) {
+				$p[':package_size'] = floatval($m[2]);
+				$p[':package_unit'] = $m[3];
+			} elseif (preg_match('/\b([\d\.]+)\s*(ea|g|gm|gr|gram|grams|mg|ml|oz)\b/i', $p[':name'], $m)) {
+				$p[':package_size'] = floatval($m[1]);
+				$p[':package_unit'] = $m[2];
+			} else {
+				// echo "No Match: '{$p['name']}'\n";
+			}
+			break;
+		default:
+			die("Unknown Product Type: '{$p[':product_type']}'");
+	}
+
+	return $p;
+
+}
+
+
 function _show_progress($idx, $max)
 {
-	if ((0 == ($idx % 100000)) || ($idx == $max)) {
+	if ((0 == ($idx % 100000)) || ($idx >= $max)) {
 
 		$pct = floor($idx / $max * 100);
 

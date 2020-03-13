@@ -57,6 +57,4 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 
 }
 
-echo "\n";
-echo "Import: $idx Records\n";
-echo "\n";
+_show_progress($idx, $max);

@@ -21,7 +21,7 @@ $sep = _fpeek_sep($fh);
 $key_list = fgetcsv($fh, 0, $sep);
 
 $idx = 0; // First Data row maps to '1'
-$max = 13832109;
+$max = 2000000;
 
 while ($rec = fgetcsv($fh, 0, $sep)) {
 
@@ -102,7 +102,7 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 
 	try {
 		$dbc->insert('b2b_sale_item', $add);
-	}  catch (Exception $e) {
+	} catch (Exception $e) {
 		_append_fail_log(sprintf('%d@%d', $idx, ftell($fh)), $e->getMessage(), $rec);
 	}
 
@@ -110,5 +110,4 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 
 }
 
-_show_progress($max, $max);
-
+_show_progress($idx, $max);

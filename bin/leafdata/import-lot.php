@@ -12,27 +12,40 @@
 
 require_once(__DIR__ . '/boot.php');
 
-$t0 = microtime(true);
-
-$dbc = _dbc();
-
 $source_file = sprintf('%s/source-data/lot.tsv', APP_ROOT);
 if (!is_file($source_file)) {
 	echo "Create the source file at '$source_file'\n";
 	exit(1);
 }
 
+$csv = new CSV_Reader($source_file);
+// $est = $csv->rowEstimate();
+// With my samle I counted 32503064 when sampling 100 rows.
+// And 28297439 when sampling 1000 rows
+// wc -l counts 27726031
+
 $idx = 1;
-$max = 23657571;
+$off = 0;
+$max = 27726031;
 
-$fh = _fopen_bom($source_file);
-$sep = _fpeek_sep($fh);
+// Seek to Work
+while ($idx < $off) {
+	$idx++;
+	$rec = $csv->fetch();
+}
 
-// Header Row
-$key_list = fgetcsv($fh, 0, $sep);
-$rec_size = count($key_list);
+// Connect DB
+$dbc = _dbc();
+$pdo = $dbc->_pdo;
+$sql = <<<SQL
+INSERT INTO lot (id, license_id, product_id, strain_id, qty, created_at, meta)
+VALUES (:id, :license_id, :product_id, :strain_id, :qty, :created_at, :meta)
+SQL;
+$dbc_insert = $pdo->prepare($sql);
 
-while ($rec = fgetcsv($fh, 0, $sep)) {
+// Read the Data
+$idx = 1;
+while ($rec = $csv->fetch()) {
 
 	$idx++;
 /*
@@ -68,20 +81,22 @@ Array
 )
 */
 
-	if ($rec_size != count($rec)) {
+	if ($csv->key_size != count($rec)) {
 		_append_fail_log($idx, 'Field Count Issue', $rec);
 		continue;
 	}
 
-	$rec = array_combine($key_list, $rec);
+	$rec = array_combine($csv->key_list, $rec);
 
 	if (empty($rec['global_id'])) {
 		_append_fail_log($idx, 'Missing Global ID', $rec);
 		continue;
 	}
 
+	$rec = de_fuck_date_format($rec);
+
 	// Clean and Drop Empty Fields
-	foreach ($key_list as $k) {
+	foreach ($csv->key_list as $k) {
 		$rec[$k] = trim($rec[$k]);
 		if (empty($rec[$k])) {
 			unset($rec[$k]);
@@ -89,41 +104,41 @@ Array
 	}
 
 	// Make sure we have the product
-	$chk = $dbc->fetchOne('SELECT id FROM product WHERE id = ?', [ $rec['inventory_type_id'] ]);
-	if (empty($chk)) {
-		continue;
-	}
+	// $chk = $dbc->fetchOne('SELECT id FROM product WHERE id = ?', [ $rec['inventory_type_id'] ]);
+	// if (empty($chk)) {
+	// 	continue;
+	// }
 
 	try {
-		$dbc->insert('lot', array(
-			'id' => $rec['global_id'],
-			'license_id' => $rec['mme_id'],
-			'product_id' => $rec['inventory_type_id'],
-			'strain_id' => $rec['strain_id'],
-			'zone_id' => $rec['area_id'],
-			'qty' => $rec['qty'],
-			'created_at' => $rec['created_at'],
-			'meta' => json_encode($rec),
-		));
+		$dbc_insert->execute([
+			':id' => $rec['global_id'],
+			':license_id' => $rec['mme_id'],
+			':product_id' => $rec['inventory_type_id'],
+			':strain_id' => $rec['strain_id'],
+			':qty' => $rec['qty'],
+			':created_at' => $rec['created_at'],
+			':meta' => json_encode($rec),
+		]);
 	} catch (Exception $e) {
 		_append_fail_log($idx, $e->getMessage(), $rec);
 	}
 
 	// Linkage
-	if (!empty($rec['lab_result_id'])) {
-		try {
-			$dbc->query('INSERT INTO lab_result_lot (lab_result_id, lot_id, type) VALUES (:lr0, :il1, :t0)', array(
-				':lr0' => $rec['lab_result_id'],
-				':il1' => $rec['global_id'],
-				':t0' => 'Lot Linkage',
-			));
-		} catch (Exception $e) {
-			_append_fail_log($idx, $e->getMessage(), $rec);
-		}
-	}
+	// @todo Move to a review script
+	// if (!empty($rec['lab_result_id'])) {
+	// 	try {
+	// 		$dbc->query('INSERT INTO lab_result_lot (lab_result_id, lot_id, type) VALUES (:lr0, :il1, :t0)', array(
+	// 			':lr0' => $rec['lab_result_id'],
+	// 			':il1' => $rec['global_id'],
+	// 			':t0' => 'Lot Linkage',
+	// 		));
+	// 	} catch (Exception $e) {
+	// 		_append_fail_log($idx, $e->getMessage(), $rec);
+	// 	}
+	// }
 
 	_show_progress($idx, $max);
 
 }
 
-_show_progress($max, $max);
+_show_progress($idx, $max);

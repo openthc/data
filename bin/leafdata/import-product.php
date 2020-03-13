@@ -2,20 +2,9 @@
 <?php
 /**
  * Import Product
- * 2019-14 Import - V-CPU: 4 Core, 2GHz; 8G RAM
- ** File Size: 5,643,261,018 bytes, 19,089,982 records
-
- * 2019.241 Import - V-CPU: 4 Core, 2GHz; 8G RAM
- ** File Size: 5,879,862,984 bytes
- ** Time to Read File & Insert: 19954511 in 210m21.184s (~1581/rps)
-
  */
 
 require_once(__DIR__ . '/boot.php');
-
-$t0 = microtime(true);
-
-$dbc = _dbc();
 
 $source_file = sprintf('%s/source-data/product.tsv', APP_ROOT);
 if (!is_file($source_file)) {
@@ -23,54 +12,57 @@ if (!is_file($source_file)) {
 	exit(1);
 }
 
-$fh = _fopen_bom($source_file);
-$sep = _fpeek_sep($fh);
-
-// Header Row
-$map = fgetcsv($fh, 0, $sep);
+$csv = new CSV_Reader($source_file);
 
 $idx = 1;
-$max = 21976516; // Get from `wc -l`
-$max = 22126659;
+$off = 500000;
+$max = 24068254;
 
-while ($rec = fgetcsv($fh, 0, $sep)) {
+// Seek to Work
+while ($idx < $off) {
+	$idx++;
+	$rec = $csv->fetch();
+}
+
+// Connect DB
+$dbc = _dbc();
+$pdo = $dbc->_pdo;
+$sql = <<<SQL
+INSERT INTO product (id, license_id, product_type, package_type, package_size, package_unit, name)
+VALUES (:id, :license_id, :product_type, :package_type, :package_size, :package_unit, :name)
+SQL;
+$dbc_insert = $pdo->prepare($sql);
+
+// Read the Data
+$idx = 1;
+while ($rec = $csv->fetch()) {
 
 	$idx++;
-
-	$rec = array_combine($map, $rec);
-
-	// Skip These?
-	if ('waste' == $rec['intermediate_type']) {
+	if ($idx < $off) {
 		continue;
 	}
 
+	$rec = array_combine($csv->key_list, $rec);
+
+	// Skip These?
 	if (empty($rec['global_id'])) {
 		echo sprintf("%d: %s; %s\n", $idx, 'Missing Global ID', json_encode($rec));
 		continue;
 	}
+
 	if ('waste' == $rec['intermediate_type']) {
 		continue;
 	}
 
 	$rec = de_fuck_date_format($rec);
 	$rec['name'] = trim($rec['name']);
-
-	// Record: 1225527
-	// Record: 1248289
-	// Record: 1283084
+	$rec['name'] = stripslashes($rec['name']);
 	$rec['name'] = str_replace('\\t', null, $rec['name']); // Replace literal \\t ?
 
+	$P = _product_inflate($rec);
+
 	try {
-		$add = array(
-			'id' => $rec['global_id'],
-			'license_id' => $rec['mme_id'],
-			'product_type' => $rec['intermediate_type'],
-			'package_type' => $rec['uom'],
-			'package_size' => $size,
-			'package_unit' => $unit,
-			'name' => trim($rec['name']),
-		);
-		$dbc->insert('product', $add);
+		$dbc_insert->execute($P);
 	} catch (Exception $e) {
 		_append_fail_log($idx, $e->getMessage(), $rec);
 	}
@@ -79,7 +71,7 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 
 }
 
-_show_progress($max, $max);
+_show_progress($idx, $max);
 
 /*
   count  |          product_type

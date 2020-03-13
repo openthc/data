@@ -20,12 +20,13 @@ cd ..
 file_list="
 Licensees_0
 Users_0
-LabResults_0
 Strains_0
 InventoryTransfers_0
 InventoryTransferItems_0
 InventoryTypes_0
 Inventories_0
+InventoryAdjustments_0
+LabResults_0
 Sales_0
 Sales_1
 SaleItems_0
@@ -57,62 +58,46 @@ do
 
 done
 
-
 # Import Each
 
-# ln -s "$RAW_SOURCE_DIR/Licensees_0.tsv" ./source-data/license.tsv
-#time ./bin/leafdata/import-license.php 2>&1 | tee ./output-data/import-license.out
+./bin/leafdata/import-license.php "$RAW_SOURCE_DIR/Licensees_0.tsv" 2>&1 | tee -a ./output-data/import-license.out
 # 0m2.157s
 
-# ln -s "$RAW_SOURCE_DIR/Users_0.tsv" ./source-data/contact.tsv
-#time ./bin/leafdata/import-contact.php 2>&1 | tee ./output-data/import-contact.out
+./bin/leafdata/import-contact.php "$RAW_SOURCE_DIR/Users_0.tsv" 2>&1 | tee -a ./output-data/import-contact.out
 # 0m9.901s
 
-#time ./bin/leafdata/review-license.php 2>&1 | tee ./output-data/review-license.out
-#
+# ./bin/leafdata/review-license.php 2>&1 | tee ./output-data/review-license.out
 
-#ln -s "$RAW_SOURCE_DIR/InventoryTransfers_0.tsv" ./source-data/b2b-sale.tsv
-#time ./bin/leafdata/import-b2b-sale.php 2>&1 | tee output-data/import-b2b-sale.out
+./bin/leafdata/import-b2b-sale.php "$RAW_SOURCE_DIR/InventoryTransfers_0.tsv" 2>&1 | tee -a ./output-data/import-b2b-sale.out
 # 16m29.337s
 
+./bin/leafdata/import-b2b-sale-item.php "$RAW_SOURCE_DIR/InventoryTransferItems_0.tsv" 2>&1 | tee -a ./output-data/import-b2b-sale-item.out
 
-#ln -s "$RAW_SOURCE_DIR/InventoryTransferItems_0.tsv" ./source-data/b2b-sale-item.tsv
-#time ./bin/leafdata/import-b2b-sale-item.php 2>&1 | tee output-data/import-b2b-sale-item.out
+# ./bin/leafdata/review-b2b.php
 
-#
-# time ./bin/leafdata/review-b2b.php
-
-
-#ln -s "$RAW_SOURCE_DIR/InventoryTypes_0.tsv" ./source-data/product.tsv
-#time ./bin/leafdata/import-product.php 2>&1 | tee output-data/import-product.out
-#./bin/leafdata/review-product.php
-#rm "$RAW_SOURCE_DIR/InventoryTypes_0.tsv"
+./bin/leafdata/import-product.php "$RAW_SOURCE_DIR/InventoryTypes_0.tsv" 2>&1 | tee -a ./output-data/import-product.out
 # 336m0.375s
 
-#ln -s "$RAW_SOURCE_DIR/Inventories_0.tsv" ./source-data/lot.tsv
-#time ./bin/leafdata/import-lot.php 2>&1 | tee output-data/import-lot.out
-# 740m43.605s
+./bin/leafdata/import-lot.php "$RAW_SOURCE_DIR/Inventories_0.tsv" 2>&1 | tee -a ./output-data/import-lot.out
+# ~900 minutes
+
+./bin/leafdata/import-lab-result.php "$RAW_SOURCE_DIR/LabResults_0.tsv" 2>&1 | tee -a ./output-data/import-lab-result.out
+
+./bin/leafdata/import-b2c-sale.php "$RAW_SOURCE_DIR/Sales_0.tsv" 2>&1 |tee -a ./output-data/import-b2c-sale.out
+# ~1324m7.276s
+./bin/leafdata/import-b2c-sale.php "$RAW_SOURCE_DIR/Sales_1.tsv" 2>&1 |tee -a ./output-data/import-b2c-sale.out
+# ~1088/s in 712m29.780s
 
 
-#ln -s "$RAW_SOURCE_DIR/Sales_0.tsv" ./source-data/b2c-sale.tsv
-#time ./bin/leafdata/import-b2c-sale.php 2>&1 |tee output-data/import-b2c-sale.out
-# rm "$RAW_SOURCE_DIR/Sales_0.tsv"
-# #0 = 1258/s in 1324m7.276s
-# #1 = 1088/s in 712m29.780s
-
-
-#ln -s "$RAW_SOURCE_DIR/SaleItems_0.tsv" ./source-data/b2c-sale-item.tsv
-#time ./bin/leafdata/import-b2c-sale-item.php 2>&1 | tee -a output-data/import-b2c-sale-item.out
-#rm "$RAW_SOURCE_DIR/SaleItems_0.tsv"
-
-#ln -s "$RAW_SOURCE_DIR/SaleItems_1.tsv" ./source-data/b2c-sale-item.tsv
-#time ./bin/leafdata/import-b2c-sale-item.php 2>&1 | tee -a output-data/import-b2c-sale-item.out
-#rm "$RAW_SOURCE_DIR/SaleItems_1.tsv"
+./bin/leafdata/import-b2c-sale-item.php "$RAW_SOURCE_DIR/SaleItems_0.tsv" 2>&1 | tee -a output-data/import-b2c-sale-item.out
+# #0 = 1020m39.460s
+./bin/leafdata/import-b2c-sale-item.php "$RAW_SOURCE_DIR/SaleItems_1.tsv" 2>&1 | tee -a output-data/import-b2c-sale-item.out
+# #1 =  864m58.789s
 
 # Not refined yet
 
-# ./bin/leafdata/import-lab-result.php
+# ./bin/leafdata/review-b2c-sale-item.php
+
+#
 
 # ./bin/leafdata/review-strain.php
-
-# ./bin/leafdata/review-b2c.php

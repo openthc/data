@@ -8,32 +8,35 @@
 
 require_once(__DIR__ . '/boot.php');
 
-$dbc = _dbc();
-
 $source_file = sprintf('%s/source-data/b2c-sale.tsv', APP_ROOT);
 if (!is_file($source_file)) {
 	echo "Create the source file at '$source_file'\n";
 	exit(1);
 }
 
-$fh = _fopen_bom($source_file);
-$sep = _fpeek_sep($fh);
+$csv = new CSV_Reader($source_file);
 
-$key_list = fgetcsv($fh, 0, $sep);
-$key_size = count($key_list);
-
-$idx = 0;
-// $max = 100000000;  // Sales_0
-$max = 37861239; // Sales_1
+$idx = 1;
+$max = 100000000; // Sales_0
+// $max =  37861239; // Sales_1
 
 $min_date = new DateTime('2018-06-01');
 
-while ($rec = fgetcsv($fh, 0, $sep)) {
+// Connect DB
+$dbc = _dbc();
+$pdo = $dbc->_pdo;
+$sql = <<<SQL
+INSERT INTO b2c_sale (id, license_id, created_at, updated_at, deleted_at, stat, flag, hash, full_price)
+VALUES (:id, :license_id, :created_at, :updated_at, :deleted_at, :stat, :flag, :hash, :full_price)
+SQL;
+$dbc_insert = $pdo->prepare($sql);
+
+while ($rec = $csv->fetch()) {
 
 	$idx++;
 	_show_progress($idx, $max);
 
-	if ($key_size != count($rec)) {
+	if ($csv->key_size != count($rec)) {
 		_append_fail_log($idx, 'Field Count', $rec);
 		continue;
 	}
@@ -41,7 +44,7 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 	$flag = 0;
 	$stat = 500;
 
-	$rec = array_combine($key_list, $rec);
+	$rec = array_combine($csv->key_list, $rec);
 
 	if (empty($rec['global_id'])) {
 		_append_fail_log($idx, 'Missing Global ID', $rec);
@@ -104,7 +107,7 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 	}
 
 	// Strip Noise
-	foreach ($key_list as $x) {
+	foreach ($csv->key_list as $x) {
 		if (empty($rec[$x])) {
 			unset($rec[$x]);
 		}
@@ -116,17 +119,16 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 
 	// INSERT
 	try {
-		$dbc->insert('b2c_sale', [
-			'id' => $rec['global_id'],
-			'license_id' => $rec['mme_id'],
-			'created_at' => $rec['created_at'],
-			'updated_at' => $rec['updated_at'],
-			'deleted_at' => $rec['deleted_at'],
-			'stat' => $stat,
-			'flag' => $flag,
-			'hash' => '-',
-			'full_price' => $rec[''],
-			// 'meta' => json_encode($rec)
+		$dbc_insert->execute([
+			':id' => $rec['global_id'],
+			':license_id' => $rec['mme_id'],
+			':created_at' => $rec['created_at'],
+			':updated_at' => $rec['updated_at'],
+			':deleted_at' => $rec['deleted_at'],
+			':stat' => $stat,
+			':flag' => $flag,
+			':hash' => '-',
+			':full_price' => 0,
 		]);
 	} catch (Exception $e) {
 		_append_fail_log($idx, $e->getMessage(), $rec);
@@ -134,6 +136,4 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 
 }
 
-echo "done\n";
 _show_progress($idx, $max);
-echo "done done\n";

@@ -13,8 +13,6 @@
 
 require_once(__DIR__ . '/boot.php');
 
-$t0 = microtime(true);
-
 $dbc = _dbc();
 
 $source_file = sprintf('%s/source-data/b2b-sale.tsv', APP_ROOT);
@@ -76,6 +74,7 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 			'id' => $rec['global_id'],
 			'license_id_origin' => $rec['from_mme_id'],
 			'license_id_target' => $rec['to_mme_id'],
+			'created_at' => $rec['created_at'],
 			'execute_at' => $date,
 			'stat' => $stat,
 			'meta' => json_encode($rec),
@@ -89,4 +88,4 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 
 }
 
-_show_progress($max, $max);
+_show_progress($idx, $max);
