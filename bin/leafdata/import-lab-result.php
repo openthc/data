@@ -6,8 +6,6 @@
 
 require_once(__DIR__ . '/boot.php');
 
-var_dump($argv);
-
 $f = $argv[1];
 if (!is_file($f)) {
 	echo "Create the source file at '$f'\n";
@@ -19,14 +17,14 @@ $csv = new CSV_Reader($f);
 $dbc = _dbc();
 
 $idx = 1;
-$max = 1806145;
+$max = 1857444;
 
 while ($rec = $csv->fetch()) {
 
 	$idx++;
-	// if ($idx < 1802663) {
-	// 	continue;
-	// }
+	if ($idx < 1830887) {
+		continue;
+	}
 
 	if ($csv->key_size != count($rec)) {
 		_append_fail_log($idx, 'Field Count Issue', $rec);
@@ -110,6 +108,7 @@ while ($rec = $csv->fetch()) {
 	case 'harvest_materials/flower':
 	case 'harvest_materials/flower_lots':
 	case 'harvest_materials/usable_marijuana':
+	case 'immature_plant/plant_tissue':
 	case 'intermediate_product/co2_concentrate':
 	case 'intermediate_product/flower':
 	case 'intermediate_product/marijuana_mix':
@@ -199,4 +198,4 @@ while ($rec = $csv->fetch()) {
 
 }
 
-_show_progress($idx, $max);
+_show_progress($idx, $idx);

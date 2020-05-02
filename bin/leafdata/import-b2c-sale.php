@@ -8,13 +8,13 @@
 
 require_once(__DIR__ . '/boot.php');
 
-$source_file = sprintf('%s/source-data/b2c-sale.tsv', APP_ROOT);
-if (!is_file($source_file)) {
-	echo "Create the source file at '$source_file'\n";
+$f = $argv[1];
+if (!is_file($f)) {
+	echo "Create the source file at '$f'\n";
 	exit(1);
 }
 
-$csv = new CSV_Reader($source_file);
+$csv = new CSV_Reader($f);
 
 $idx = 1;
 $max = 100000000; // Sales_0
@@ -136,4 +136,4 @@ while ($rec = $csv->fetch()) {
 
 }
 
-_show_progress($idx, $max);
+_show_progress($idx, $idx);

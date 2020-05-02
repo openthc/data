@@ -6,13 +6,13 @@
 
 require_once(__DIR__ . '/boot.php');
 
-$source_file = sprintf('%s/source-data/product.tsv', APP_ROOT);
-if (!is_file($source_file)) {
-	echo "Create the source file at '$source_file'\n";
+$f = $argv[1];
+if (!is_file($f)) {
+	echo "Create the source file at '$f'\n";
 	exit(1);
 }
 
-$csv = new CSV_Reader($source_file);
+$csv = new CSV_Reader($f);
 
 $idx = 1;
 $off = 500000;
@@ -71,7 +71,7 @@ while ($rec = $csv->fetch()) {
 
 }
 
-_show_progress($idx, $max);
+_show_progress($idx, $idx);
 
 /*
   count  |          product_type

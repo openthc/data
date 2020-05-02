@@ -15,21 +15,16 @@ require_once(__DIR__ . '/boot.php');
 
 $dbc = _dbc();
 
-$source_file = sprintf('%s/source-data/b2b-sale.tsv', APP_ROOT);
-if (!is_file($source_file)) {
-	echo "Create the source file at '$source_file'\n";
+$f = $argv[1];
+if (!is_file($f)) {
+	echo "Create the source file at '$f'\n";
 	exit(1);
 }
 
+$csv = new CSV_Reader($f);
+
 $idx = 1;
 $max = 924580;
-
-
-$fh = _fopen_bom($source_file);
-$sep = _fpeek_sep($fh);
-
-// Header Row
-$key_list = fgetcsv($fh, 0, $sep);
 
 while ($rec = fgetcsv($fh, 0, $sep)) {
 
@@ -88,4 +83,4 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 
 }
 
-_show_progress($idx, $max);
+_show_progress($idx, $idx);

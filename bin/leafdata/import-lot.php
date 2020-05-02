@@ -12,13 +12,13 @@
 
 require_once(__DIR__ . '/boot.php');
 
-$source_file = sprintf('%s/source-data/lot.tsv', APP_ROOT);
-if (!is_file($source_file)) {
-	echo "Create the source file at '$source_file'\n";
+$f = $argv[1];
+if (!is_file($f)) {
+	echo "Create the source file at '$f'\n";
 	exit(1);
 }
 
-$csv = new CSV_Reader($source_file);
+$csv = new CSV_Reader($f);
 // $est = $csv->rowEstimate();
 // With my samle I counted 32503064 when sampling 100 rows.
 // And 28297439 when sampling 1000 rows
@@ -141,4 +141,4 @@ Array
 
 }
 
-_show_progress($idx, $max);
+_show_progress($idx, $idx);

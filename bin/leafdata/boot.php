@@ -284,7 +284,7 @@ function _product_inflate($rec)
 
 function _show_progress($idx, $max)
 {
-	if ((0 == ($idx % 100000)) || ($idx >= $max)) {
+	if ((0 == ($idx % 100000)) || ($idx == $max)) {
 
 		$pct = floor($idx / $max * 100);
 
