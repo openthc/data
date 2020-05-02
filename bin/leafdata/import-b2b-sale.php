@@ -26,11 +26,10 @@ $csv = new CSV_Reader($f);
 $idx = 1;
 $max = 924580;
 
-while ($rec = fgetcsv($fh, 0, $sep)) {
+while ($rec = $csv->fetch()) {
 
 	$idx++;
-
-	$rec = array_combine($key_list, $rec);
+	$rec = array_combine($csv->key_list, $rec);
 
 	unset($rec['user_id']);
 	unset($rec['from_user_id']);
@@ -60,7 +59,8 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 		}
 		break;
 	default:
-		_append_fail_log(sprintf('%d@%d', $idx, ftell($fh)), $e->getMessage(), $rec);
+		_append_fail_log($idx, $e->getMessage(), $rec);
+		print($rec);
 		die("\nODD VOID \n");
 	}
 
@@ -76,7 +76,7 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 		);
 		$dbc->insert('b2b_sale', $add);
 	} catch (Exception $e) {
-		_append_fail_log(sprintf('%d@%d', $idx, ftell($fh)), $e->getMessage(), $rec);
+		_append_fail_log($idx, $e->getMessage(), $rec);
 	}
 
 	_show_progress($idx, $max);

@@ -6,35 +6,32 @@
 
 require_once(__DIR__ . '/boot.php');
 
+$f = $argv[1];
+if (!is_file($f)) {
+	echo "Create the source file at '$f'\n";
+	exit(1);
+}
+
+$csv = new CSV_Reader($f);
+
 $dbc = _dbc();
 
 $select_license = $dbc->prepare('SELECT id, name FROM license WHERE id = ?');
 //$select_license->execute($arg);
 //$select_license = SQL::prepare('SELECT id, name FROM license WHERE id = ?');
 
-$f = sprintf('%s/source-data/license.tsv', APP_ROOT);
-if (!is_file($f)) {
-	echo "Create the source file at '$f'\n";
-	exit(1);
-}
-
-$fh = _fopen_bom($f);
-$sep = _fpeek_sep($fh);
-
-$map = fgetcsv($fh, 0, $sep);
-$map_c = count($map);
-
 $idx = 1;
-while ($rec = fgetcsv($fh, 0, $sep)) {
+while ($rec = $csv->fetch()) {
 
 	$idx++;
 
-	if ($map_c != count($rec)) {
-		_append_fail_log($idx, 'Field Count', $rec);
-		continue;
-	}
-
-	$rec = array_combine($map, $rec);
+//	if ($map_c != count($rec)) {
+//		_append_fail_log($idx, 'Field Count', $rec);
+//		continue;
+//	}
+//
+//	$rec = array_combine($map, $rec);
+	$rec = array_combine($csv->key_list, $rec);
 
 	unset($rec['exernal_id']);
 
@@ -57,4 +54,4 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 
 }
 
-_show_progress($idx, $max);
+_show_progress($idx, $idx);

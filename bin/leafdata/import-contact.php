@@ -8,34 +8,25 @@ require_once(__DIR__ . '/boot.php');
 
 $dbc = _dbc();
 
-$f0 = sprintf('%s/source-data/contact.tsv', APP_ROOT);
-if (!is_file($f0)) {
-	echo "Create the source file at '$f0'\n";
-	exit(1);
-}
-$f1 = sprintf('%s/source-data/contact-license.tsv', APP_ROOT);
-if (!is_file($f1)) {
-	echo "Create the source file at '$f1'\n";
+$f = $argv[1];
+if (!is_file($f)) {
+	echo "Create the source file at '$f'\n";
 	exit(1);
 }
 
-$fh = _fopen_bom($f0);
-$sep = _fpeek_sep($fh);
-
-$map = fgetcsv($fh, 0, $sep);
-$map_c = count($map);
+$csv = new CSV_Reader($f);
 
 $idx = 1;
-while ($rec = fgetcsv($fh, 0, $sep)) {
+while ($rec = $csv->fetch()) {
 
 	$idx++;
+	$rec = array_combine($csv->key_list, $rec);
 
-	if ($map_c != count($rec)) {
-		_append_fail_log($idx, 'Field Count', $rec);
-		continue;
-	}
-
-	$rec = array_combine($map, $rec);
+//	if ($map_c != count($rec)) {
+//		_append_fail_log($idx, 'Field Count', $rec);
+//		continue;
+//	}
+//	$rec = array_combine($map, $rec);
 
 	try {
 		$dbc->insert('contact', array(
@@ -48,6 +39,16 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 	}
 
 }
+
+die("Figuour Contac t/ Licnee Linkage ?? MMEUSER?\n");
+
+//$f1 = $argv[2]; // sprintf('%s/source-data/contact-license.tsv', APP_ROOT);
+//if (!is_file($f1)) {
+//	echo "Create the source file at '$f1'\n";
+//	exit(1);
+//}
+
+
 
 // License to Contact Linkage
 $fh = _fopen_bom($f1);

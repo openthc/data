@@ -6,6 +6,7 @@ User-Agent: *
 
 Disallow: /b2b
 Disallow: /b2c
+Disallow: /company
 Disallow: /license
 Disallow: /inventory
 Disallow: /manifest

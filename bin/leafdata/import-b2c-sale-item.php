@@ -19,17 +19,13 @@ require_once(__DIR__ . '/boot.php');
 
 $dbc = _dbc();
 
-$source_file = sprintf('%s/source-data/b2c-sale-item.tsv', APP_ROOT);
-if (!is_file($source_file)) {
-	echo "Create the source file at '$source_file'\n";
+$f = $argv[1];
+if (!is_file($f)) {
+	echo "Create the source file at '$f'\n";
 	exit(1);
 }
 
-$fh = _fopen_bom($source_file);
-$sep = _fpeek_sep($fh);
-
-$key_list = fgetcsv($fh, 0, $sep);
-$key_size = count($key_list);
+$csv = new CSV_Reader($f);
 
 $idx = 1;
 $max = 90000001; // from wc -l
@@ -38,12 +34,16 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 
 	$idx++;
 
-	if ($key_size != count($rec)) {
+	if ($idx <= ??) {
+		continue;
+	}
+
+	if ($csv->key_size != count($rec)) {
 		_append_fail_log($idx, 'Field Count', $rec);
 		continue;
 	}
 
-	$rec = array_combine($key_list, $rec);
+	$rec = array_combine($csv->key_list, $rec);
 	unset($rec['user_id']);
 	unset($rec['batch_id']);
 	unset($rec['external_id']);
@@ -84,7 +84,4 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 
 }
 
-echo "done\n";
-echo _show_progress($max, $max);
-echo "done done\n";
-
+_show_progress($idx, $idx);

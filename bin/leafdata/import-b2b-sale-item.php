@@ -8,26 +8,21 @@ require_once(__DIR__ . '/boot.php');
 
 $dbc = _dbc();
 
-$source_file = sprintf('%s/source-data/b2b-sale-item.tsv', APP_ROOT);
-if (!is_file($source_file)) {
-	echo "Create the source file at '$source_file'\n";
+$f = $argv[1];
+if (!is_file($f)) {
+	echo "Create the source file at '$f'\n";
 	exit(1);
 }
 
-$fh = _fopen_bom($source_file);
-$sep = _fpeek_sep($fh);
-
-// Header Row
-$key_list = fgetcsv($fh, 0, $sep);
+$csv = new CSV_Reader($f);
 
 $idx = 0; // First Data row maps to '1'
 $max = 2000000;
 
-while ($rec = fgetcsv($fh, 0, $sep)) {
+while ($rec = $csv->fetch()) {
 
 	$idx++;
-
-	$rec = array_combine($key_list, $rec);
+	$rec = array_combine($csv->key_list, $rec);
 
 	if (empty($rec['global_id'])) {
 		echo sprintf("%d: %s; %s\n", $idx, 'Missing Global ID', json_encode($rec));
@@ -66,7 +61,7 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 		$stat[] = 'Sample/Budtender';
 		break;
 	default:
-		_append_fail_log(sprintf('%d@%d', $idx, ftell($fh)), 'is_sample/sample_type/product_sample_type', $rec);
+		_append_fail_log($idx, 'is_sample/sample_type/product_sample_type', $rec);
 		die("BAD is_sample/sample_type/product_sample_type = $x\n");
 	}
 
@@ -80,7 +75,7 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 		$stat[] = 'For Extraction';
 		break;
 	default:
-		_append_fail_log(sprintf('%d@%d', $idx, ftell($fh)), 'Invalid is_for_extraction', $rec);
+		_append_fail_log($idx, 'Invalid is_for_extraction', $rec);
 		die("BAD is_for_extraction = $x\n");
 	}
 	//sample_type
@@ -103,11 +98,11 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 	try {
 		$dbc->insert('b2b_sale_item', $add);
 	} catch (Exception $e) {
-		_append_fail_log(sprintf('%d@%d', $idx, ftell($fh)), $e->getMessage(), $rec);
+		_append_fail_log($idx, $e->getMessage(), $rec);
 	}
 
 	_show_progress($idx, $max);
 
 }
 
-_show_progress($idx, $max);
+_show_progress($idx, $idx);
