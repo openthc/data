@@ -235,8 +235,8 @@ CREATE TABLE public.lab_result (
     stat integer DEFAULT 200 NOT NULL,
     flag integer DEFAULT 0 NOT NULL,
     type character varying(64) NOT NULL,
-    cbd numeric(8,4),
-    thc numeric(8,4),
+    cbd numeric(12,4),
+    thc numeric(12,4),
     meta jsonb
 );
 
@@ -581,6 +581,7 @@ CREATE OR REPLACE VIEW public.license_revenue_full AS
     license.code AS license_code,
     license.type AS license_type,
     license_revenue.month,
+    license_revenue.source,
     sum(license_revenue.rev_amount) AS rev_amount_sum,
     sum(license_revenue.tax_amount) AS tax_amount_sum,
     (license.address_meta ->> 'city'::text) AS city,
@@ -588,7 +589,7 @@ CREATE OR REPLACE VIEW public.license_revenue_full AS
    FROM ((public.company
      JOIN public.license ON (((company.id)::text = (license.company_id)::text)))
      JOIN public.license_revenue ON (((license.id)::text = (license_revenue.license_id)::text)))
-  GROUP BY company.id, company.name, license.id, license.name, license_revenue.month, (license.address_meta ->> 'city'::text), (license.address_meta ->> 'county'::text);
+  GROUP BY company.id, company.name, license.id, license.name, license_revenue.month, license_revenue.source, (license.address_meta ->> 'city'::text), (license.address_meta ->> 'county'::text);
 
 
 --
