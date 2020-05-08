@@ -20,7 +20,7 @@ $idx = 1;
 $max = 100000000; // Sales_0
 // $max =  37861239; // Sales_1
 
-$min_date = new DateTime('2018-06-01');
+$min_date = new DateTime('2019-01-01');
 
 // Connect DB
 $dbc = _dbc();

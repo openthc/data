@@ -17,6 +17,8 @@
 
 require_once(__DIR__ . '/boot.php');
 
+$min_date = new DateTime('2019-01-01');
+
 $dbc = _dbc();
 
 $f = $argv[1];
@@ -29,14 +31,9 @@ $csv = new CSV_Reader($f);
 
 $idx = 1;
 $max = 90000001; // from wc -l
-$max = 47918396;
-while ($rec = fgetcsv($fh, 0, $sep)) {
+while ($rec = $csv->fetch()) {
 
 	$idx++;
-
-	if ($idx <= ??) {
-		continue;
-	}
 
 	if ($csv->key_size != count($rec)) {
 		_append_fail_log($idx, 'Field Count', $rec);
@@ -49,17 +46,30 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 	unset($rec['external_id']);
 	unset($rec['use_by_date']);
 
-	foreach ($key_list as $x) {
+	foreach ($csv->key_list as $x) {
 		if (empty($rec[$x])) {
 			unset($rec[$x]);
 		}
 	}
 
-	// print_r($rec); exit;
-
 	if (empty($rec['global_id'])) {
 		_append_fail_log($idx, 'Missing Global ID', $rec);
 		continue;
+	}
+
+	$d0 = new DateTime($rec['created_at']);
+	if ($d0 < $min_date) {
+		continue;
+	}
+
+	$rec['unit_price'] = floatval($rec['unit_price']);
+	$rec['full_price'] = floatval($rec['full_price']);
+
+	// Price Fixer
+	if (!empty($rec['qty'])) {
+		if (empty($rec['unit_price']) && !empty($rec['full_price'])) {
+			$rec['unit_price'] = $rec['full_price'] / $rec['qty'];
+		}
 	}
 
 	$add = [
