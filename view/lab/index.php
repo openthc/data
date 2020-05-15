@@ -5,6 +5,8 @@
 
 $_ENV['title'] = 'Laboratory';
 
+echo _lab_tabs();
+
 echo '<div class="mt-4">';
 require_once(__DIR__ . '/chart-result-count-stacked-column.php');
 echo '</div>';
@@ -21,6 +23,10 @@ echo '</div>';
 
 echo '</div>';
 
+echo '<hr>';
+
+require_once(__DIR__ . '/table-at4-at5-lrx.php');
+
 return(0);
 
 ?>
@@ -28,7 +34,7 @@ return(0);
 <!-- <div class="container-fluid mt-2">
 <iframe
     allowtransparency
-    src="https://meta.weedtraqr.com/public/question/ad1b938a-7c5f-48ab-99dc-a28676d04647#theme=night&bordered=false&titled=false"
+    src="https://meta.openthc.com/public/question/ad1b938a-7c5f-48ab-99dc-a28676d04647#theme=night&bordered=false&titled=false"
     frameborder="0"
     height="600"
 	style="width:100%;"

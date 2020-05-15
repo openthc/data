@@ -118,38 +118,34 @@ sort($q_list);
 
 if ('csv' == $_GET['o']) {
 
-	header('content-description: Data Download');
-	header('content-disposition: attachment; filename="License_Activity.csv"');
-	header('content-type: text/plain');
-
-	$fh = fopen('php://output', 'w');
+	// Have to Re-Fold this Data First
 
 	// Head
-	$row = [];
-	$row[] = 'Code';
-	$row[] = 'Name';
+	$csv_spec = [
+		'code' => 'Code',
+		'name' => 'Name',
+	];
 	foreach ($q_list as $q) {
-		$row[] = "Count $q";
-		$row[] = "Revnue $q";
+		$csv_spec["c$q"] = "Count $q";
+		$csv_spec["r$q"] = "Revnue $q";
 	}
 
-	fputcsv($fh, $row);
-
+	$csv_data = [];
 	foreach ($res_activity as $l) {
 
 		$row = [];
-		$row[] = $l['code'];
-		$row[] = $l['name'];
+		$row['code'] = $l['code'];
+		$row['name'] = $l['name'];
 		foreach ($q_list as $q) {
-			$row[] = floatval($l['api'][$q]['c']);
-			$row[] = floatval($l['api'][$q]['r']);
+			$row["c$q"] = floatval($l['api'][$q]['c']);
+			$row["r$q"] = floatval($l['api'][$q]['r']);
 		}
 
-		fputcsv($fh, $row);
-
+		$csv_data[] = $row;
 	}
 
-	exit(0);
+	_res_to_csv($csv_data, $csv_spec, 'License_Activity.csv');
+
 }
 
 

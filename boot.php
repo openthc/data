@@ -5,16 +5,18 @@
 
 define('APP_ROOT', dirname(__FILE__));
 define('APP_SALT', sha1(__FILE__ . 'change-this-value'));
-define('APP_BUILD', '420.19.300');
+define('APP_BUILD', '420.20.120');
 
 openlog('openthc-data', LOG_ODELAY|LOG_PID, LOG_LOCAL0);
 
 error_reporting(E_ALL & ~ E_NOTICE);
 
-define('DATE_ALPHA_6MO', '2019-06-01 00:00:00');
+define('DATE_ALPHA', '2019-10-01 00:00:00');
+define('DATE_OMEGA', '2020-04-30 23:59:59');
 
 require_once(APP_ROOT . '/vendor/autoload.php');
 require_once(APP_ROOT . '/lib/data.php');
+require_once(APP_ROOT . '/lib/export.php');
 
 function _dbc()
 {
