@@ -1,6 +1,6 @@
 #!/bin/bash -x
 #
-# Import from LeafData
+# Import from LeafData from Specified Source Path
 #
 
 set -o errexit
@@ -9,58 +9,10 @@ set -o nounset
 f=$(readlink -f "$0")
 d=$(dirname "$f")
 
-RAW_SOURCE_DIR=$(readlink -f "$1")
-
 cd "$d"
 cd ..
 
-
-#
-# Extract the ZIP Files from LeafData
-#
-file_list="
-Licensees_0
-Users_0
-MmeUser_0
-Strains_0
-InventoryTransfers_0
-InventoryTransferItems_0
-InventoryTypes_0
-Inventories_0
-InventoryAdjustments_0
-LabResults_0
-Sales_0
-Sales_1
-SaleItems_0
-SaleItems_1
-SaleItems_2
-"
-
-for f in $file_list;
-do
-	if [ ! -f "$RAW_SOURCE_DIR/$f.zip" ]
-	then
-		continue
-	fi
-
-	chk=$(zipinfo $RAW_SOURCE_DIR/$f.zip | grep '1 file')
-	if [ -z "$chk" ]
-	then
-		echo "Invalid Zip File for: $f"
-		continue
-	fi
-
-	unzip "$RAW_SOURCE_DIR/$f.zip" -d "$RAW_SOURCE_DIR"
-	if [ -f "$RAW_SOURCE_DIR/$f.csv" ]
-	then
-		rm "$RAW_SOURCE_DIR/$f.zip"
-		touch "$RAW_SOURCE_DIR/$f.csv"
-		iconv -f UTF-16LE -t ASCII//TRANSLIT "$RAW_SOURCE_DIR/$f.csv" > "$RAW_SOURCE_DIR/$f.tsv"
-		rm "$RAW_SOURCE_DIR/$f.csv"
-	fi
-
-done
-
+RAW_SOURCE_DIR=$(readlink -f "$1")
 
 #
 # Import Each
