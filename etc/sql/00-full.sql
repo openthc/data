@@ -2,9 +2,6 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.5 (Debian 11.5-1+deb10u1)
--- Dumped by pg_dump version 11.5 (Debian 11.5-1+deb10u1)
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -78,8 +75,8 @@ CREATE TABLE public.lot (
     id character varying(26) NOT NULL,
     license_id character varying(26) NOT NULL,
     product_id character varying(26) NOT NULL,
-    strain_id character varying(26),
-    zone_id character varying(26),
+    variety_id character varying(26),
+    section_id character varying(26),
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone,
@@ -170,6 +167,9 @@ CREATE TABLE public.b2c_sale_item (
     flag integer DEFAULT 0 NOT NULL,
     qty numeric(16,4) NOT NULL,
     unit_price numeric(12,4) NOT NULL,
+    package_size numeric(16,4),
+    package_unit character varying(8),
+    product_type character varying(256),
     meta jsonb
 );
 
@@ -409,10 +409,10 @@ CREATE TABLE public.product_license_name (
 ALTER TABLE public.product_license_name OWNER TO postgres;
 
 --
--- Name: strain; Type: TABLE; Schema: public; Owner: openthc
+-- Name: variety; Type: TABLE; Schema: public; Owner: openthc
 --
 
-CREATE TABLE public.strain (
+CREATE TABLE public.variety (
     id character varying(26) NOT NULL,
     license_id character varying(26) NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
@@ -426,7 +426,7 @@ CREATE TABLE public.strain (
 );
 
 
-ALTER TABLE public.strain OWNER TO openthc;
+ALTER TABLE public.variety OWNER TO openthc;
 
 --
 -- Name: license_history id; Type: DEFAULT; Schema: public; Owner: openthc
@@ -539,11 +539,11 @@ ALTER TABLE ONLY public.product
 
 
 --
--- Name: strain strain_pkey; Type: CONSTRAINT; Schema: public; Owner: openthc
+-- Name: variety variety_pkey; Type: CONSTRAINT; Schema: public; Owner: openthc
 --
 
-ALTER TABLE ONLY public.strain
-    ADD CONSTRAINT strain_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.variety
+    ADD CONSTRAINT variety_pkey PRIMARY KEY (id);
 
 
 --
@@ -756,10 +756,10 @@ GRANT SELECT ON TABLE public.product_license_name TO openthc_ro;
 
 
 --
--- Name: TABLE strain; Type: ACL; Schema: public; Owner: openthc
+-- Name: TABLE variety; Type: ACL; Schema: public; Owner: openthc
 --
 
-GRANT SELECT ON TABLE public.strain TO openthc_ro;
+GRANT SELECT ON TABLE public.variety TO openthc_ro;
 
 
 --

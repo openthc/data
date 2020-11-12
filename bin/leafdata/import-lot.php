@@ -38,8 +38,8 @@ while ($idx < $off) {
 $dbc = _dbc();
 $pdo = $dbc->_pdo;
 $sql = <<<SQL
-INSERT INTO lot (id, license_id, product_id, strain_id, qty, created_at, meta)
-VALUES (:id, :license_id, :product_id, :strain_id, :qty, :created_at, :meta)
+INSERT INTO lot (id, license_id, product_id, variety_id, qty, created_at, meta)
+VALUES (:id, :license_id, :product_id, :variety_id, :qty, :created_at, :meta)
 SQL;
 $dbc_insert = $pdo->prepare($sql);
 
@@ -114,7 +114,7 @@ Array
 			':id' => $rec['global_id'],
 			':license_id' => $rec['mme_id'],
 			':product_id' => $rec['inventory_type_id'],
-			':strain_id' => $rec['strain_id'],
+			':variety_id' => $rec['strain_id'],
 			':qty' => $rec['qty'],
 			':created_at' => $rec['created_at'],
 			':meta' => json_encode($rec),

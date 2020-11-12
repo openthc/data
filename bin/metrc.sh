@@ -17,8 +17,8 @@ cd "$d"
 cd ..
 
 
-./metrc/import-zone.php
-./metrc/import-strain.php
+./metrc/import-section.php
+./metrc/import-variety.php
 ./metrc/import-product.php
 ./metrc/import-lot.php
 ./metrc/import-plant.php
