@@ -3,7 +3,7 @@
  * Laboratory Details
  */
 
-$_ENV['title'] = 'Laboratory';
+$_ENV['h1'] = $_ENV['title'] = 'Lab Results';
 
 echo _lab_tabs();
 
@@ -11,21 +11,21 @@ echo '<div class="mt-4">';
 require_once(__DIR__ . '/chart-result-count-stacked-column.php');
 echo '</div>';
 
-echo '<div class="row">';
+// echo '<div class="row">';
 
-echo '<div class="col-md-6">';
-require_once(__DIR__ . '/chart-result-count-6mo-pie.php');
-echo '</div>';
+// echo '<div class="col-md-6">';
+// require_once(__DIR__ . '/chart-result-count-6mo-pie.php');
+// echo '</div>';
 
-echo '<div class="col-md-6">';
-require_once(__DIR__ . '/chart-result-count-3mo-pie.php');
-echo '</div>';
+// echo '<div class="col-md-6">';
+// require_once(__DIR__ . '/chart-result-count-3mo-pie.php');
+// echo '</div>';
 
-echo '</div>';
+// echo '</div>';
 
-echo '<hr>';
+// echo '<hr>';
 
-require_once(__DIR__ . '/table-at4-at5-lrx.php');
+// require_once(__DIR__ . '/table-at4-at5-lrx.php');
 
 return(0);
 
