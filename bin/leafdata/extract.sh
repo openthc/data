@@ -63,8 +63,7 @@ do
 
 	echo "CONV"
 	touch "$RAW_SOURCE_DIR/$f.csv"
-	iconv -f UTF-16LE -t ASCII//TRANSLIT "$RAW_SOURCE_DIR/$f.csv" > "$RAW_SOURCE_DIR/$f.tsv"
-
+	iconv -f UTF-16LE -t ASCII//TRANSLIT "$RAW_SOURCE_DIR/$f.csv" | tee "$RAW_SOURCE_DIR/$f.tsv" | wc -l | tee "$RAW_SOURCE_DIR/$f.max"
 
 	echo "DONE"
 	rm "$RAW_SOURCE_DIR/$f.zip"
