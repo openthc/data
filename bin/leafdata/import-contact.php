@@ -22,12 +22,6 @@ while ($rec = $csv->fetch()) {
 	$idx++;
 	$rec = array_combine($csv->key_list, $rec);
 
-//	if ($map_c != count($rec)) {
-//		_append_fail_log($idx, 'Field Count', $rec);
-//		continue;
-//	}
-//	$rec = array_combine($map, $rec);
-
 	try {
 		$dbc->insert('contact', array(
 			'id' => $rec['global_id'],
@@ -40,14 +34,13 @@ while ($rec = $csv->fetch()) {
 
 }
 
-die("Figuour Contac t/ Licnee Linkage ?? MMEUSER?\n");
+exit(0);
 
 //$f1 = $argv[2]; // sprintf('%s/source-data/contact-license.tsv', APP_ROOT);
 //if (!is_file($f1)) {
 //	echo "Create the source file at '$f1'\n";
 //	exit(1);
 //}
-
 
 
 // License to Contact Linkage

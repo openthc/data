@@ -17,8 +17,6 @@
 
 require_once(__DIR__ . '/boot.php');
 
-$min_date = new DateTime('2019-01-01');
-
 $dbc = _dbc();
 
 $f = $argv[1];
@@ -30,7 +28,9 @@ if (!is_file($f)) {
 $csv = new CSV_Reader($f);
 
 $idx = 1;
-$max = 90000001; // from wc -l
+$max = _find_max($f, $csv);
+$min_date = new DateTime(DATE_ALPHA);
+
 while ($rec = $csv->fetch()) {
 
 	$idx++;
@@ -61,6 +61,8 @@ while ($rec = $csv->fetch()) {
 	if ($d0 < $min_date) {
 		continue;
 	}
+	$y0 = intval($d0->format('Y'));
+
 
 	$rec['unit_price'] = floatval($rec['unit_price']);
 	$rec['full_price'] = floatval($rec['full_price']);
@@ -85,7 +87,19 @@ while ($rec = $csv->fetch()) {
 	];
 
 	try {
-		$dbc->insert('b2c_sale_item', $add);
+		switch ($y0) {
+			case 2018:
+				$dbc->insert('b2c_sale_item_2018', $add);
+			break;
+			case 2019:
+				$dbc->insert('b2c_sale_item_2019', $add);
+			break;
+			case 2020:
+				$dbc->insert('b2c_sale_item', $add);
+			break;
+			default:
+				die("\n$idx Has Bad Year\n");
+		}
 	} catch (Exception $e) {
 		_append_fail_log($idx, $e->getMessage(), $rec);
 	}

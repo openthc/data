@@ -10,7 +10,7 @@ f=$(readlink -f "$0")
 d=$(dirname "$f")
 
 cd "$d"
-cd ..
+cd ../../
 
 RAW_SOURCE_DIR=$(readlink -f "$1")
 if [ -z "$RAW_SOURCE_DIR" ]
@@ -18,8 +18,6 @@ then
 	echo "Provide a Source Path of Files"
 	exit 1
 fi
-
-exit
 
 #
 # Import Each
@@ -29,6 +27,7 @@ exit
 
 ./bin/leafdata/import-b2b-sale.php "$RAW_SOURCE_DIR/InventoryTransfers_0.tsv" 2>&1 | tee -a ./output-data/import-b2b-sale.out
 ./bin/leafdata/import-b2b-sale-item.php "$RAW_SOURCE_DIR/InventoryTransferItems_0.tsv" 2>&1 | tee -a ./output-data/import-b2b-sale-item.out
+# ./bin/leafdata/import-b2b-sale-item.php "$RAW_SOURCE_DIR/InventoryTransferItems_1.tsv" 2>&1 | tee -a ./output-data/import-b2b-sale-item.out
 
 ./bin/leafdata/import-product.php "$RAW_SOURCE_DIR/InventoryTypes_0.tsv" 2>&1 | tee -a ./output-data/import-product.out
 ./bin/leafdata/import-lot.php "$RAW_SOURCE_DIR/Inventories_0.tsv" 2>&1 | tee -a ./output-data/import-lot.out

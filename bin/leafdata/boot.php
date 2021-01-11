@@ -6,6 +6,22 @@
 // App-Boot
 require_once(dirname(dirname(dirname(__FILE__))) . '/boot.php');
 
+function _find_max($f, $csv)
+{
+	$max = 0;
+	$max_file = preg_match('/\.tsv$/', '.max', $f);
+
+	if (is_file($max_file)) {
+		$max = intval(file_get_contents($max_file));
+	}
+
+	if (0 == $max) {
+		$max = $csv->rowEstimate();
+	}
+
+	return $max;
+
+}
 
 class CSV_Reader
 {

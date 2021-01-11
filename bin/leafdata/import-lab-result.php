@@ -17,14 +17,12 @@ $csv = new CSV_Reader($f);
 $dbc = _dbc();
 
 $idx = 1;
-$max = 1857444;
+$max = _find_max($f, $csv);
+$min_date = new DateTime('2018-07-01');
 
 while ($rec = $csv->fetch()) {
 
 	$idx++;
-	if ($idx < 1830887) {
-		continue;
-	}
 
 	if ($csv->key_size != count($rec)) {
 		_append_fail_log($idx, 'Field Count Issue', $rec);
@@ -40,6 +38,12 @@ while ($rec = $csv->fetch()) {
 
 	if ('waste' == $rec['type']) {
 		echo sprintf("%d: %s; %s\n", $idx, 'Is Waste', json_encode($rec));
+		continue;
+	}
+
+	$dt0 = new DateTime($rec['created_at']);
+	if ($dt0 < $min_date) {
+		echo '.';
 		continue;
 	}
 
