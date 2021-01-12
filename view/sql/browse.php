@@ -147,7 +147,7 @@ function _echo_obj_detail($dbc, $tab_view, $obj_view)
 		// echo '<h2>Show Family</h2>';
 
 		echo '<h2>lot &raquo; b2b_sale_item</h2>';
-		$res = $dbc->fetchAll('SELECT * FROM b2b_sale_item WHERE lot_id_origin = ?', [ $obj_view ]);
+		$res = $dbc->fetchAll('SELECT * FROM b2b_sale_item WHERE lot_id_source = ?', [ $obj_view ]);
 		_echo_res_table($res, 'b2b_sale_item');
 
 		$res = $dbc->fetchAll('SELECT * FROM b2b_sale_item WHERE lot_id_target = ?', [ $obj_view ]);
