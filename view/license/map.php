@@ -36,7 +36,7 @@ if ($do_client) {
 SELECT DISTINCT license.id AS license_id, license.name AS license_name, license.lat, license.lon
 FROM b2b_sale
 JOIN license ON b2b_sale.license_id_target = license.id
-WHERE b2b_sale.license_id_origin = :l0 AND b2b_sale.stat IN ('in-transit', 'ready-for-pickup', 'received')
+WHERE b2b_sale.license_id_source = :l0 AND b2b_sale.stat IN ('in-transit', 'ready-for-pickup', 'received')
 AND execute_at >= now() - '12 months'::interval
 AND full_price > 0
 LIMIT 100
@@ -57,7 +57,7 @@ if ($do_vendor) {
 	$sql = <<<SQL
 SELECT DISTINCT license.id AS license_id, license.name AS license_name, license.lat, license.lon
 FROM b2b_sale
-JOIN license ON b2b_sale.license_id_origin = license.id
+JOIN license ON b2b_sale.license_id_source = license.id
 WHERE b2b_sale.license_id_target = :l0 AND b2b_sale.stat IN ('in-transit', 'ready-for-pickup', 'received')
 AND execute_at >= now() - '12 months'::interval
 AND full_price > 0

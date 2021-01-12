@@ -31,7 +31,7 @@ foreach ($res_license as $l) {
 
 // Sales Activity, By Quarter, from FOIA data
 $sql = <<<SQL
-SELECT license_id_origin AS l
+SELECT license_id_source AS l
 , count(id) AS c
 , sum(full_price) AS r
 , date_trunc('quarter', execute_at) AS q

@@ -37,7 +37,7 @@ ALTER TABLE public.b2b_path OWNER TO openthc;
 
 CREATE TABLE public.b2b_sale (
     id character varying(26) NOT NULL,
-    license_id_origin character varying(26),
+    license_id_source character varying(26),
     license_id_target character varying(26),
     execute_at timestamp with time zone,
     stat character varying(32),
@@ -55,7 +55,7 @@ ALTER TABLE public.b2b_sale OWNER TO openthc;
 CREATE TABLE public.b2b_sale_item (
     id character varying(26) NOT NULL,
     transfer_id character varying(26),
-    lot_id_origin character varying(26),
+    lot_id_source character varying(26),
     lot_id_target character varying(26),
     qom_tx numeric(16,3),
     qom_rx numeric(16,3),
@@ -113,22 +113,22 @@ ALTER TABLE public.product OWNER TO openthc;
 CREATE VIEW public.b2b_sale_item_full AS
  SELECT b2b_sale.id,
     b2b_sale.execute_at,
-    b2b_sale.license_id_origin,
+    b2b_sale.license_id_source,
     b2b_sale.license_id_target,
     b2b_sale.stat,
     b2b_sale.full_price AS sale_full_price,
-    b2b_sale_item.lot_id_origin,
+    b2b_sale_item.lot_id_source,
     b2b_sale_item.lot_id_target,
     b2b_sale_item.full_price AS sale_item_full_price,
     b2b_sale_item.qom_tx AS qty_tx,
     b2b_sale_item.qom_rx AS qty_rx,
-    product_origin.product_type,
-    product_origin.name AS product_name,
-    product_origin.package_size
+    product_source.product_type,
+    product_source.name AS product_name,
+    product_source.package_size
    FROM (((public.b2b_sale
      JOIN public.b2b_sale_item ON (((b2b_sale.id)::text = (b2b_sale_item.transfer_id)::text)))
-     JOIN public.lot lot_origin ON (((b2b_sale_item.lot_id_origin)::text = (lot_origin.id)::text)))
-     JOIN public.product product_origin ON (((lot_origin.product_id)::text = (product_origin.id)::text)));
+     JOIN public.lot lot_source ON (((b2b_sale_item.lot_id_source)::text = (lot_source.id)::text)))
+     JOIN public.product product_source ON (((lot_source.product_id)::text = (product_source.id)::text)));
 
 
 ALTER TABLE public.b2b_sale_item_full OWNER TO openthc;
