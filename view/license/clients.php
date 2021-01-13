@@ -56,7 +56,7 @@ SELECT count(b2b_sale.id) AS c, sum(full_price) AS rev
 , license.name AS license_name
 FROM b2b_sale
 JOIN license ON b2b_sale.license_id_target = license.id
-WHERE b2b_sale.license_id_origin = ?
+WHERE b2b_sale.license_id_source = ?
  $stat_filter
 AND execute_at >= now() - '12 months'::interval
 AND full_price > 0

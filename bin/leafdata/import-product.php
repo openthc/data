@@ -15,8 +15,8 @@ if (!is_file($f)) {
 $csv = new CSV_Reader($f);
 
 $idx = 1;
-$off = 500000;
-$max = 24068254;
+$off = 0;
+$max = _find_max($f, $csv);
 
 // Seek to Work
 while ($idx < $off) {
@@ -30,6 +30,7 @@ $pdo = $dbc->_pdo;
 $sql = <<<SQL
 INSERT INTO product (id, license_id, product_type, package_type, package_size, package_unit, name)
 VALUES (:id, :license_id, :product_type, :package_type, :package_size, :package_unit, :name)
+ON CONFLICT (id) DO NOTHING
 SQL;
 $dbc_insert = $pdo->prepare($sql);
 

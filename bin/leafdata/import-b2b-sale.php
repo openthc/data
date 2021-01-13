@@ -24,20 +24,20 @@ if (!is_file($f)) {
 $csv = new CSV_Reader($f);
 
 $idx = 1;
-$max = 924580;
+$max = _find_max($f, $csv);
+$min_date = new DateTime(DATE_ALPHA);
 
 while ($rec = $csv->fetch()) {
 
 	$idx++;
 	$rec = array_combine($csv->key_list, $rec);
+	$rec = de_fuck_date_format($rec);
 
 	unset($rec['user_id']);
 	unset($rec['from_user_id']);
 	unset($rec['to_user_id']);
 	unset($rec['hold_ends_at']);
 	unset($rec['hold_starts_at']);
-
-	$rec = de_fuck_date_format($rec);
 
 	$date = $rec['transferred_at'];
 	if (empty($date)) {
@@ -46,6 +46,13 @@ while ($rec = $csv->fetch()) {
 	if (empty($date)) {
 		$date = $rec['created_at'];
 	}
+
+	// Skip Old
+	$d0 = new DateTime($date);
+	if ($d0 < $min_date) {
+		continue;
+	}
+
 
 	$stat = $rec['status'];
 	switch ($rec['void']) {
@@ -67,7 +74,7 @@ while ($rec = $csv->fetch()) {
 	try {
 		$add = array(
 			'id' => $rec['global_id'],
-			'license_id_origin' => $rec['from_mme_id'],
+			'license_id_source' => $rec['from_mme_id'],
 			'license_id_target' => $rec['to_mme_id'],
 			'created_at' => $rec['created_at'],
 			'execute_at' => $date,

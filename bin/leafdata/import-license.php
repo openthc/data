@@ -16,9 +16,9 @@ $csv = new CSV_Reader($f);
 
 $dbc = _dbc();
 
-$select_license = $dbc->prepare('SELECT id, name FROM license WHERE id = ?');
-//$select_license->execute($arg);
-//$select_license = SQL::prepare('SELECT id, name FROM license WHERE id = ?');
+// $select_license = $dbc->prepare('SELECT id, name FROM license WHERE id = ?');
+// $select_license->execute($arg);
+// $select_license = SQL::prepare('SELECT id, name FROM license WHERE id = ?');
 
 $idx = 1;
 while ($rec = $csv->fetch()) {
@@ -29,18 +29,16 @@ while ($rec = $csv->fetch()) {
 //		_append_fail_log($idx, 'Field Count', $rec);
 //		continue;
 //	}
-//
-//	$rec = array_combine($map, $rec);
+
 	$rec = array_combine($csv->key_list, $rec);
 
-	unset($rec['exernal_id']);
+	unset($rec['external_id']);
 
 	$rec['name'] = trim($rec['name']);
 	$rec['address1'] = trim($rec['address1']);
 	$rec['address2'] = trim($rec['address2']);
 	$rec['certificate_number'] = trim($rec['certificate_number']);
 
-	// $chk = $select_license
 	try {
 		$dbc->insert('license', array(
 			'id' => $rec['global_id'],

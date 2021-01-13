@@ -5,10 +5,6 @@
 
 $_ENV['title'] = 'License :: Top Vendors';
 
-if (!_acl($_SESSION['acl_subject'], 'license', 'view-vendors')) {
-	_exit_html('Please <a href="/auth/open">sign-in</a> to view more details', 403);
-}
-
 $dbc = _dbc();
 
 $L = $dbc->fetchRow('SELECT * FROM license WHERE id = ?', [ $_GET['id'] ]);
@@ -39,7 +35,7 @@ SELECT count(b2b_sale.id) AS c, sum(full_price) AS rev
 , license.code AS license_code
 , license.name AS license_name
 FROM b2b_sale
-JOIN license ON b2b_sale.license_id_origin = license.id
+JOIN license ON b2b_sale.license_id_source = license.id
 WHERE b2b_sale.license_id_target = ? AND b2b_sale.stat IN ('in-transit', 'ready-for-pickup', 'received')
 AND execute_at >= now() - '12 months'::interval
 AND full_price > 0

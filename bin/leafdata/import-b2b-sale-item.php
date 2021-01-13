@@ -16,8 +16,9 @@ if (!is_file($f)) {
 
 $csv = new CSV_Reader($f);
 
-$idx = 0; // First Data row maps to '1'
-$max = 2000000;
+$idx = 1; // First Data row maps to '1'
+$max = _find_max($f, $csv);
+$min_date = new DateTime(DATE_ALPHA);
 
 while ($rec = $csv->fetch()) {
 
@@ -26,6 +27,12 @@ while ($rec = $csv->fetch()) {
 
 	if (empty($rec['global_id'])) {
 		echo sprintf("%d: %s; %s\n", $idx, 'Missing Global ID', json_encode($rec));
+		continue;
+	}
+
+	// Skip Old
+	$d0 = new DateTime($rec['created_at']);
+	if ($d0 < $min_date) {
 		continue;
 	}
 
