@@ -5,6 +5,8 @@
 
 $_ENV['title'] = 'License :: Relationship Map';
 
+$map_api_key = \OpenTHC\Config::get('google/map_api_key');
+
 if (!_acl($_SESSION['acl_subject'], 'license', 'view-map')) {
 	_exit_html('Please <a href="/auth/open">sign-in</a> to view more details', 403);
 }
@@ -126,7 +128,7 @@ foreach ([] as $c) {
 </div>
 
 
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVJvvpHqOFkGNKknxBsE4VuVEsdSXGJbs&amp;libraries=places"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?= $map_api_key ?>&amp;libraries=places"></script>
 <script>
 var head = document.getElementsByTagName('head')[0];
 
