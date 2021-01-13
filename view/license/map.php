@@ -7,10 +7,6 @@ $_ENV['title'] = 'License :: Relationship Map';
 
 $map_api_key = \OpenTHC\Config::get('google/map_api_key');
 
-if (!_acl($_SESSION['acl_subject'], 'license', 'view-map')) {
-	_exit_html('Please <a href="/auth/open">sign-in</a> to view more details', 403);
-}
-
 $dbc = _dbc();
 
 $L = $dbc->fetchRow('SELECT * FROM license WHERE id = ?', [ $_GET['id'] ]);

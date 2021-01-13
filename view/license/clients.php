@@ -7,10 +7,6 @@ $_ENV['title'] = 'License :: Top Clients';
 
 session_write_close();
 
-if (!_acl($_SESSION['acl_subject'], 'license', 'view-clients')) {
-	_exit_html('Please <a href="/auth/open">sign-in</a> to view more details', 403);
-}
-
 $show_void = intval($_GET['void']);
 
 $dbc = _dbc();

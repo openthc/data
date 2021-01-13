@@ -22,6 +22,7 @@ if (empty($limit_count)) {
 $res = $dbc->fetchRow('SELECT min(month) AS date_alpha, max(month) AS date_omega FROM license_revenue');
 $mon0 = $res['date_alpha'];
 $mon1 = $res['date_omega'];
+$mon_list = [];
 
 $license_filter = null;
 switch ($_GET['t']) {

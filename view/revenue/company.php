@@ -18,9 +18,14 @@ if (empty($limit_count)) {
 $dbc = _dbc();
 
 $res = $dbc->fetchRow('SELECT min(month) AS date_alpha, max(month) AS date_omega FROM license_revenue');
+// var_dump($res);
+// if (empty($res['date_omega'])) {
+// 	_exit_text('Revenue Reports not Available', 404);
+// }
+
 $mon0 = $res['date_alpha'];
 $mon1 = $res['date_omega'];
-
+$mon_list = [];
 
 $sql = <<<EOS
 SELECT company.id

@@ -9,19 +9,10 @@ use Edoceo\Radix\Session;
 require_once(dirname(dirname(__FILE__)) . '/boot.php');
 require_once(APP_ROOT . '/lib/App_Menu.php');
 
-Radix::init();
-
 // Session
 session_start();
 
-if (empty($_SESSION['acl_subject'])) {
-	$_SESSION['acl_subject'] = 'free';
-}
-//$_SESSION['acl_subject'] = 'paid';
-
-if (_acl($_SESSION['acl_subject'], 'sql', 'direct-query')) {
-	 // App_Menu::addMenuItem('main', '/sql', '<i class="fas fa-database"></i> SQL', 9000);
-}
+Radix::init();
 
 Radix::exec();
 
