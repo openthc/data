@@ -17,7 +17,7 @@ function _find_license($lic6)
 }
 
 
-function _revenue_record_insert($L, $date, $mode, $rev_sum, $tax_sum)
+function _revenue_record_insert($L, $date, $mode, $rev_sum, $tax_sum=0)
 {
 	$dbc = _dbc();
 
@@ -38,7 +38,7 @@ function _revenue_record_insert($L, $date, $mode, $rev_sum, $tax_sum)
 	$arg = array($add['license_id'], $add['month'], $add['source'], $add['rev_amount']);
 	$chk = $dbc->fetchRow($sql, $arg);
 	if (empty($chk)) {
-		echo '+';
+		// echo '+';
 		$dbc->insert('license_revenue', $add);
 	} else {
 		echo '.';

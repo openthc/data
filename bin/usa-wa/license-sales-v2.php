@@ -84,7 +84,6 @@ foreach($xls->getSheetNames() as $n) {
 		}
 
 		$rev_sum = trim($wks->getCell(sprintf('C%d', $idx))->getValue());
-		$tax_sum = trim($wks->getCell(sprintf('D%d', $idx))->getValue());
 
 		// Find Vendor
 		$L = _find_license($lic6);
@@ -94,7 +93,7 @@ foreach($xls->getSheetNames() as $n) {
 			continue;
 		}
 
-		_revenue_record_insert($L, $date, 'lcb-v2', $rev_sum, $tax_sum);
+		_revenue_record_insert($L, $date, 'lcb-v2', $rev_sum);
 
 		$date_x = $date;
 
