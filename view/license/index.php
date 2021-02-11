@@ -6,19 +6,14 @@
 $_ENV['h1'] = null;
 $_ENV['title'] = 'License';
 
-session_write_close();
-
 $dbc = _dbc();
 
-$L = $dbc->fetchRow('SELECT * FROM license WHERE id = ?', [ $_GET['id'] ]);
+$L = $dbc->fetchRow('SELECT * FROM license WHERE id = :l', [ ':l' => $_GET['id'] ]);
 if (empty($L['id'])) {
 	_exit_text('Invalid License', 400);
 }
 
 $_ENV['title'] = sprintf('License :: %s - %s', $L['code'], $L['name']);
-
-$lim = 6;
-$lim = 12;
 
 /*
 select distinct stat from b2b_sale;
@@ -47,7 +42,7 @@ SQL;
 
 $arg = [
 	':l0' => $L['id'],
-	':dt0' => '2018-06-01',
+	':dt0' => DATE_ALPHA,
 ];
 
 $res_expense = _select_via_cache($dbc, $sql, $arg);
@@ -68,7 +63,7 @@ SQL;
 
 $arg = [
 	':l0' => $L['id'],
-	':dt0' => '2018-06-01',
+	':dt0' => DATE_ALPHA,
 ];
 
 $res_revenue = _select_via_cache($dbc, $sql, $arg);
@@ -80,7 +75,6 @@ $cht_data[] = [
 	'Revenue LCB',
 	'Revenue FOIA',
 	'FOIA VOID',
-	// 'Revenue FOIA',
 	// 'Expense',
 ];
 
@@ -158,43 +152,42 @@ foreach ($res_middle as $rec) {
 <?= _menu_license_tabs($L) ?>
 </div>
 
-
-<div class="container-fluid">
+<!-- <div class="container-fluid">
 	<h2 style="margin:0;padding:0;">Expense &amp; Revenue</h2>
 	<div id="chart-revenue" style="border 1px solid #333; height:240px; width:100%;"></div>
-</div>
-
+</div> -->
 
 <div class="container-fluid">
 <div class="row">
 <div class="col-md-6">
 <?php
-require_once(__DIR__ . '/transfer-incoming.php');
+require_once(__DIR__ . '/b2b-incoming.php');
 ?>
 </div>
 <div class="col-md-6">
 <?php
-require_once(__DIR__ . '/transfer-outgoing.php');
+require_once(__DIR__ . '/b2b-outgoing.php');
 ?>
 </div>
 </div>
 </div>
 
-
+<!--
 <div class="container-fluid">
 <div class="row">
 <div class="col-md-6">
 	<?php
-	require_once(__DIR__ . '/index-product-incoming.php');
+	// require_once(__DIR__ . '/index-product-incoming.php');
 	?>
 </div>
 <div class="col-md-6">
 	<?php
-	require_once(__DIR__ . '/index-product-outgoing.php');
+	// require_once(__DIR__ . '/index-product-outgoing.php');
 	?>
 </div>
 </div>
 </div>
+-->
 
 
 <script>
