@@ -12,13 +12,16 @@ openlog('openthc-data', LOG_ODELAY|LOG_PID, LOG_LOCAL0);
 error_reporting(E_ALL & ~ E_NOTICE);
 
 // Objective is to show 5 quarters of data
-define('DATE_ALPHA', '2019-10-01 00:00:00');
-define('DATE_OMEGA', '2020-12-31 23:59:59');
+define('DATE_ALPHA', '2020-02-01 00:00:00');
+define('DATE_OMEGA', '2021-03-01 00:00:00');
 
 require_once(APP_ROOT . '/vendor/autoload.php');
 require_once(APP_ROOT . '/lib/data.php');
 require_once(APP_ROOT . '/lib/export.php');
 
+/**
+ * Database Connection
+ */
 function _dbc()
 {
 	static $dbc;

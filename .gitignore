@@ -1,0 +1,20 @@
+#
+# Ignore Stuff
+#
+
+.build/
+.config/
+.env
+.gradle/
+.idea/
+.local/
+.vscode/
+
+Custom/
+
+bower_components/
+build/
+node_modules/
+release/
+var/
+vendor/
