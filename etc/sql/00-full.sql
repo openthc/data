@@ -54,7 +54,7 @@ ALTER TABLE public.b2b_sale OWNER TO openthc;
 
 CREATE TABLE public.b2b_sale_item (
     id character varying(26) NOT NULL,
-    transfer_id character varying(26),
+    b2b_sale_id character varying(26),
     lot_id_source character varying(26),
     lot_id_target character varying(26),
     qom_tx numeric(16,3),
@@ -126,7 +126,7 @@ CREATE VIEW public.b2b_sale_item_full AS
     product_source.name AS product_name,
     product_source.package_size
    FROM (((public.b2b_sale
-     JOIN public.b2b_sale_item ON (((b2b_sale.id)::text = (b2b_sale_item.transfer_id)::text)))
+     JOIN public.b2b_sale_item ON (((b2b_sale.id)::text = (b2b_sale_item.b2b_sale_id)::text)))
      JOIN public.lot lot_source ON (((b2b_sale_item.lot_id_source)::text = (lot_source.id)::text)))
      JOIN public.product product_source ON (((lot_source.product_id)::text = (product_source.id)::text)));
 
@@ -563,10 +563,10 @@ ALTER TABLE ONLY public.b2b_sale
 
 
 --
--- Name: transfer_item_transfer_id_idx; Type: INDEX; Schema: public; Owner: openthc
+-- Name: transfer_item_b2b_sale_id_idx; Type: INDEX; Schema: public; Owner: openthc
 --
 
-CREATE INDEX transfer_item_transfer_id_idx ON public.b2b_sale_item USING btree (transfer_id);
+CREATE INDEX transfer_item_b2b_sale_id_idx ON public.b2b_sale_item USING btree (b2b_sale_id);
 
 
 --

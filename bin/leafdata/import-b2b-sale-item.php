@@ -91,7 +91,7 @@ while ($rec = $csv->fetch()) {
 
 	$add = array(
 		'id' => $rec['global_id'],
-		'transfer_id' => $rec['inventory_transfer_id'],
+		'b2b_sale_id' => $rec['inventory_transfer_id'],
 		'lot_id_source' => $rec['inventory_id'],
 		'lot_id_target' => $rec['received_inventory_id'],
 		'qom_tx' => floatval($rec['qty']),

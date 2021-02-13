@@ -10,11 +10,15 @@ use Edoceo\Radix\Net\HTTP;
 require_once(__DIR__ . '/boot.php');
 
 $dbc = _dbc();
+$off = 2128;
 
-$dir = new OpenTHC\Service('dir');
+$sql = sprintf('SELECT id, code, name, lat, lon, address_meta, company_id FROM license ORDER BY id OFFSET %d', $off);
+$res_license = $dbc->fetchAll($sql);
+$idx = $off;
+$max = $off + count($res_license);
 
-$idx = 0;
-$res_license = $dbc->fetchAll('SELECT id, code, lat, lon, address_meta, company_id FROM license');
+$dir = new OpenTHC\Service\OpenTHC('dir');
+
 foreach ($res_license as $l0) {
 
 	$idx++;
@@ -35,23 +39,20 @@ foreach ($res_license as $l0) {
 		break;
 	}
 
-	echo '.';
-
 	if (!empty($l0['lat']) && !empty($l0['lon'])) {
 		continue;
 	}
 
-	// Special Key to Get Revenue
-	$res = $dir->get(sprintf('/api/license/%s', $l0['id']));
-	switch ($res->getStatusCode()) {
-	case 200:
+	printf('%04d/%04d:%02d%%: %s: %s; ', $idx, $max, $idx / $max * 100, $l0['id'], $l0['name']);
 
-		$res = $res->getBody()->getContents();
-		$l1 = json_decode($res, true);
-		// var_dump($l1);
+	$res = $dir->get(sprintf('/api/license/%s', $l0['id']));
+	if (!empty($res['data']['id'])) {
+
+		$l1 = $res['data'];
 
 		$chk = $dbc->fetchOne('SELECT id FROM company WHERE id = ?', [ $l1['company']['id'] ]);
 		if (empty($chk)) {
+			echo '+';
 			$dbc->insert('company', [
 				'id' => $l1['company']['id'],
 				'name' => $l1['name'],
@@ -60,7 +61,7 @@ foreach ($res_license as $l0) {
 
 		// Does Up-Stream have a Good Geo?
 		if (empty($l1['geo'])) {
-			echo "$idx: {$l0['id']} No Source GEO\n";
+			echo 'NO GEO; ';
 		}
 
 		$arg = array(
@@ -71,10 +72,12 @@ foreach ($res_license as $l0) {
 			':am' => $l1['address_meta'],
 		);
 
+		echo '^';
+
 		$sql = 'UPDATE license SET lat = :lat, lon = :lon, address_meta = :am, company_id = :com WHERE id = :id';
 		$dbc->query($sql, $arg);
 
-		echo '^';
-
 	}
+
+	echo "\n";
 }

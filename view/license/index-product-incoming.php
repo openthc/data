@@ -5,7 +5,7 @@
 // Stuff They Are Selling
 $sql = <<<SQL
 SELECT count(qom_tx) AS c, sum(full_price) AS r
-FROM b2b_sale_item WHERE transfer_id IN (SELECT id FROM b2b_sale WHERE license_id_target = :l0)
+FROM b2b_sale_item WHERE b2b_sale_id IN (SELECT id FROM b2b_sale WHERE license_id_target = :l0)
 LIMIT 100
 SQL;
 
