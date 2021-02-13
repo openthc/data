@@ -7,8 +7,6 @@ session_write_close();
 
 $_ENV['h1'] = $_ENV['title'] = 'Lab Results :: Potency';
 
-_lab_tabs();
-
 $dbc = _dbc();
 
 $sql = <<<SQL
@@ -37,6 +35,7 @@ if ('csv' == $_GET['o']) {
 	_res_to_csv($res, $csv_spec, 'Lab_Result_Potency.csv');
 }
 
+echo App\UI::lab_tabs();
 echo '<p><a href="?o=csv">Download CSV</p>';
 
 _res_to_table($res);

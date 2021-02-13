@@ -3,11 +3,7 @@
  * Show Most Used Lab Results
  */
 
-session_write_close();
-
 $_ENV['h1'] = $_ENV['title'] = 'Lab Results :: Usage';
-
-_lab_tabs();
 
 $dbc = _dbc();
 
@@ -40,6 +36,8 @@ ORDER BY 1 DESC
 LIMIT 25
 SQL;
 $res1 = _select_via_cache($dbc, $sql, $arg);
+
+echo App\UI::lab_tabs();
 
 echo '<div class="row">';
 echo '<div class="col-md-6"><p>Count lots with WAATTEST records, at Retail, Top 25</p>';

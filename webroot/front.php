@@ -50,6 +50,54 @@ $app->get('/lab', function($REQ, $RES) {
 
 });
 
+$app->get('/lab/frequency', function($REQ, $RES) {
+
+	require_once(APP_ROOT . '/controller/lab.php');
+
+	$c = $this; // Container
+	$v = new class($c) extends \OpenTHC\Controller\Base {};
+	$f = 'lab/frequency.php';
+	$d = [];
+	return $RES->write( $v->render($f, $d) );
+
+});
+
+$app->get('/lab/potency', function($REQ, $RES) {
+
+	require_once(APP_ROOT . '/controller/lab.php');
+
+	$c = $this; // Container
+	$v = new class($c) extends \OpenTHC\Controller\Base {};
+	$f = 'lab/potency.php';
+	$d = [];
+	return $RES->write( $v->render($f, $d) );
+
+});
+
+$app->get('/lab/usage', function($REQ, $RES) {
+
+	require_once(APP_ROOT . '/controller/lab.php');
+
+	$c = $this; // Container
+	$v = new class($c) extends \OpenTHC\Controller\Base {};
+	$f = 'lab/usage.php';
+	$d = [];
+	return $RES->write( $v->render($f, $d) );
+
+});
+
+$app->get('/lab/attested', function($REQ, $RES) {
+
+	require_once(APP_ROOT . '/controller/lab.php');
+
+	$c = $this; // Container
+	$v = new class($c) extends \OpenTHC\Controller\Base {};
+	$f = 'lab/attested.php';
+	$d = [];
+	return $RES->write( $v->render($f, $d) );
+
+});
+
 $app->get('/license/{id}', function($REQ, $RES, $ARG) {
 
 	$_GET['id'] = $ARG['id'];
