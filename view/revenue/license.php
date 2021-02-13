@@ -5,11 +5,7 @@
 
 use Edoceo\Radix\DB\SQL;
 
-session_write_close();
-
 $_ENV['h1'] = $_ENV['title'] = 'Revenue :: by License';
-
-_revenue_nav_tabs();
 
 $dbc = _dbc();
 
@@ -141,9 +137,8 @@ $rev_license = array_slice($rev_license, 0, $limit_count);
 $mon_list = array_unique($mon_list);
 sort($mon_list);
 $mon_list = array_slice($mon_list, -6);
-// var_dump($mon_list);
-// exit;
 
+echo App\UI::revenue_nav_tabs();
 
 ?>
 

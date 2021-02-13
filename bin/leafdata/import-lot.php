@@ -26,7 +26,7 @@ $csv = new CSV_Reader($f);
 
 $idx = 1;
 $off = 0;
-$max = 27726031;
+$max = _find_max($f, $csv);
 
 // Seek to Work
 while ($idx < $off) {

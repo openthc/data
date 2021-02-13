@@ -18,6 +18,12 @@ if (empty($L['id'])) {
 
 ?>
 
+<div class="container-fluid mt-2">
+<?= _license_info($L) ?>
+<?= App\UI::license_tabs($L) ?>
+</div>
+
+<!--
 <div class="container-fluid">
 <div class="row">
 	<div class="col-md-6">
@@ -27,8 +33,8 @@ if (empty($L['id'])) {
 		<a class="btn btn-outline-secondary" href="/license/map?id=<?= $L['id'] ?>&amp;license=vendor"><i class="fas fa-map"></i></a>
 	</div>
 </div>
-<?= _menu_license_tabs($L) ?>
-</div>
+<?= App\UI::license_tabs($L) ?>
+</div> -->
 
 <div class="container-fluid">
 <?php
@@ -52,15 +58,18 @@ SELECT count(b2b_sale.id) AS c, sum(full_price) AS rev
 , license.name AS license_name
 FROM b2b_sale
 JOIN license ON b2b_sale.license_id_target = license.id
-WHERE b2b_sale.license_id_source = ?
+WHERE b2b_sale.license_id_source = :l
  $stat_filter
-AND execute_at >= now() - '12 months'::interval
+AND execute_at >= :dt0
 AND full_price > 0
 GROUP BY license.id, license.name
 ORDER BY 2 DESC
 LIMIT $max
 SQL;
-$arg = [ $L['id'] ];
+$arg = [
+	':l' => $L['id'],
+	':dt0' => DATE_ALPHA,
+];
 $res = _select_via_cache($dbc, $sql, $arg);
 ?>
 

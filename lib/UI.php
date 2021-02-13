@@ -113,20 +113,31 @@ class UI
 
 	static function license_tabs($L)
 	{
-		ob_starT();
+		$active = 'single';
+
+		$p = strtok($_SERVER['REQUEST_URI'], '?');
+		$b = basename($p);
+		switch ($b) {
+			case 'clients':
+			case 'vendors':
+			case 'map':
+				$active = $b;
+		}
+
+		ob_start();
 	?>
 <ul class="nav nav-tabs">
 	<li class="nav-item">
-	<a class="nav-link" href="/license?id=<?= $L['id'] ?>">Overview</a>
+	<a class="nav-link<?= ('single' == $active ? ' active' : null) ?>" href="/license/<?= $L['id'] ?>">Overview</a>
 	</li>
 	<li class="nav-item">
-	<a class="nav-link<?= ('supply' == $lic_type ? ' active' : null) ?>" href="/license/vendors?id=<?= $L['id'] ?>">Vendors</a>
+	<a class="nav-link<?= ('vendors' == $active ? ' active' : null) ?>" href="/license/<?= $L['id'] ?>/vendors">Vendors</a>
 	</li>
 	<li class="nav-item">
-	<a class="nav-link<?= (('license_id' == $obj_type && null == $lic_type) ? ' active' : null) ?>" href="/license/clients?id=<?= $L['id'] ?>">Clients</a>
+	<a class="nav-link<?= ('clients' == $active ? ' active' : null) ?>" href="/license/<?= $L['id'] ?>/clients">Clients</a>
 	</li>
 	<li class="nav-item">
-	<a class="nav-link<?= ('retail' == $lic_type ? ' active' : null) ?>" href="/license/map?id=<?= $L['id'] ?>">Map</a>
+	<a class="nav-link<?= ('map' == $active ? ' active' : null) ?>" href="/license/<?= $L['id'] ?>/map">Map</a>
 	</li>
 </ul>
 	<?php

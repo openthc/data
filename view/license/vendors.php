@@ -14,9 +14,9 @@ if (empty($L['id'])) {
 
 ?>
 
-<div class="container-fluid">
+<div class="container-fluid mt-2">
 <?= _license_info($L) ?>
-<?= _menu_license_tabs($L) ?>
+<?= App\UI::license_tabs($L) ?>
 </div>
 
 <div class="container-fluid">

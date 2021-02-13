@@ -5,8 +5,6 @@
 
 $_ENV['title'] = 'B2B :: Wholesale :: Flower';
 
-session_write_close();
-
 $dbc = _dbc();
 
 $sql = <<<SQL
@@ -23,8 +21,6 @@ ORDER BY 2
 SQL;
 
 $res = _select_via_cache($dbc, $sql, null);
-// _res_to_table($res);
-// var_dump($res);
 
 $res_middle = [];
 foreach ($res as $rec) {
@@ -48,8 +44,6 @@ foreach ($res as $rec) {
 	}
 
 }
-// var_dump($res_middle);
-// _res_to_table($res_middle);
 
 
 $cht_data_buds = [];
@@ -135,9 +129,7 @@ foreach ($res_middle as $rec_middle) {
 
 <div class="container-fluid">
 <h1><?= $_ENV['title'] ?></h1>
-<?php
-_b2b_tabs();
-?>
+<?= \App\UI::b2b_tabs(); ?>
 
 <h2>Grade A :: Wholesale <small>flower / flower_lots</small></h2>
 <div id="chart-flower" style="height:360px; width:100%;"></div>

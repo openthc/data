@@ -5,8 +5,6 @@
 
 $_ENV['title'] = 'B2B :: Wholesale :: Extract';
 
-session_write_close();
-
 $dbc = _dbc();
 
 
@@ -135,9 +133,7 @@ foreach ($res_middle as $dts => $rec_middle) {
 
 <h1><?= $_ENV['title'] ?></h1>
 
-<?php
-_b2b_tabs();
-?>
+<?= \App\UI::b2b_tabs(); ?>
 
 <h2>Extract :: Dollars</h2>
 <div class="chart-fill" id="chart-extract-rev" style="height:360px; width:100%;"></div>

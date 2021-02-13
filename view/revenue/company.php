@@ -3,11 +3,7 @@
  * @todo Breakout between Supply Revenue and Retail Revenue
  */
 
-session_write_close();
-
 $_ENV['h1'] = $_ENV['title'] = "Revenue :: by Company :: $month_count Months";
-
-_revenue_nav_tabs();
 
 $month_count = 6;
 $limit_count = intval($_GET['l']);
@@ -88,6 +84,8 @@ $rev_company = array_slice($rev_company, 0, $limit_count);
 $mon_list = array_unique($mon_list);
 sort($mon_list);
 $mon_list = array_slice($mon_list, -6);
+
+echo App\UI::revenue_nav_tabs();
 
 ?>
 
