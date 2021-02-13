@@ -149,7 +149,7 @@ foreach ($res_middle as $rec) {
 		<?= _license_info($L) ?>
 	</div>
 </div>
-<?= _menu_license_tabs($L) ?>
+<?= \App\UI::license_tabs($L) ?>
 </div>
 
 <!-- <div class="container-fluid">

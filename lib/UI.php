@@ -111,6 +111,29 @@ class UI
 		return ob_get_clean();
 	}
 
+	static function license_tabs($L)
+	{
+		ob_starT();
+	?>
+<ul class="nav nav-tabs">
+	<li class="nav-item">
+	<a class="nav-link" href="/license?id=<?= $L['id'] ?>">Overview</a>
+	</li>
+	<li class="nav-item">
+	<a class="nav-link<?= ('supply' == $lic_type ? ' active' : null) ?>" href="/license/vendors?id=<?= $L['id'] ?>">Vendors</a>
+	</li>
+	<li class="nav-item">
+	<a class="nav-link<?= (('license_id' == $obj_type && null == $lic_type) ? ' active' : null) ?>" href="/license/clients?id=<?= $L['id'] ?>">Clients</a>
+	</li>
+	<li class="nav-item">
+	<a class="nav-link<?= ('retail' == $lic_type ? ' active' : null) ?>" href="/license/map?id=<?= $L['id'] ?>">Map</a>
+	</li>
+</ul>
+	<?php
+		return ob_get_clean();
+	}
+
+
 	/**
 	 *
 	 */
