@@ -23,6 +23,29 @@ $tool_menu_item = function($head, $link)
 <?php
 };
 
+$echo_session_flash = function()
+{
+	$x = Session::flash();
+	if (!empty($x)) {
+
+		$x = str_replace('<div class="good">', '<div class="alert alert-success alert-dismissible" role="alert">', $x);
+		$x = str_replace('<div class="info">', '<div class="alert alert-info alert-dismissible" role="alert">', $x);
+		$x = str_replace('<div class="warn">', '<div class="alert alert-warning alert-dismissible" role="alert">', $x);
+		$x = str_replace('<div class="fail">', '<div class="alert alert-danger alert-dismissible" role="alert">', $x);
+
+		// Add Close Button before Closing DIV
+		$x = str_replace('</div>', '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>', $x);
+
+		echo '<div class="radix-flash">';
+			// echo '<div>';
+			echo $x;
+			// echo '</div>';
+			// echo '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>';
+		echo '</div>';
+	}
+
+};
+
 header('content-type: text/html; charset=utf-8', true);
 
 ?>
@@ -267,6 +290,15 @@ div.main-wrap nav.menu-r div.item:hover div.drawer a:active {
 	<nav class="menu-l <?= $_SESSION['_ui']['menu'] ?>" id="menu-left">
 	<?php
 	$menu_list = App_Menu::getMenu('main');
+	// $menu_list = [];
+	// $menu_list[] = [ 'name' => '', 'link' => '' ];
+	// $menu_list[] = [ 'name' => '', 'link' => '' ];
+	// $menu_list[] = [ 'name' => '', 'link' => '' ];
+	// $menu_list[] = [ 'name' => '', 'link' => '' ];
+	// $menu_list[] = [ 'name' => '', 'link' => '' ];
+	// $menu_list[] = [ 'name' => '', 'link' => '' ];
+	// $menu_list[] = [ 'name' => '', 'link' => '' ];
+
 	foreach ($menu_list as $menu) {
 
 		if (empty($menu['id'])) {
@@ -299,78 +331,15 @@ div.main-wrap nav.menu-r div.item:hover div.drawer a:active {
 			<div>
 				<h1><?= $_ENV['h1'] ?></h1>
 			</div>
-		<?php
-		/*
-
-			<div>
-				<form class="form-inline">
-				<div class="filter-input-wrap" id="data-filter">
-					<select class="form-control" id="view" name="view"><option selected="" value="active">Active Inventory</option></select>
-					<select class="form-control" id="product-type" name="product-type"><option value="">- All Product Types -</option></select>
-					<!-- @todo conver to just a normal link -->
-					<button class="btn btn-outline-danger" name="a" title="Reset Filters" value="reset"><i class="fas fa-times"></i></button>
-					<button class="btn btn-outline-secondary" name="a" title="Download this Dataset" type="submit" value="download"><i class="fas fa-download"></i></button>
-					<button class="btn btn-outline-secondary" name="a" title="Get Printable Audit Report" type="submit" value="print-audit"><i class="fas fa-print"></i></button>
-				</div>
-				</form>
-			</div>
-			<div>
-				<form autocomplete="off" method="post">
-				<div class="main-body-head d-flex align-items-center">
-				<div class="r">
-				<div class="btn-group">
-					<a class="btn btn-outline-secondary" href="/inventory?ff=v1"><i class="fas fa-th-list"></i></a>
-					<a class="btn btn-outline-secondary" href="/inventory/grid"><i class="fas fa-table"></i></a>
-					<a class="btn btn-outline-secondary" href="#" id="exec-qrcode-link"><i class="fas fa-qrcode"></i></a>
-				</div>
-				</div>
-				</div>
-				</form>
-			</div>
-		*/
-		?>
 		</header>
 		<div class="main-data">
-		<?php
-		$x = Session::flash();
-		if (!empty($x)) {
-
-			$x = str_replace('<div class="good">', '<div class="alert alert-success alert-dismissible" role="alert">', $x);
-			$x = str_replace('<div class="info">', '<div class="alert alert-info alert-dismissible" role="alert">', $x);
-			$x = str_replace('<div class="warn">', '<div class="alert alert-warning alert-dismissible" role="alert">', $x);
-			$x = str_replace('<div class="fail">', '<div class="alert alert-danger alert-dismissible" role="alert">', $x);
-
-			// Add Close Button before Closing DIV
-			$x = str_replace('</div>', '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>', $x);
-
-			// $x = str_replace('class="info"', 'class="alert alert-dismissible alert-info"', $x);
-			// $x = str_replace('class="warn"', 'class="alert alert-dismissible alert-warning"', $x);
-			// $x = str_replace('class="fail"', 'class="alert alert-dismissible alert-danger"', $x);
-
-			echo '<div class="radix-flash">';
-				// echo '<div>';
-				echo $x;
-				// echo '</div>';
-				// echo '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>';
-			echo '</div>';
-		}
-		?>
-
+		<?= $echo_session_flash(); ?>
+		<div class="container-fluid">
 		<?= $this->body; ?>
+		</div>
 
 		</div>
 	</div>
-	<nav class="menu-r">
-		<?= $tool_menu_item("<i class=\"fas fa-bullhorn\"></i> CIC", "https://cic.openthc.com/dashboard") ?>
-		<?= $tool_menu_item("<i class=\"fas fa-gamepad\"></i> Ops", "https://ops.openthc.com/dashboard") ?>
-		<?= $tool_menu_item("<i class=\"fas fa-address-book\"></i> Directory", "https://directory.openthc.com/search") ?>
-		<?= $tool_menu_item("<i class=\"fas fa-flask\"></i> Lab", "https://lab.openthc.com/") ?>
-		<?= $tool_menu_item("<i class=\"far fa-comments\"></i> Chat", "https://chat.openthc.com/") ?>
-		<?= $tool_menu_item("<i class=\"fas fa-tachometer-alt\"></i> Grafana", "https://log.openthc.com/grafana") ?>
-		<?= $tool_menu_item("<i class=\"fas fa-chart-bar\"></i> Prometheus", "https://log.openthc.com/prometheus") ?>
-		<?= $tool_menu_item("<i class=\"fab fa-gitlab\"></i> GetLab", "https://gitlab.com/openthc") ?>
-		<?= $tool_menu_item("<i class=\"fab fa-github\"></i> GitHub", "https://github.com/openthc") ?>
-	</nav>
 </div>
 </div>
 

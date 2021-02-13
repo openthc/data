@@ -5,7 +5,7 @@
 
 $_ENV['h1'] = $_ENV['title'] = 'Lab Results';
 
-echo _lab_tabs();
+echo \App\UI::lab_tabs();
 
 echo '<div class="mt-4">';
 require_once(__DIR__ . '/chart-result-count-stacked-column.php');

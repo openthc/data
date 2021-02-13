@@ -5,9 +5,7 @@
 
 $_ENV['h1'] = $_ENV['title'] = 'B2C';
 
-session_write_close();
-
-_b2c_tabs();
+echo \App\UI::b2c_tabs();
 
 require_once(__DIR__ . '/index-chart.php');
 
