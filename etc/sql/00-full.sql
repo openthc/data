@@ -22,8 +22,8 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE public.b2b_path (
-    supply_license_id character varying(26) NOT NULL,
-    demand_license_id character varying(26) NOT NULL,
+    license_id_source character varying(26) NOT NULL,
+    license_id_target character varying(26) NOT NULL,
     meta jsonb,
     pair character varying(64)
 );
@@ -447,7 +447,7 @@ ALTER TABLE ONLY public.license_revenue ALTER COLUMN id SET DEFAULT nextval('pub
 --
 
 ALTER TABLE ONLY public.b2b_path
-    ADD CONSTRAINT b2b_path_pkey PRIMARY KEY (supply_license_id, demand_license_id);
+    ADD CONSTRAINT b2b_path_pkey PRIMARY KEY (license_id_source, license_id_target);
 
 
 --
