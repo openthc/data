@@ -5,8 +5,6 @@
 
 $_ENV['title'] = 'License :: Relationship Map';
 
-$map_api_key = \OpenTHC\Config::get('google/map_api_key');
-
 $dbc = _dbc();
 
 $L = $dbc->fetchRow('SELECT * FROM license WHERE id = ?', [ $_GET['id'] ]);
@@ -14,8 +12,8 @@ if (empty($L['id'])) {
 	_exit_text('Invalid License', 400);
 }
 
-$do_client = false;
-$do_vendor = false;
+$do_client = true;
+$do_vendor = true;
 
 switch ($_GET['view']) {
 case 'clients':
@@ -73,11 +71,11 @@ SQL;
 ?>
 
 <div class="container-fluid mt-2">
-<?= _license_info($L) ?>
+<?= App\UI::license_info($L) ?>
 <?= App\UI::license_tabs($L) ?>
+</div>
 
 <div id="google-map" style="background: #999; border: 1px solid #333; height: 85vh; width: 100%;"></div>
-</div>
 
 <div class="container-fluid mt-2">
 <div class="row">
@@ -86,13 +84,12 @@ SQL;
 <table class="table table-sm">
 <?php
 $idx = 0;
-// foreach ($res_vendor_list as $c) {
-foreach ([] as $c) {
+foreach ($res_vendor_list as $c) {
 	$idx++;
 ?>
 	<tr>
 		<td><?= $idx ?></td>
-		<td><a href="/license?id=<?= $c['license_id'] ?>"><?= h($c['license_name']) ?></a></td>
+		<td><a href="/license/<?= $c['license_id'] ?>"><?= h($c['license_name']) ?></a></td>
 		<td>
 	</tr>
 <?php
@@ -105,13 +102,13 @@ foreach ([] as $c) {
 <table class="table table-sm">
 <?php
 $idx = 0;
-// foreach ($res_client_list as $c) {
-foreach ([] as $c) {
+foreach ($res_client_list as $c) {
+// foreach ([] as $c) {
 	$idx++;
 ?>
 	<tr>
 		<td><?= $idx ?></td>
-		<td><a href="/license?id=<?= $c['license_id'] ?>"><?= h($c['license_name']) ?></a></td>
+		<td><a href="/license/<?= $c['license_id'] ?>"><?= h($c['license_name']) ?></a></td>
 		<td>
 	</tr>
 <?php
@@ -123,8 +120,7 @@ foreach ([] as $c) {
 </div>
 </div>
 
-
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?= $map_api_key ?>&amp;libraries=places"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&amp;key=<?= \OpenTHC\Config::get('google/api_key_js') ?>"></script>
 <script>
 var head = document.getElementsByTagName('head')[0];
 
@@ -252,12 +248,10 @@ $(function() {
 			var html = '';
 			html += '<div>';
 			html += '<h2>';
-			html += '<a href="/license?id=' + this.license.id + '">';
+			html += '<a href="/license/' + this.license.id + '">';
 			html += this.license.name;
 			html += '</a>';
 			html += '</h2>';
-			// html += '<h3>Company: #' + mark._otd.company_guid + '</h3>';
-			// html += '<h3>License: #' + mark._otd.license_code + '</h3>';
 			html += '</div>';
 
 			G_Inf.open(G_Map, this);
@@ -302,12 +296,10 @@ $(function() {
 			var html = '';
 			html += '<div>';
 			html += '<h2>';
-			html += '<a href="/license?id=' + this.license.id + '">';
+			html += '<a href="/license/' + this.license.id + '">';
 			html += this.license.name;
 			html += '</a>';
 			html += '</h2>';
-			// html += '<h3>Company: #' + mark._otd.company_guid + '</h3>';
-			// html += '<h3>License: #' + mark._otd.license_code + '</h3>';
 			html += '</div>';
 
 			G_Inf.open(G_Map, this);

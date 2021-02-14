@@ -111,6 +111,35 @@ class UI
 		return ob_get_clean();
 	}
 
+	/**
+	 *
+	 */
+	static function license_info($L)
+	{
+		$m = $L['address_meta'];
+		if (is_string($m)) {
+			$m = json_decode($m, true);
+		}
+
+		ob_start();
+	?>
+<div class="license-info">
+<h2><a href="/license/<?= $L['id'] ?>"><?= h($L['name']) ?></a> - <?= h($L['code']) ?></h2>
+<!--
+<p><?= $m['full'] ?> <a href="https://directory.openthc.com/map?<?= http_build_query([ 'q' => $m['full'] ]) ?>" target="_blank"><i class="fas fa-map"></i></a></p>
+-->
+<!-- <pre>
+	<?php
+	var_dump($L);
+	?>
+</pre> -->
+</div>
+<?php
+		return ob_get_clean();
+	}
+
+
+
 	static function license_tabs($L)
 	{
 		$active = 'single';

@@ -15,7 +15,7 @@ if (empty($L['id'])) {
 ?>
 
 <div class="container-fluid mt-2">
-<?= _license_info($L) ?>
+<?= App\UI::license_info($L) ?>
 <?= App\UI::license_tabs($L) ?>
 </div>
 
@@ -71,7 +71,7 @@ $res = _select_via_cache($dbc, $sql, $arg);
 foreach ($res as $rec) {
 ?>
 	<tr>
-		<td><a href="/license?id=<?= $rec['license_id'] ?>"><?= $rec['license_name'] ?></a> <small><?= $rec['license_code'] ?></small></td>
+		<td><a href="/license/<?= $rec['license_id'] ?>"><?= $rec['license_name'] ?></a> <small><?= $rec['license_code'] ?></small></td>
 		<td class="r"><?= $rec['c'] ?></td>
 		<td class="r"><?= $rec['rev'] ?></td>
 		<td class="r"><a href="/b2b/transfer?client=<?= $L['id'] ?>&amp;vendor=<?= $rec['license_id'] ?>"><i class="fas fa-retweet"></i></a></td>
