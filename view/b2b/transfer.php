@@ -7,9 +7,7 @@ $_ENV['title'] = 'B2B :: Details';
 
 session_write_close();
 
-if (!_acl($_SESSION['acl_subject'], 'transfer', 'view-full')) {
-	_exit_html('Please <a href="/auth/open">sign-in</a> to view more details', 403);
-}
+$show_void = intval($_GET['void']);
 
 $dbc = _dbc();
 
@@ -25,15 +23,21 @@ if (empty($L_Target['id'])) {
 
 $_ENV['title'] = 'B2B :: Details :: ' . $L_Vendor['name'] . ' :: ' . $L_Target['name'];
 
+$stat_filter = "AND stat IN ('in-transit', 'ready-for-pickup', 'received')";
+if ($show_void) {
+	$stat_filter = null;
+}
+
 // Summary
 $sql = <<<SQL
 SELECT count(id) AS c
-, sum(qty_tx) AS qty
+, sum(qty_tx) AS qty_tx
+, sum(qty_rx) AS qty_rx
 , sum(sale_item_full_price) AS full_price
 , product_name
 FROM b2b_sale_item_full
-WHERE license_id_origin = :l0 AND license_id_target = :l1
- AND stat IN ('in-transit', 'received')
+WHERE license_id_source = :l0 AND license_id_target = :l1
+ $stat_filter
  AND execute_at >= now() - '12 months'::interval
  AND sale_item_full_price > 0
 GROUP BY product_name
@@ -50,7 +54,9 @@ $res_b2b = _select_via_cache($dbc, $sql, [
 
 // Fetch the Retail Information
 $res_b2c = [];
-$sql = <<<SQL
+if ('R' == $L_Target['type']) {
+
+	$sql = <<<SQL
 SELECT sum(b2c_sale_item.qty) AS qty
 , sum(b2c_sale_item.unit_price) AS unit_price
 , min(b2c_sale_item.unit_price) AS unit_price_min
@@ -58,7 +64,7 @@ SELECT sum(b2c_sale_item.qty) AS qty
 , meta->>'name' AS name
 FROM b2c_sale_item WHERE lot_id IN (
 	SELECT lot_id_target FROM b2b_sale_item_full
-	WHERE license_id_origin = :l0 AND license_id_target = :l1
+	WHERE license_id_source = :l0 AND license_id_target = :l1
 	AND stat IN ('in-transit', 'received')
 	AND execute_at >= now() - '12 months'::interval
 )
@@ -66,24 +72,24 @@ FROM b2c_sale_item WHERE lot_id IN (
 GROUP BY meta->>'name'
 SQL;
 
-$res = _select_via_cache($dbc, $sql, [
-	':l0' => $L_Vendor['id'],
-	':l1' => $L_Target['id'],
-]);
-// var_dump($res);
-foreach ($res as $rec) {
-	$res_b2c[ $rec['name'] ] = $rec;
+	$res = _select_via_cache($dbc, $sql, [
+		':l0' => $L_Vendor['id'],
+		':l1' => $L_Target['id'],
+	]);
+	// var_dump($res);
+	foreach ($res as $rec) {
+		$res_b2c[ $rec['name'] ] = $rec;
+	}
 }
-
 ?>
 
 <div class="container-fluid mt-2">
 <div class="row">
 	<div class="col-md-6">
-		<h2>Vendor: <a href="/license?id=<?= $L_Vendor['id'] ?>"><?= h($L_Vendor['name']) ?></a>  <small><?= h($L_Vendor['code']) ?></small></h2>
+		<h2>Vendor: <a href="/license/<?= $L_Vendor['id'] ?>"><?= h($L_Vendor['name']) ?></a>  <small><?= h($L_Vendor['code']) ?></small></h2>
 	</div>
 	<div class="col-md-6">
-		<h2>Client: <a href="/license?id=<?= $L_Target['id'] ?>"><?= h($L_Target['name']) ?></a>  <small><?= h($L_Target['code']) ?></small></h2>
+		<h2>Client: <a href="/license/<?= $L_Target['id'] ?>"><?= h($L_Target['name']) ?></a>  <small><?= h($L_Target['code']) ?></small></h2>
 	</div>
 </div>
 <div class="row">
@@ -91,31 +97,50 @@ foreach ($res as $rec) {
 <?= _b2b_transfer_tabs() ?>
 </div>
 </div>
-
 </div>
 
-<div class="container-fluid">
-<div class="table-responsive">
-<table class="table table-sm">
-<thead class="thead-dark">
+<div class="ui container">
+<?php
+if ($show_void) {
+?>
+	<p>Transfers from the last 12 months, <strong class="text-danger">inclusive of VOID</strong> transactions.</p>
+<?php
+} else {
+?>
+	<p>Transfers from the last 12 months, <strong>exclusive of VOID</strong> transactions.</p>
+<?php
+}
+?>
+
+<table class="ui table">
+<caption>Products Sold to this License and, if client side is Retail then the B2C sales of this product are included.</caption>
+<thead>
 <tr>
 	<th>Product</th>
-	<th>Units</th>
-	<th class="r">Revenue</th>
-	<th class="r">B2B $/U</th>
-	<th class="r">B2C $/#</th>
-	<th class="r">B2C $/U</th>
+	<th class="r">Sent</th>
+	<th class="r">Received</th>
+	<th class="r">Vendor &sum;$</th>
+	<th class="r">Vendor $/U</th>
+	<th class="r">Client $/#</th>
+	<th class="r">Client $/U</th>
 </thead>
 <tbody>
 <?php
 foreach ($res_b2b as $rec) {
-	$rec['unit_price'] = $rec['full_price'] / $rec['qty'];
+
+	if ($rec['qty_rx'] > 0) {
+		$rec['unit_price'] = sprintf('%0.2f', $rec['full_price'] / $rec['qty_rx']);
+	} else {
+		$rec['unit_price'] = '-';
+	}
+
 ?>
 	<tr>
 		<td><?= h($rec['product_name']) ?></td>
-		<td class="r"><?= $rec['qty'] ?></td>
+		<td class="r"><?= $rec['qty_tx'] ?></td>
+		<td class="r"><?= $rec['qty_rx'] ?></td>
 		<td class="r"><?= $rec['full_price'] ?></td>
-		<td class="r"><?= sprintf('%0.2f', $rec['unit_price']) ?></td>
+		<td class="r"><?= $rec['unit_price'] ?></td>
 		<?php
 		if (!empty($res_b2c[ $rec['product_name'] ])) {
 			$b2c = $res_b2c[ $rec['product_name'] ];
@@ -131,5 +156,4 @@ foreach ($res_b2b as $rec) {
 </tbody>
 </table>
 
-</div>
 </div>

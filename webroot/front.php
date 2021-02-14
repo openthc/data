@@ -25,6 +25,35 @@ $app->get('/b2b', function($REQ, $RES) {
 
 });
 
+$app->get('/b2b/flower', function($REQ, $RES) {
+
+	$c = $this; // Container
+	$v = new class($c) extends \OpenTHC\Controller\Base {};
+	$f = 'b2b/flower.php';
+	$d = [];
+	return $RES->write( $v->render($f, $d) );
+
+});
+
+$app->get('/b2b/extract', function($REQ, $RES) {
+
+	$c = $this; // Container
+	$v = new class($c) extends \OpenTHC\Controller\Base {};
+	$f = 'b2b/extract.php';
+	$d = [];
+	return $RES->write( $v->render($f, $d) );
+
+});
+
+$app->get('/b2b/edible', function($REQ, $RES) {
+
+	$c = $this; // Container
+	$v = new class($c) extends \OpenTHC\Controller\Base {};
+	$f = 'b2b/edible.php';
+	$d = [];
+	return $RES->write( $v->render($f, $d) );
+
+});
 
 $app->get('/b2c', function($REQ, $RES) {
 

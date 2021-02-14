@@ -335,30 +335,6 @@ div.main-wrap nav.menu-r div.item:hover div.drawer a:active {
 </div>
 </div>
 
-<?php
-// Flash Messages
-// $x = Session::flash();
-// if (!empty($x)) {
-
-// 	$x = str_replace('class="info"', 'class="alert alert-info"', $x);
-// 	$x = str_replace('class="warn"', 'class="alert alert-warning"', $x);
-// 	$x = str_replace('class="fail"', 'class="alert alert-danger"', $x);
-
-// 	echo '<div class="radix-flash" style="background: #fff; border 1px solid #333; border-radius: 0.5rem; left: 2vw; margin:0; padding: 1vh 1vw; position: absolute; right: -2vw; top: 0; z-index: 1000;">';
-// 		echo '<div>';
-// 			echo $x;
-// 		echo '</div>';
-// 		echo '<div>';
-// 			echo '<button>X</button>';
-// 		echo '</div>';
-// 	echo '</div>';
-
-// }
-
-echo Radix::block('app-modal');
-
-?>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js" integrity="sha256-VeNaFBVDhoX3H+gJ37DpT/nTuZTdjYro9yBruHjVmoQ=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM=" crossorigin="anonymous"></script>
@@ -439,7 +415,9 @@ if (!empty($buf)) {
 	echo "\n$buf\n";
 }
 
-//require_once(__DIR__ . '/dump.php');
+if (!empty($this->foot_script)) {
+	echo $this->foot_script;
+}
 
 ?>
 </body>

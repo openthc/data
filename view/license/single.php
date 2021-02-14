@@ -146,7 +146,7 @@ foreach ($res_middle as $rec) {
 <div class="container-fluid mt-2">
 <div class="row">
 	<div class="col-md-6">
-		<?= _license_info($L) ?>
+		<?= \App\UI::license_info($L) ?>
 	</div>
 </div>
 <?= \App\UI::license_tabs($L) ?>

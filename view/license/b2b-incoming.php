@@ -29,8 +29,8 @@ if (count($res)) {
 		<div style="flex: 1 1 auto;"><h2>B2B Incoming</h2></div>
 		<div style="flex: 1 0 auto; text-align:right;">
 			<div class="btn-group btn-group-sm">
-				<a class="btn btn-outline-secondary" href="/license/vendors?id=<?= $L['id'] ?>"> view more <i class="fas fa-arrow-right"></i></a>
-				<a class="btn btn-outline-secondary" href="/license/map?view=vendors&amp;id=<?= $L['id'] ?>"><i class="fas fa-map"></i></a>
+				<a class="btn btn-outline-secondary" href="/license/<?= $L['id'] ?>/vendors"> view more <i class="fas fa-arrow-right"></i></a>
+				<a class="btn btn-outline-secondary" href="/license/<?= $L['id'] ?>/map?view=vendors"><i class="fas fa-map"></i></a>
 			</div>
 		</div>
 	</div>
@@ -48,7 +48,7 @@ if (count($res)) {
 	foreach ($res as $rec) {
 	?>
 		<tr>
-			<td><a href="/license?id=<?= $rec['license_id'] ?>"><?= $rec['license_name'] ?></a></td>
+			<td><a href="/license/<?= $rec['license_id'] ?>"><?= $rec['license_name'] ?></a></td>
 			<td class="r"><?= $rec['c'] ?></td>
 			<td class="r"><?= $rec['rev'] ?></td>
 		</tr>

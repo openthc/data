@@ -87,13 +87,8 @@ case 1:
 default:
 
 	echo '<div class="container">';
-	echo '<table class="table">';
 	foreach ($res as $rec) {
-		echo '<tr>';
-		printf('<td><h2><a href="/license/%s">%s</a></h2></td>', $rec['license_id'], h($rec['license_name']));
-		echo '<td><h2>' . $rec['company_name'] . '</h2></td>';
-		echo '</tr>';
+		printf('<h2><a href="/license/%s">%s</a> <code>%s</code></h2>', $rec['license_id'], h($rec['license_name']), $rec['license_code']);
 	}
-	echo '</table>';
 	echo '</div>';
 }

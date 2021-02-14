@@ -9,4 +9,4 @@ $_ENV['h1'] = $_ENV['title'] = 'B2B Sales';
 
 echo \App\UI::b2b_tabs();
 
-require_once(__DIR__ . '/index-rank.php');
+require_once(__DIR__ . '/main-rank.php');
