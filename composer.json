@@ -16,8 +16,8 @@
 		"ext-session": "*",
 		"ext-sockets": "*",
 		"edoceo/radix": "dev-master",
-		"erusev/parsedown": "1.7.4",
+		"erusev/parsedown-extra": "0.8.1",
 		"openthc/common": "dev-master",
-		"phpoffice/phpspreadsheet": "1.13.0"
+		"phpoffice/phpspreadsheet": "1.16.0"
 	}
 }
