@@ -4,7 +4,6 @@
  */
 
 use Edoceo\Radix;
-use Edoceo\Radix\Session;
 
 require_once(dirname(dirname(__FILE__)) . '/boot.php');
 require_once(APP_ROOT . '/lib/App_Menu.php');
@@ -54,6 +53,28 @@ $app->get('/b2b/edible', function($REQ, $RES) {
 	return $RES->write( $v->render($f, $d) );
 
 });
+
+
+$app->get('/b2b/transfer', function($REQ, $RES) {
+
+	$c = $this;
+	$v = new class($c) extends \OpenTHC\Controller\Base {};
+	$f = 'b2b/transfer.php';
+	$d = [];
+	return $RES->write( $v->render($f, $d) );
+
+});
+
+$app->get('/b2b/transfer-detail', function($REQ, $RES) {
+
+	$c = $this;
+	$v = new class($c) extends \OpenTHC\Controller\Base {};
+	$f = 'b2b/transfer-detail.php';
+	$d = [];
+	return $RES->write( $v->render($f, $d) );
+
+});
+
 
 $app->get('/b2c', function($REQ, $RES) {
 
@@ -222,6 +243,14 @@ $app->get('/search', function($REQ, $RES) {
 
 });
 
+$app->get('/sql', function($REQ, $RES) {
+	return render_view($this, $RES, 'sql/main.php');
+});
+
+$app->get('/sql/info', function($REQ, $RES) {
+	return render_view($this, $RES, 'sql/info.php');
+});
+
 // App_Menu::addMenuItem('main', '/dashboard', '<i class="fas fa-building"></i> License');
 App_Menu::addMenuItem('main', '/revenue', '<i class="fas fa-funnel-dollar"></i> Revenue');
 App_Menu::addMenuItem('main', '/b2b', '<i class="fas fa-truck-loading"></i> B2B');
@@ -232,17 +261,4 @@ $res = $app->run();
 if (404 == $res->getStatusCode()) {
 	$html = file_get_contents(sprintf('%s/webroot/e/404.html', APP_ROOT));
 	_exit_html($html);
-// 	unset($app);
-// 	unset($res);
-
-// 	while (ob_get_level() > 0) { ob_end_clean(); };
-
-// 	// Session
-// 	session_start();
-
-// 	Radix::init();
-// 	Radix::exec();
-// 	Radix::view();
-// 	Radix::send();
-
 }

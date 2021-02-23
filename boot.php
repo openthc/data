@@ -12,12 +12,14 @@ openlog('openthc-data', LOG_ODELAY|LOG_PID, LOG_LOCAL0);
 error_reporting(E_ALL & ~ E_NOTICE);
 
 // Objective is to show 5 quarters of data
-define('DATE_ALPHA', '2020-02-01 00:00:00');
+define('DATE_ALPHA', '2019-04-01 00:00:00');
 define('DATE_OMEGA', '2021-03-01 00:00:00');
 
 require_once(APP_ROOT . '/vendor/autoload.php');
 require_once(APP_ROOT . '/lib/data.php');
 require_once(APP_ROOT . '/lib/export.php');
+
+\OpenTHC\Config::init(APP_ROOT);
 
 /**
  * Database Connection
@@ -38,6 +40,18 @@ function _dbc()
 	return $dbc;
 
 }
+
+/**
+ * El-Cheapo Render Helper
+ */
+function render_view($c, $RES, $f)
+{
+	// $c = $this; // Container
+	$v = new class($c) extends \OpenTHC\Controller\Base {};
+	$d = [];
+	return $RES->write( $v->render($f, $d) );
+}
+
 
 function _select_via_cache($dbc, $sql, $arg)
 {
