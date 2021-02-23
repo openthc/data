@@ -33,24 +33,22 @@ $min_date = new DateTime(DATE_ALPHA);
 
 while ($rec = $csv->fetch()) {
 
-	$idx++;
-
+	// Clean
 	if ($csv->key_size != count($rec)) {
 		_append_fail_log($idx, 'Field Count', $rec);
 		continue;
 	}
 
 	$rec = array_combine($csv->key_list, $rec);
-	unset($rec['user_id']);
-	unset($rec['batch_id']);
-	unset($rec['external_id']);
-	unset($rec['use_by_date']);
-
 	foreach ($csv->key_list as $x) {
 		if (empty($rec[$x])) {
 			unset($rec[$x]);
 		}
 	}
+	unset($rec['user_id']);
+	unset($rec['batch_id']);
+	unset($rec['external_id']);
+	unset($rec['use_by_date']);
 
 	if (empty($rec['global_id'])) {
 		_append_fail_log($idx, 'Missing Global ID', $rec);
@@ -61,8 +59,8 @@ while ($rec = $csv->fetch()) {
 	if ($d0 < $min_date) {
 		continue;
 	}
-	$y0 = intval($d0->format('Y'));
 
+	$y0 = intval($d0->format('Y'));
 
 	$rec['unit_price'] = floatval($rec['unit_price']);
 	$rec['full_price'] = floatval($rec['full_price']);
@@ -104,6 +102,7 @@ while ($rec = $csv->fetch()) {
 		_append_fail_log($idx, $e->getMessage(), $rec);
 	}
 
+	$idx++;
 	_show_progress($idx, $max);
 
 }

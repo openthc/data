@@ -29,7 +29,7 @@ $min_date = new DateTime(DATE_ALPHA);
 
 while ($rec = $csv->fetch()) {
 
-	$idx++;
+	// Clean
 	$rec = array_combine($csv->key_list, $rec);
 	$rec = de_fuck_date_format($rec);
 
@@ -52,7 +52,6 @@ while ($rec = $csv->fetch()) {
 	if ($d0 < $min_date) {
 		continue;
 	}
-
 
 	$stat = $rec['status'];
 	switch ($rec['void']) {
@@ -86,6 +85,7 @@ while ($rec = $csv->fetch()) {
 		_append_fail_log($idx, $e->getMessage(), $rec);
 	}
 
+	$idx++;
 	_show_progress($idx, $max);
 
 }

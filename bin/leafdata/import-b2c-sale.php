@@ -17,19 +17,17 @@ if (!is_file($f)) {
 $csv = new CSV_Reader($f);
 
 $idx = 1;
-$max = 100000000; // Sales_0
-// $max =  37861239; // Sales_1
+$max = _find_max($f, $csv);
+$min_date = new DateTime(DATE_ALPHA);
 
-$min_date = new DateTime('2019-01-01');
 
 // Connect DB
 $dbc = _dbc();
-$pdo = $dbc->_pdo;
 $sql = <<<SQL
 INSERT INTO b2c_sale (id, license_id, created_at, updated_at, deleted_at, stat, flag, hash, full_price)
 VALUES (:id, :license_id, :created_at, :updated_at, :deleted_at, :stat, :flag, :hash, :full_price)
 SQL;
-$dbc_insert = $pdo->prepare($sql);
+$dbc_insert = $dbc->prepare($sql);
 
 while ($rec = $csv->fetch()) {
 
@@ -60,12 +58,13 @@ while ($rec = $csv->fetch()) {
 	// Cleanup Dates
 	$rec = de_fuck_date_format($rec);
 
-	if (!empty($rec['deleted_at'])) {
-		$flag = $flag | 0x08000000;
-		continue;
-	}
 	$d0 = new DateTime($rec['created_at']);
 	if ($d0 < $min_date) {
+		continue;
+	}
+
+	if (!empty($rec['deleted_at'])) {
+		$flag = $flag | 0x08000000;
 		continue;
 	}
 
