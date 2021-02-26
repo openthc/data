@@ -7,8 +7,6 @@ use Edoceo\Radix;
 use Edoceo\Radix\Session;
 use Edoceo\Radix\DB\SQL;
 
-// _exit_text('Disabled', 501);
-
 set_time_limit(360);
 
 $_ENV['h1'] = $_ENV['title'] = 'Data :: Direct SQL';

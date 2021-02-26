@@ -3,7 +3,7 @@
  * Show Details about the Data Size
  */
 
-$_ENV['title'] = 'Database Info';
+$_ENV['h1'] = $_ENV['title'] = 'Database Info';
 
 $dbc = _dbc();
 
@@ -56,9 +56,7 @@ $sum_stat = [
 
 ?>
 
-<div class="container mt-2">
-
-<h1><?= $_ENV['title'] ?></h1>
+<div class="container">
 
 <table class="table table-sm">
 <thead class="thead-dark">
