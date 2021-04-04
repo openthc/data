@@ -1,6 +1,6 @@
 #!/bin/bash -x
 #
-# Extract the ZIP to "CVS" to ".tsv" from the given working directory
+# Extract the ZIP to "CVS" to ".tsv" from the given directory
 #
 
 set -o errexit
@@ -15,7 +15,7 @@ cd "$RAW_SOURCE_DIR"
 
 #
 # Extract the ZIP Files from LeafData
-#
+# Explicit list, in preferred order
 file_list="
 Licensees_0
 Users_0
@@ -28,12 +28,14 @@ InventoryTypes_0
 Inventories_0
 InventoryAdjustments_0
 InventoryAdjustments_1
+InventoryAdjustments_2
 LabResults_0
 Sales_0
 Sales_1
 SaleItems_0
 SaleItems_1
 SaleItems_2
+SaleItems_3
 "
 
 for f in $file_list;

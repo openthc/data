@@ -8,11 +8,13 @@ Then you can run reports on this data-set.
 ## Loading Akerna/MJFreeway/MJPlatform/LeafData Data
 
 Get the ZIP files or Table Dumps from LeafData.
-Put the LeafData CSV/Zip files in some origin directory (`/mnt/leafdata`).
+Put the LeafData CSV/Zip files in some origin directory (`./source-data/leafdata`).
 Extract and prepare them as necessary.
 Symlink those files into `./source-data/$NAME.csv`, using the name required by the import script.
 Then remove the origin file, leaving an orphan symlink to track what's been completed.
 And clean up when all the way done.
+
+See `./bin/leafdata/extract.sh` for an automated process.
 
 
 ### BOM, UTF-16
@@ -23,15 +25,18 @@ Some of the files are UTF-16-LE
 * https://www.dave-baker.com/2017/10/03/converting-a-utf-16-csv-to-utf-8-in-php/
 * http://www.craiglotter.co.za/2010/03/07/how-to-convert-an-utf-16-file-to-an-utf-8-file-using-php/
 
+
 ### iconv
 
 * Use iconv -f UTF-16LE -t UTF-8
 iconv -f UTF-16LE -t UTF-8 <filename> -o <new-filename>
 
+
 ### Extracting
 
 The files may be delivered as `zip`, and internally they are labeled as `csv` files.
 They may use a comma, they may use a TAB.
+
 
 ### Importing
 
