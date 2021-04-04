@@ -117,6 +117,7 @@ CREATE VIEW public.b2b_sale_item_full AS
     b2b_sale.license_id_target,
     b2b_sale.stat,
     b2b_sale.full_price AS sale_full_price,
+    b2b_sale.unit_price AS sale_unit_price,
     b2b_sale_item.lot_id_source,
     b2b_sale_item.lot_id_target,
     b2b_sale_item.full_price AS sale_item_full_price,

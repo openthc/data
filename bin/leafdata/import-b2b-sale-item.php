@@ -26,7 +26,7 @@ while ($rec = $csv->fetch()) {
 	$rec = array_combine($csv->key_list, $rec);
 
 	if (empty($rec['global_id'])) {
-		echo sprintf("%d: %s; %s\n", $idx, 'Missing Global ID', json_encode($rec));
+		_append_fail_log($idx, 'Missing Global ID', $rec);
 		continue;
 	}
 
@@ -89,6 +89,12 @@ while ($rec = $csv->fetch()) {
 	//product_sample_type
 	$stat = implode('-', $stat);
 
+	$qty = floatval($rec['received_qty']);
+	if (empty($qty)) {
+		$qty = floatval($rec['qty']);
+	}
+
+
 	$add = array(
 		'id' => $rec['global_id'],
 		'b2b_sale_id' => $rec['inventory_transfer_id'],
@@ -99,6 +105,7 @@ while ($rec = $csv->fetch()) {
 		'uom' => $rec['uom'],
 		'stat' => $stat,
 		'full_price' => floatval($rec['price']),
+		'unit_price' => ($qty ? ($rec['price'] / $rec['qty']) : 0)
 		// 'meta' => json_encode($rec),
 	);
 

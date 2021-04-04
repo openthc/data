@@ -26,13 +26,12 @@ while ($idx < $off) {
 
 // Connect DB
 $dbc = _dbc();
-$pdo = $dbc->_pdo;
 $sql = <<<SQL
 INSERT INTO product (id, license_id, product_type, package_type, package_size, package_unit, name)
 VALUES (:id, :license_id, :product_type, :package_type, :package_size, :package_unit, :name)
 ON CONFLICT (id) DO NOTHING
 SQL;
-$dbc_insert = $pdo->prepare($sql);
+$dbc_insert = $dbc->prepare($sql);
 
 // Read the Data
 $idx = 1;
@@ -47,7 +46,7 @@ while ($rec = $csv->fetch()) {
 
 	// Skip These?
 	if (empty($rec['global_id'])) {
-		echo sprintf("%d: %s; %s\n", $idx, 'Missing Global ID', json_encode($rec));
+		// _append_fail_log($idx, 'Missing Global ID', $rec);
 		continue;
 	}
 
@@ -58,7 +57,13 @@ while ($rec = $csv->fetch()) {
 	$rec = de_fuck_date_format($rec);
 	$rec['name'] = trim($rec['name']);
 	$rec['name'] = stripslashes($rec['name']);
-	$rec['name'] = str_replace('\\t', null, $rec['name']); // Replace literal \\t ?
+	$rec['name'] = str_replace('\\\\', '\\', $rec['name']); // Replace literal \\
+	$rec['name'] = str_replace('\\t', null, $rec['name']);  // Replace literal \t
+	$rec['name'] = str_replace('\\"', null, $rec['name']);  // Replace literal \"
+	$rec['name'] = str_replace("\\'", null, $rec['name']);  // Replace literal \'
+	$rec['name'] = str_replace('\\/', null, $rec['name']);  // Replace literal \/
+	// "\/\/"
+	// "\/\/\/\/\/\/"
 
 	$P = _product_inflate($rec);
 

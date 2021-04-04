@@ -32,9 +32,7 @@ while ($rec = fgetcsv($fh, 0, $sep)) {
 	$rec = array_combine($csv->key_list, $rec);
 
 	if (empty($rec['global_id'])) {
-		echo "$idx : Missing Global ID; ";
-		echo implode(',', $rec);
-		echo "\n";
+		// _append_fail_log($idx, 'Missing Global ID', $rec);
 		continue;
 	}
 

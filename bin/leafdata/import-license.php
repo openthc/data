@@ -25,11 +25,6 @@ while ($rec = $csv->fetch()) {
 
 	$idx++;
 
-//	if ($map_c != count($rec)) {
-//		_append_fail_log($idx, 'Field Count', $rec);
-//		continue;
-//	}
-
 	$rec = array_combine($csv->key_list, $rec);
 
 	unset($rec['external_id']);

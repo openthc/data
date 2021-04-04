@@ -45,7 +45,7 @@ while ($rec = $csv->fetch()) {
 	$rec = array_combine($csv->key_list, $rec);
 
 	if (empty($rec['global_id'])) {
-		_append_fail_log($idx, 'Missing Global ID', $rec);
+		// _append_fail_log($idx, 'Missing Global ID', $rec);
 		continue;
 	}
 

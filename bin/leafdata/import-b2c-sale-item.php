@@ -51,7 +51,7 @@ while ($rec = $csv->fetch()) {
 	unset($rec['use_by_date']);
 
 	if (empty($rec['global_id'])) {
-		_append_fail_log($idx, 'Missing Global ID', $rec);
+		// _append_fail_log($idx, 'Missing Global ID', $rec);
 		continue;
 	}
 
@@ -80,7 +80,7 @@ while ($rec = $csv->fetch()) {
 		'unit_price' => floatval($rec['unit_price']),
 		'created_at' => $rec['created_at'],
 		'updated_at' => $rec['updated_at'],
-		'hash' => '-',
+		// ' hash' => '-',
 		'meta' => json_encode($rec)
 	];
 
@@ -93,6 +93,7 @@ while ($rec = $csv->fetch()) {
 				$dbc->insert('b2c_sale_item_2019', $add);
 			break;
 			case 2020:
+			case 2021:
 				$dbc->insert('b2c_sale_item', $add);
 			break;
 			default:

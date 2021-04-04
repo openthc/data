@@ -32,18 +32,17 @@ while ($rec = $csv->fetch()) {
 	$rec = array_combine($csv->key_list, $rec);
 
 	if (empty($rec['global_id'])) {
-		echo sprintf("%d: %s; %s\n", $idx, 'Missing Global ID', json_encode($rec));
-		continue;
-	}
-
-	if ('waste' == $rec['type']) {
-		echo sprintf("%d: %s; %s\n", $idx, 'Is Waste', json_encode($rec));
+		// _append_fail_log($idx, 'Missing Global ID', $rec);
 		continue;
 	}
 
 	$dt0 = new DateTime($rec['created_at']);
 	if ($dt0 < $min_date) {
-		echo '.';
+		continue;
+	}
+
+	if ('waste' == $rec['type']) {
+		_append_fail_log($idx, 'Is Waste', $rec);
 		continue;
 	}
 
@@ -175,6 +174,7 @@ while ($rec = $csv->fetch()) {
 	} catch (Exception $e) {
 		 _append_fail_log($idx, $e->getMessage(), $rec);
 	}
+
 	// Sample is the Inventory Item Sent to the Lab
 	// Owned by the Supply-Side License
 	// Make sure these are looking like Supply Side IDs (not Lab IDs?)
@@ -203,3 +203,63 @@ while ($rec = $csv->fetch()) {
 }
 
 _show_progress($idx, $idx);
+
+// Patch Into Four Types
+$map_type = [
+	'end_product/capsules' => 'Other',
+	'end_product/concentrate_for_inhalation' => 'Extract',
+	'end_product/infused_mix' => 'Mixed',
+	'end_product/liquid_edible' => 'Edible',
+	'end_product/packaged_marijuana_mix' => 'Mixed',
+	'end_product/sample_jar' => 'Other',
+	'end_product/solid_edible' => 'Edible',
+	'end_product/tinctures' => 'Other',
+	'end_product/topical' => 'Other',
+	'end_product/transdermal_patches' => 'Other',
+	'end_product/usable_marijuana' => 'Flower',
+	'harvest_materials/flower' => 'Flower',
+	'harvest_materials/flower_lots' => 'Flower',
+	'harvest_materials/usable_marijuana' => 'Flower',
+	'immature_plant/plant_tissue' => 'Other',
+	'intermediate_product/co2_concentrate' => 'Extract',
+	'intermediate_product/ethanol_concentrate' => 'Extract',
+	'intermediate_product/flower' => 'Flower',
+	'intermediate_product/food_grade_solvent_concentrate' => 'Edible',
+	'intermediate_product/hydrocarbon_concentrate' => 'Extract',
+	'intermediate_product/infused_cooking_medium' => 'Edible',
+	'intermediate_product/marijuana_mix' => 'Mixed',
+	'intermediate_product/non-solvent_based_concentrate' => 'Extract',
+	'intermediate_product/usable_marijuana' => 'Flower',
+	'marijuana/flower' => 'Flower',
+	'marijuana/usable_marijuana' => 'Flower',
+	'mature_plant/mature_plant' => 'Other',
+	'mature_plant/non_mandatory_plant_sample' => 'Other',
+];
+
+foreach ($map_type as $t0 => $t1) {
+
+	if (empty($t1)) {
+			echo "Skip: $t0\n";
+			continue;
+	}
+
+	$sql = 'UPDATE lab_result SET type = :t1 WHERE type = :t0';
+	$arg = [
+			':t0' => $t0,
+			':t1' => $t1,
+	];
+
+	// $dbc->query($sql, $arg);
+
+}
+
+
+// Update the License ID Source on Lab Result
+// $sql = <<<SQL
+// UPDATE lab_result
+//  SET license_id_source = substr(meta->>'global_for_inventory_id', 3, 7)
+// WHERE license_id_source IS NULL
+// SQL;
+
+// $sql = <<<SQL
+// UPDATE lab_result SET license_id_source = (SELECT id FROM license WHERE license.code = lab_result.license_id_source)
