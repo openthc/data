@@ -18,7 +18,7 @@ $dbc = _dbc();
 
 $idx = 1;
 $max = _find_max($f, $csv);
-$min_date = new DateTime('2018-07-01');
+$min_date = new DateTime(DATE_ALPHA);
 
 while ($rec = $csv->fetch()) {
 

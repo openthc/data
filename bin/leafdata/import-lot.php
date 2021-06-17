@@ -19,29 +19,19 @@ if (!is_file($f)) {
 }
 
 $csv = new CSV_Reader($f);
-// $est = $csv->rowEstimate();
-// With my samle I counted 32503064 when sampling 100 rows.
-// And 28297439 when sampling 1000 rows
-// wc -l counts 27726031
 
 $idx = 1;
-$off = 0;
 $max = _find_max($f, $csv);
+$min_date = new DateTime(DATE_ALPHA);
 
-// Seek to Work
-while ($idx < $off) {
-	$idx++;
-	$rec = $csv->fetch();
-}
 
 // Connect DB
 $dbc = _dbc();
-$pdo = $dbc->_pdo;
 $sql = <<<SQL
 INSERT INTO lot (id, license_id, product_id, variety_id, qty, created_at, meta)
 VALUES (:id, :license_id, :product_id, :variety_id, :qty, :created_at, :meta)
 SQL;
-$dbc_insert = $pdo->prepare($sql);
+$dbc_insert = $dbc->prepare($sql);
 
 // Read the Data
 $idx = 1;
@@ -89,7 +79,7 @@ Array
 	$rec = array_combine($csv->key_list, $rec);
 
 	if (empty($rec['global_id'])) {
-		_append_fail_log($idx, 'Missing Global ID', $rec);
+		// _append_fail_log($idx, 'Missing Global ID', $rec);
 		continue;
 	}
 
@@ -101,6 +91,11 @@ Array
 		if (empty($rec[$k])) {
 			unset($rec[$k]);
 		}
+	}
+
+	$dt0 = new DateTime($rec['created_at']);
+	if ($dt0 < $min_date) {
+		continue;
 	}
 
 	// Make sure we have the product

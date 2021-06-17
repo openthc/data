@@ -16,17 +16,18 @@ The files may be delivered as `zip`, and internally they are labeled as `csv` fi
 They may use a comma, they may use a TAB.
 
 
-## Importing 
+## Importing
 
 ```
+./download.php "https://lcb.box.com/..."
 ./extract.sh SOURCE_PATH
 ./import.sh SOURCE_PATH
 ./import-license.php
+./import-b2b-sale.php
+./import-b2b-sale-item.php
 ./import-product.php
 ./import-variety.php
 ./import-lot.php
-./import-b2b-sale.php
-./import-b2b-sale-item.php
 ./import-b2c-sale.php
 ./import-b2c-sale-item.php
 ```

@@ -25,14 +25,18 @@ while ($rec = $csv->fetch()) {
 
 	$idx++;
 
+	// Data was fuctup one time so we have this shit-hack patch
+	array_splice($rec, 4, 0, [ '' ]);
+	array_splice($rec, 16, 1);
+
 	$rec = array_combine($csv->key_list, $rec);
 
 	unset($rec['external_id']);
 
 	$rec['name'] = trim($rec['name']);
-	$rec['address1'] = trim($rec['address1']);
-	$rec['address2'] = trim($rec['address2']);
-	$rec['certificate_number'] = trim($rec['certificate_number']);
+	// $rec['address1'] = trim($rec['address1']);
+	// $rec['address2'] = trim($rec['address2']);
+	$rec['certificate_number'] = substr(trim($rec['certificate_number']), 0, 16);
 
 	try {
 		$dbc->insert('license', array(

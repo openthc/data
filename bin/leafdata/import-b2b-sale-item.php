@@ -14,6 +14,9 @@ if (!is_file($f)) {
 	exit(1);
 }
 
+$stat_ignore = 0;
+$stat_insert = 0;
+
 $csv = new CSV_Reader($f);
 
 $idx = 1; // First Data row maps to '1'
@@ -111,7 +114,9 @@ while ($rec = $csv->fetch()) {
 
 	try {
 		$dbc->insert('b2b_sale_item', $add);
+		$stat_insert++;
 	} catch (Exception $e) {
+		$stat_ignore++;
 		_append_fail_log($idx, $e->getMessage(), $rec);
 	}
 
@@ -120,3 +125,6 @@ while ($rec = $csv->fetch()) {
 }
 
 _show_progress($idx, $idx);
+
+echo "INSERT: $stat_insert\n";
+echo "IGNORE: $stat_ignore\n";

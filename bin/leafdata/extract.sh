@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 #
 # Extract the ZIP to "CVS" to ".tsv" from the given directory
 #
@@ -15,60 +15,39 @@ cd "$RAW_SOURCE_DIR"
 
 #
 # Extract the ZIP Files from LeafData
-# Explicit list, in preferred order
-file_list="
-Licensees_0
-Users_0
-MmeUser_0
-Strains_0
-Areas_0
-InventoryTransfers_0
-InventoryTransferItems_0
-InventoryTypes_0
-Inventories_0
-InventoryAdjustments_0
-InventoryAdjustments_1
-InventoryAdjustments_2
-LabResults_0
-Sales_0
-Sales_1
-SaleItems_0
-SaleItems_1
-SaleItems_2
-SaleItems_3
-"
-
-for f in $file_list;
+for f in $RAW_SOURCE_DIR/*.zip;
 do
-	echo "FILE: $f"
+	n=$(basename "$f" ".zip")
 
-	if [ ! -f "$RAW_SOURCE_DIR/$f.zip" ]
-	then
-		echo "ZIP NOT FOUND"
-		continue
-	fi
+	echo "FILE: $f / $n"
 
-	chk=$(zipinfo $RAW_SOURCE_DIR/$f.zip | grep '1 file')
+	# Check Zip
+	chk=$(zipinfo "$f" | grep '1 file')
 	if [ -z "$chk" ]
 	then
 		echo "Invalid Zip File for: $f"
 		continue
 	fi
 
-	unzip "$RAW_SOURCE_DIR/$f.zip" -d "$RAW_SOURCE_DIR"
-	if [ ! -f "$RAW_SOURCE_DIR/$f.csv" ]
+	# Extract Zip
+	unzip "$f" -d "$RAW_SOURCE_DIR"
+	if [ -f "$RAW_SOURCE_DIR/$n.csv" ]
 	then
-		echo "CSV NOT FOUND"
-		continue
+		rm "$f"
+	else
+		echo "CSV NOT FOUND: $n.csv"
 	fi
 
+done
 
-	echo "CONV"
-	touch "$RAW_SOURCE_DIR/$f.csv"
-	iconv -f UTF-16LE -t ASCII//TRANSLIT "$RAW_SOURCE_DIR/$f.csv" | tee "$RAW_SOURCE_DIR/$f.tsv" | wc -l | tee "$RAW_SOURCE_DIR/$f.max"
+#
+# spin CSV files
+for f in $RAW_SOURCE_DIR/*.csv;
+do
+	n=$(basename "$f" ".csv")
 
-	echo "DONE"
-	rm "$RAW_SOURCE_DIR/$f.zip"
-	rm "$RAW_SOURCE_DIR/$f.csv"
+	iconv -f UTF-16LE -t ASCII//TRANSLIT "$f" | tee "$RAW_SOURCE_DIR/$n.tsv" | wc -l | tee "$RAW_SOURCE_DIR/$n.max"
+
+	rm "$f"
 
 done
