@@ -3,9 +3,6 @@
  * License Detail
  */
 
-$_ENV['h1'] = null;
-$_ENV['title'] = 'License';
-
 $dbc = _dbc();
 
 $L = $dbc->fetchRow('SELECT * FROM license WHERE id = :l', [ ':l' => $_GET['id'] ]);
@@ -13,43 +10,120 @@ if (empty($L['id'])) {
 	_exit_text('Invalid License', 400);
 }
 
-$_ENV['title'] = sprintf('License :: %s - %s', $L['code'], $L['name']);
+$_ENV['h1'] = sprintf('License :: %s - %s', $L['code'], $L['name']);
+$_ENV['title'] = $_ENV['h1'];
 
 
 // Revenue Chart
-$sql = <<<SQL
+if ('*' == $_GET['stat']) {
+
+	$sql = <<<SQL
 SELECT date_trunc('month', execute_at) AS execute_at
+, CASE
+	 WHEN stat IN ('open', 'ready-for-pickup', 'in-transit', 'received') THEN 'Live'
+	 ELSE 'VOID'
+END AS stat
 , sum(full_price) AS full_price
 FROM b2b_sale
 WHERE license_id_source = :l0
 AND full_price > 0
+GROUP BY 1, 2
+ORDER BY 1, 2
+SQL;
+
+	$arg = [ ':l0' => $L['id'] ];
+	// $res_source = $dbc->fetchAll($sql, $arg);
+	$res_source = _select_via_cache($dbc, $sql, $arg);
+
+	// Determine max value and add padding
+	$max = array_reduce($res_source, function($prev, $item) {
+		return max($item['full_price'], $prev);
+	}, 0);
+	$max = ($max * 1.20);
+
+	// Collapse the various types of STAT values into the LIVE or VOID
+	$res_output = [];
+	$stat_list = [];
+	foreach ($res_source as $rec) {
+
+		if (empty($res_output[$rec['execute_at']])) {
+			$res_output[$rec['execute_at']]	 = [];
+		}
+
+		$res_output[$rec['execute_at']][ $rec['stat'] ] = $rec['full_price'];
+
+		$stat_list[ $rec['stat'] ] = true;
+
+	}
+
+	echo '<div style="border: 2px solid #333; height: 320px;">';
+	echo '<table class="charts-css column multiple stacked show-data-on-hover show-heading show-labels">';
+	echo '<caption>Monthly Revenue (All) <a href="?stat=">show-live-only</a></caption>';
+	echo '<thead><tr><th scope="col">Date</th><th scope="col">VOID</th><th scope="col">Live</th></tr></thead>';
+	echo '<tbody>';
+	foreach ($res_output as $dts => $rec) {
+
+		$live_v1 = $rec['Live'] / $max;
+		$void_v1 = $rec['VOID'] / $max;
+
+		echo '<tr>';
+		printf('<th scope="row">%s</th>', _date('m/Y', $dts));
+		printf('<td style="--start: %0.6f; --size: %0.6f"><span class="data" style="font-weight:700; z-index: 30">%s</span></td>'
+			, $void_v0
+			, $void_v1
+			, number_format($rec['VOID'], 2)
+		);
+		printf('<td style="--start: %0.6f; --size: %0.6f"><span class="data" style="font-weight:700; z-index: 30">%s</span></td>'
+			, $live_v0
+			, $live_v1
+			, number_format($rec['Live'], 2)
+		);
+		echo '</tr>';
+
+		$live_v0 = $live_v1;
+		$void_v0 = $void_v1;
+
+	}
+	echo '</tbody>';
+	echo '</table>';
+	echo '</div>';
+
+} else {
+
+	$sql = <<<SQL
+SELECT date_trunc('month', execute_at) AS execute_at
+, sum(full_price) AS full_price
+FROM b2b_sale
+WHERE license_id_source = :l0
+AND full_price > 0 AND stat IN ('open', 'ready-for-pickup', 'in-transit', 'received')
 GROUP BY 1
 ORDER BY 1
 SQL;
-$arg = [ ':l0' => $L['id'] ];
-// $res = $dbc->fetchAll($sql, $arg);
-$res = _select_via_cache($dbc, $sql, $arg);
 
-$max = array_reduce($res, function($prev, $item) {
-	return max($item['full_price'], $prev);
-}, 0);
-$max = ($max * 1.20);
+	$arg = [ ':l0' => $L['id'] ];
+	// $res = $dbc->fetchAll($sql, $arg);
+	$res = _select_via_cache($dbc, $sql, $arg);
 
-echo '<div style="border: 2px solid #333; height: 320px;">';
-echo '<table class="charts-css area show-heading show-labels">';
-echo '<caption>Monthly Revenue</caption>';
+	$max = array_reduce($res, function($prev, $item) {
+		return max($item['full_price'], $prev);
+	}, 0);
+	$max = ($max * 1.20);
 
-$v0 = $res[0]['full_price'] / $max;
+	echo '<div style="border: 2px solid #333; height: 320px;">';
+	echo '<table class="charts-css column multiple show-data-on-hover show-heading show-labels">';
+	echo '<caption>Monthly Revenue (in-transit, received) <a href="?stat=*">show-all</a></caption>';
 
-foreach ($res as $rec) {
-	// <td style="--start: 0.0; --size: 0.4"> <span class="data"> $ 40K </span> </td>
-	$v1 = $rec['full_price'] / $max;
-	printf('<tr><th scope="row">%s</th><td style="--start: %0.6f; --size: %0.6f"><span class="data" style="font-weight:700; z-index: 30">%s</span></td></tr>', _date('m/Y', $rec['execute_at']), $v0, $v1, number_format($rec['full_price'], 2));
-	$v0 = $v1;
+	$v0 = $res[0]['full_price'] / $max;
+
+	foreach ($res as $rec) {
+		// <td style="--start: 0.0; --size: 0.4"> <span class="data"> $ 40K </span> </td>
+		$v1 = $rec['full_price'] / $max;
+		printf('<tr><th scope="row">%s</th><td style="--start: %0.6f; --size: %0.6f"><span class="data" style="font-weight:700; z-index: 30">%s</span></td></tr>', _date('m/Y', $rec['execute_at']), $v0, $v1, number_format($rec['full_price'], 2));
+		$v0 = $v1;
+	}
+	echo '</table>';
+	echo '</div>';
 }
-echo '</table>';
-echo '</div>';
-
 
 
 /*
