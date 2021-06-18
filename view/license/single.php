@@ -15,6 +15,42 @@ if (empty($L['id'])) {
 
 $_ENV['title'] = sprintf('License :: %s - %s', $L['code'], $L['name']);
 
+
+// Revenue Chart
+$sql = <<<SQL
+SELECT date_trunc('month', execute_at) AS execute_at
+, sum(full_price) AS full_price
+FROM b2b_sale
+WHERE license_id_source = :l0
+AND full_price > 0
+GROUP BY 1
+ORDER BY 1
+SQL;
+
+$res = $dbc->fetchAll($sql, [ ':l0' => $L['id'] ]);
+
+$max = array_reduce($res, function($prev, $item) {
+	return max($item['full_price'], $prev);
+}, 0);
+$max = ($max * 1.20);
+
+echo '<div style="border: 2px solid #333; height: 320px;">';
+echo '<table class="charts-css area show-heading show-labels">';
+echo '<caption>Monthly Revenue</caption>';
+
+$v0 = $res[0]['full_price'] / $max;
+
+foreach ($res as $rec) {
+	// <td style="--start: 0.0; --size: 0.4"> <span class="data"> $ 40K </span> </td>
+	$v1 = $rec['full_price'] / $max;
+	printf('<tr><th scope="row">%s</th><td style="--start: %0.6f; --size: %0.6f"><span class="data" style="font-weight:700; z-index: 30">%s</span></td></tr>', _date('m/Y', $rec['execute_at']), $v0, $v1, number_format($rec['full_price'], 2));
+	$v0 = $v1;
+}
+echo '</table>';
+echo '</div>';
+
+
+
 /*
 select distinct stat from b2b_sale;
 
