@@ -26,8 +26,9 @@ AND full_price > 0
 GROUP BY 1
 ORDER BY 1
 SQL;
-
-$res = $dbc->fetchAll($sql, [ ':l0' => $L['id'] ]);
+$arg = [ ':l0' => $L['id'] ];
+// $res = $dbc->fetchAll($sql, $arg);
+$res = _select_via_cache($dbc, $sql, $arg);
 
 $max = array_reduce($res, function($prev, $item) {
 	return max($item['full_price'], $prev);
