@@ -3,9 +3,7 @@
  * Detail
  */
 
-$_ENV['title'] = 'B2B :: Details';
-
-session_write_close();
+$_ENV['h1'] = 'B2B :: Details';
 
 $show_void = intval($_GET['void']);
 
@@ -21,9 +19,10 @@ if (empty($L_Target['id'])) {
 	_exit_text('Invalid Client License', 400);
 }
 
-$_ENV['title'] = 'B2B :: Details :: ' . $L_Vendor['name'] . ' :: ' . $L_Target['name'];
+$_ENV['h1'] = 'B2B :: Details :: ' . $L_Vendor['name'] . ' :: ' . $L_Target['name'];
+$_ENV['title'] = $_ENV['h1'];
 
-$stat_filter = "AND stat IN ('in-transit', 'ready-for-pickup', 'received')";
+$stat_filter = "AND stat IN ('open', 'in-transit', 'ready-for-pickup', 'received')";
 if ($show_void) {
 	$stat_filter = null;
 }
@@ -38,18 +37,17 @@ SELECT count(id) AS c
 FROM b2b_sale_item_full
 WHERE license_id_source = :l0 AND license_id_target = :l1
  $stat_filter
- AND execute_at >= now() - '12 months'::interval
+ AND execute_at >= :dt0
  AND sale_item_full_price > 0
 GROUP BY product_name
 ORDER BY full_price DESC
 LIMIT 500
 SQL;
 $res_b2b = _select_via_cache($dbc, $sql, [
+	':dt0' => DATE_ALPHA,
 	':l0' => $L_Vendor['id'],
 	':l1' => $L_Target['id'],
 ]);
-// var_dump($res);
-
 
 
 // Fetch the Retail Information
@@ -65,14 +63,15 @@ SELECT sum(b2c_sale_item.qty) AS qty
 FROM b2c_sale_item WHERE lot_id IN (
 	SELECT lot_id_target FROM b2b_sale_item_full
 	WHERE license_id_source = :l0 AND license_id_target = :l1
-	AND stat IN ('in-transit', 'received')
-	AND execute_at >= now() - '12 months'::interval
+	$stat_filter
+	AND execute_at >= :dt0
 )
  AND b2c_sale_item.stat = 200
 GROUP BY meta->>'name'
 SQL;
 
 	$res = _select_via_cache($dbc, $sql, [
+		':dt0' => DATE_ALPHA,
 		':l0' => $L_Vendor['id'],
 		':l1' => $L_Target['id'],
 	]);
@@ -94,7 +93,7 @@ SQL;
 </div>
 <div class="row">
 <div class="col-12">
-<?= _b2b_transfer_tabs() ?>
+<?= App\UI::b2b_transfer_tabs() ?>
 </div>
 </div>
 </div>
@@ -103,18 +102,18 @@ SQL;
 <?php
 if ($show_void) {
 ?>
-	<p>Transfers from the last 12 months, <strong class="text-danger">inclusive of VOID</strong> transactions.</p>
+	<p>Transfers since <?= _date('F, Y', DATE_ALPHA) ?>, <strong class="text-danger">including VOID</strong> transactions.</p>
 <?php
 } else {
 ?>
-	<p>Transfers from the last 12 months, <strong>exclusive of VOID</strong> transactions.</p>
+	<p>Transfers since <?= _date('F, Y', DATE_ALPHA) ?>, <strong>excluding VOID</strong> transactions.</p>
 <?php
 }
 ?>
 
-<table class="ui table">
+<table class="table table-sm">
 <caption>Products Sold to this License and, if client side is Retail then the B2C sales of this product are included.</caption>
-<thead>
+<thead class="thead-dark">
 <tr>
 	<th>Product</th>
 	<th class="r">Sent</th>

@@ -272,12 +272,12 @@ foreach ($res_middle as $rec) {
 <div class="row">
 <div class="col-md-6">
 <?php
-require_once(__DIR__ . '/b2b-incoming.php');
+require_once(__DIR__ . '/single-b2b-incoming.php');
 ?>
 </div>
 <div class="col-md-6">
 <?php
-require_once(__DIR__ . '/b2b-outgoing.php');
+require_once(__DIR__ . '/single-b2b-outgoing.php');
 ?>
 </div>
 </div>
