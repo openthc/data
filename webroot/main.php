@@ -187,6 +187,33 @@ $app->get('/license/{id}/map', function($REQ, $RES, $ARG) {
 
 } );
 
+$app->get('/license/{id}/b2b', function($REQ, $RES, $ARG) {
+
+	$_GET['id'] = $ARG['id'];
+
+	$c = $this; // Container
+	$v = new class($c) extends \OpenTHC\Controller\Base {};
+	$f = 'license/b2b-sale.php';
+	$d = [];
+
+	return $RES->write( $v->render($f, $d) );
+
+} );
+
+$app->get('/license/{id}/b2b-detail', function($REQ, $RES, $ARG) {
+
+	$_GET['id'] = $ARG['id'];
+
+	$c = $this; // Container
+	$v = new class($c) extends \OpenTHC\Controller\Base {};
+	$f = 'license/b2b-sale-detail.php';
+	$d = [];
+
+	return $RES->write( $v->render($f, $d) );
+
+} );
+
+
 $app->get('/license/{id}/vendors', function($REQ, $RES, $ARG) {
 
 	$_GET['id'] = $ARG['id'];
