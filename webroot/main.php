@@ -278,7 +278,6 @@ $app->get('/sql/info', function($REQ, $RES) {
 	return render_view($this, $RES, 'sql/info.php');
 });
 
-// App_Menu::addMenuItem('main', '/dashboard', '<i class="fas fa-building"></i> License');
 App_Menu::addMenuItem('main', '/revenue', '<i class="fas fa-funnel-dollar"></i> Revenue');
 App_Menu::addMenuItem('main', '/b2b', '<i class="fas fa-truck-loading"></i> B2B');
 App_Menu::addMenuItem('main', '/lab', '<i class="fas fa-flask"></i> Lab');

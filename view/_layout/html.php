@@ -256,7 +256,7 @@ div.main-wrap nav.menu-r div.item:hover div.drawer a:active {
 	<nav>
 		<div class="item logo">
 			<div style="font-size: 32px;">
-				<a class="btn btn-sm" href="/dashboard"><img alt="OpenTHC Icon" src="https://cdn.openthc.com/img/icon/icon-w-32.png"></a>
+				<a class="btn btn-sm" href="/"><img alt="OpenTHC Icon" src="https://cdn.openthc.com/img/icon/icon-w-32.png"></a>
 			</div>
 			<div>
 				<button class="btn" id="menu-left-mode" data-mode="<?= $_SESSION['_ui']['menu'] ?>" style="height:48px;">
@@ -365,11 +365,6 @@ $(function() {
 		$('#menu-left').removeClass('open mini shut');
 		$('#menu-left').addClass(mode1);
 		this.dataset.mode = mode1;
-
-		$.post('/dashboard/ajax', {
-			a: 'menu-mode',
-			mode: mode1
-		});
 
 	});
 
