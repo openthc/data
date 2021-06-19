@@ -8,7 +8,7 @@ $_ENV['h1'] = $_ENV['title'] = 'Lab Results';
 echo \App\UI::lab_tabs();
 
 echo '<div class="mt-4">';
-require_once(__DIR__ . '/chart-result-count-stacked-column.php');
+require_once(__DIR__ . '/main-chart-result-count-column-stacked.php');
 echo '</div>';
 
 // echo '<div class="row">';
