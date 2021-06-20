@@ -35,14 +35,12 @@ foreach ($res_source as $src) {
 	}
 	$res_output[ $src['created_at'] ][ $src['license_name'] ] = $src['count'];
 	$license_list[ $src['license_name'] ] = true;
-	$license_rank[ $src['license_name'] ] = $src['count']; // track their most recent count only
+	 // track their most recent counts only
+	$license_rank[ $src['license_name'] ] = ($license_rank[ $src['license_name'] ] + $src['count']) / 3;
+	// $license_rank[ $src['license_name'] ] = 0; // $src['count'];
 }
-// sort($license_list);
 arsort($license_rank);
 $license_list = array_keys($license_rank);
-// var_dump($res);
-// $cht_data = _fold_to_cht_data($res);
-// var_dump($cht_data);
 
 ob_start();
 ?>

@@ -78,8 +78,6 @@ $app->get('/b2b/transfer-detail', function($REQ, $RES) {
 
 $app->get('/b2c', function($REQ, $RES) {
 
-	// require_once(APP_ROOT . '/controller/lab.php');
-
 	$c = $this; // Container
 	$v = new class($c) extends \OpenTHC\Controller\Base {};
 	$f = 'b2c/main.php';
@@ -89,8 +87,6 @@ $app->get('/b2c', function($REQ, $RES) {
 });
 
 $app->get('/lab', function($REQ, $RES) {
-
-	require_once(APP_ROOT . '/controller/lab.php');
 
 	$c = $this; // Container
 	$v = new class($c) extends \OpenTHC\Controller\Base {};
@@ -102,8 +98,6 @@ $app->get('/lab', function($REQ, $RES) {
 
 $app->get('/lab/frequency', function($REQ, $RES) {
 
-	require_once(APP_ROOT . '/controller/lab.php');
-
 	$c = $this; // Container
 	$v = new class($c) extends \OpenTHC\Controller\Base {};
 	$f = 'lab/frequency.php';
@@ -113,8 +107,6 @@ $app->get('/lab/frequency', function($REQ, $RES) {
 });
 
 $app->get('/lab/potency', function($REQ, $RES) {
-
-	require_once(APP_ROOT . '/controller/lab.php');
 
 	$c = $this; // Container
 	$v = new class($c) extends \OpenTHC\Controller\Base {};
@@ -126,8 +118,6 @@ $app->get('/lab/potency', function($REQ, $RES) {
 
 $app->get('/lab/usage', function($REQ, $RES) {
 
-	require_once(APP_ROOT . '/controller/lab.php');
-
 	$c = $this; // Container
 	$v = new class($c) extends \OpenTHC\Controller\Base {};
 	$f = 'lab/usage.php';
@@ -137,8 +127,6 @@ $app->get('/lab/usage', function($REQ, $RES) {
 });
 
 $app->get('/lab/attested', function($REQ, $RES) {
-
-	require_once(APP_ROOT . '/controller/lab.php');
 
 	$c = $this; // Container
 	$v = new class($c) extends \OpenTHC\Controller\Base {};
