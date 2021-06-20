@@ -92,7 +92,7 @@ class UI
 	?>
 <ul class="nav nav-tabs">
 	<li class="nav-item">
-	<a class="nav-link" href="/lab">Lab</a>
+	<a class="nav-link" href="/lab">Main</a>
 	</li>
 	<li class="nav-item">
 	<a class="nav-link" href="/lab/frequency">Frequency</a>

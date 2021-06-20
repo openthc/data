@@ -7,6 +7,13 @@ use Edoceo\Radix;
 use Edoceo\Radix\Layout;
 use Edoceo\Radix\Session;
 
+header('content-type: text/html; charset=utf-8', true);
+
+$body_class_list = [];
+$m1_mode = preg_match('/^(open|mini|shut)$/', $_COOKIE['m1'], $m) ? $m[1] : 'open';
+$body_class_list[] = sprintf('m1-%s', $m1_mode);
+
+
 $tool_menu_item = function($head, $link)
 {
 	$icon = preg_match('/(<i.+i>)/', $head, $m) ? $m[1] : $head;
@@ -46,8 +53,6 @@ $echo_session_flash = function()
 
 };
 
-header('content-type: text/html; charset=utf-8', true);
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -55,7 +60,7 @@ header('content-type: text/html; charset=utf-8', true);
 <meta charset="utf-8">
 <meta name="viewport" content="initial-scale=1, user-scalable=yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#212121">
+<meta name="theme-color" content="#069420">
 <link rel="stylesheet" crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==">
 <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.openthc.com/bootstrap/4.4.1/bootstrap.css" integrity="sha256-L/W5Wfqfa0sdBNIKN9cG6QA5F2qx4qICmU2VgLruv9Y=">
 <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/charts.css@0.9.0/dist/charts.min.css">
@@ -250,7 +255,7 @@ div.main-wrap nav.menu-r div.item:hover div.drawer a:active {
 }
 </style>
 </head>
-<body>
+<body class="<?= implode(' ', $body_class_list) ?>" data-menu-left-mode="<?= $m1_mode ?>">
 <div class="body-wrap">
 <header class="body-head bg-dark">
 	<nav>
@@ -259,15 +264,15 @@ div.main-wrap nav.menu-r div.item:hover div.drawer a:active {
 				<a class="btn btn-sm" href="/"><img alt="OpenTHC Icon" src="https://cdn.openthc.com/img/icon/icon-w-32.png"></a>
 			</div>
 			<div>
-				<button class="btn" id="menu-left-mode" data-mode="<?= $_SESSION['_ui']['menu'] ?>" style="height:48px;">
+				<button class="btn menu-left-mode" data-mode="<?= $_SESSION['_ui']['menu'] ?>" style="height:48px;">
 					<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" role="img" title="Menu Icon"><g stroke="none" stroke-width="1" fill="inherit" fill-rule="evenodd"><g transform="translate(-188.000000, -38.000000)" fill-rule="nonzero" fill="inherit"><g><g><g transform="translate(188.000000, 38.000000)"><path d="M15.5,0 C15.776,0 16,0.224 16,0.5 L16,1.5 C16,1.776 15.776,2 15.5,2 L0.5,2 C0.224,2 0,1.776 0,1.5 L0,0.5 C0,0.224 0.224,0 0.5,0 L15.5,0 Z M15.5,4 C15.776,4 16,4.224 16,4.5 L16,5.5 C16,5.776 15.776,6 15.5,6 L0.5,6 C0.224,6 0,5.776 0,5.5 L0,4.5 C0,4.224 0.224,4 0.5,4 L15.5,4 Z M15.5,8 C15.776,8 16,8.224 16,8.5 L16,9.5 C16,9.776 15.776,10 15.5,10 L0.5,10 C0.224,10 0,9.776 0,9.5 L0,8.5 C0,8.224 0.224,8 0.5,8 L15.5,8 Z"></path></g></g></g></g></g></svg>
 				</button>
 			</div>
 		</div>
 		<div class="item find">
-			<form action="/search" class="form-inline" id="search-form">
+			<form action="/search" autocomplete="off" class="form-inline" id="search-form">
 				<div class="input-group">
-					<input class="form-control" id="search-q" name="q" placeholder="Search" title="Search (use '/' to focus)" type="text">
+					<input autocomplete="off" class="form-control" id="search-q" name="q" placeholder="Search" title="Search (use '/' to focus)" type="text">
 					<div class="input-group-append">
 						<button class="btn btn-outline-success"><i class="fas fa-search"></i></button>
 					</div>
@@ -280,15 +285,6 @@ div.main-wrap nav.menu-r div.item:hover div.drawer a:active {
 	<nav class="menu-l <?= $_SESSION['_ui']['menu'] ?>" id="menu-left">
 	<?php
 	$menu_list = App_Menu::getMenu('main');
-	// $menu_list = [];
-	// $menu_list[] = [ 'name' => '', 'link' => '' ];
-	// $menu_list[] = [ 'name' => '', 'link' => '' ];
-	// $menu_list[] = [ 'name' => '', 'link' => '' ];
-	// $menu_list[] = [ 'name' => '', 'link' => '' ];
-	// $menu_list[] = [ 'name' => '', 'link' => '' ];
-	// $menu_list[] = [ 'name' => '', 'link' => '' ];
-	// $menu_list[] = [ 'name' => '', 'link' => '' ];
-
 	foreach ($menu_list as $menu) {
 
 		if (empty($menu['id'])) {
@@ -319,6 +315,11 @@ div.main-wrap nav.menu-r div.item:hover div.drawer a:active {
 	<div class="main-body">
 		<header class="main-head">
 			<div>
+				<button class="btn menu-left-mode" style="height:48px;">
+					<i class="fas fa-bars"></i>
+				</button>
+			</div>
+			<div>
 				<h1><?= $_ENV['h1'] ?></h1>
 			</div>
 		</header>
@@ -347,9 +348,10 @@ var Clippy;
 $(function() {
 
 	// Menu Toggler
-	$('#menu-left-mode').on('click', function() {
+	$('.menu-left-mode').on('click', function() {
+		debugger;
+		var mode0 = document.body.dataset.menuLeftMode || 'open';
 
-		var mode0 = this.dataset.mode || 'open';
 		var mode1 = '';
 		switch (mode0) {
 			case 'mini':
@@ -362,9 +364,19 @@ $(function() {
 				mode1 = 'open';
 		}
 
-		$('#menu-left').removeClass('open mini shut');
-		$('#menu-left').addClass(mode1);
-		this.dataset.mode = mode1;
+
+		var c = document.body.getAttribute('class');
+		var a = c.split(/\s+/);
+		var i = 0;
+		var m = a.length;
+		for (i=0; i<m; i++) {
+			c = c.replace(a[i], '');
+		}
+		c += (' ' + `m1-${mode1}`);
+		document.body.setAttribute('class', c);
+		document.body.dataset.menuLeftMode = mode1;
+
+		document.cookie = `m1=${mode1};path=/;samesite=strict;secure`;
 
 	});
 
