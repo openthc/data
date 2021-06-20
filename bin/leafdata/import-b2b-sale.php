@@ -31,6 +31,12 @@ while ($rec = $csv->fetch()) {
 
 	// Clean
 	$rec = array_combine($csv->key_list, $rec);
+
+	// Some records are missing this critical field
+	// if (empty($rec['to_mme_id'])) {
+	// 	_append_fail_log()
+	// }
+
 	$rec = de_fuck_date_format($rec);
 
 	unset($rec['user_id']);

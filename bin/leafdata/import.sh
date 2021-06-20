@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 #
 # Import from LeafData from Specified Source Path
 #
@@ -24,6 +24,7 @@ fi
 #
 ./bin/leafdata/import-license.php "$RAW_SOURCE_DIR/Licensees_0.tsv" 2>&1 | tee -a ./output-data/import-license.out
 ./bin/leafdata/import-contact.php "$RAW_SOURCE_DIR/Users_0.tsv" 2>&1 | tee -a ./output-data/import-contact.out
+./bin/leafdata/import-contact.php "$RAW_SOURCE_DIR/MmeUser_0.tsv" 2>&1 | tee -a ./output-data/import-contact.out
 
 ./bin/leafdata/import-b2b-sale.php "$RAW_SOURCE_DIR/InventoryTransfers_0.tsv" 2>&1 | tee -a ./output-data/import-b2b-sale.out
 ./bin/leafdata/import-b2b-sale-item.php "$RAW_SOURCE_DIR/InventoryTransferItems_0.tsv" 2>&1 | tee -a ./output-data/import-b2b-sale-item.out
@@ -39,6 +40,8 @@ fi
 ./bin/leafdata/import-b2c-sale-item.php "$RAW_SOURCE_DIR/SaleItems_0.tsv" 2>&1 | tee -a output-data/import-b2c-sale-item.out
 ./bin/leafdata/import-b2c-sale-item.php "$RAW_SOURCE_DIR/SaleItems_1.tsv" 2>&1 | tee -a output-data/import-b2c-sale-item.out
 ./bin/leafdata/import-b2c-sale-item.php "$RAW_SOURCE_DIR/SaleItems_2.tsv" 2>&1 | tee -a output-data/import-b2c-sale-item.out
+./bin/leafdata/import-b2c-sale-item.php "$RAW_SOURCE_DIR/SaleItems_3.tsv" 2>&1 | tee -a output-data/import-b2c-sale-item.out
+
 
 #
 # Review and repair the data
@@ -46,8 +49,12 @@ fi
 #
 
 # ./bin/leafdata/review-license.php 2>&1 | tee ./output-data/review-license.out
-# ./bin/leafdata/review-b2b.php
-# ./bin/leafdata/review-b2c.php
-# ./bin/leafdata/review-b2c-sale-item.php
-
 # ./bin/leafdata/review-variety.php
+# ./bin/leafdata/review-product.php
+# ./bin/leafdata/review-lab.php
+
+./bin/leafdata/review-b2b-sale-item.php 2>&1 | tee ./output-data/review-b2b-sale-item.out
+./bin/leafdata/review-b2b.php 2>&1 | tee ./output-data/review-b2b.out
+
+./bin/leafdata/review-b2c-sale-item.php 2>&1 | tee ./output-data/review-b2c-sale-item.out
+./bin/leafdata/review-b2c.php 2>&1 | tee ./output-data/review-b2c.out

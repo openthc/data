@@ -33,6 +33,10 @@ while ($rec = $csv->fetch()) {
 		continue;
 	}
 
+	$rec['qty'] = floatval($rec['qty']);
+	$rec['price'] = floatval($rec['price']);
+	$rec['received_qty'] = floatval($rec['received_qty']);
+
 	// Skip Old
 	$d0 = new DateTime($rec['created_at']);
 	if ($d0 < $min_date) {
@@ -92,22 +96,21 @@ while ($rec = $csv->fetch()) {
 	//product_sample_type
 	$stat = implode('-', $stat);
 
-	$qty = floatval($rec['received_qty']);
+	$qty = $rec['received_qty'];
 	if (empty($qty)) {
-		$qty = floatval($rec['qty']);
+		$qty = $rec['qty'];
 	}
-
 
 	$add = array(
 		'id' => $rec['global_id'],
 		'b2b_sale_id' => $rec['inventory_transfer_id'],
 		'lot_id_source' => $rec['inventory_id'],
 		'lot_id_target' => $rec['received_inventory_id'],
-		'qom_tx' => floatval($rec['qty']),
-		'qom_rx' => floatval($rec['received_qty']),
+		'qom_tx' => $rec['qty'],
+		'qom_rx' => $rec['received_qty'],
 		'uom' => $rec['uom'],
 		'stat' => $stat,
-		'full_price' => floatval($rec['price']),
+		'full_price' => $rec['price'],
 		'unit_price' => ($qty ? ($rec['price'] / $rec['qty']) : 0)
 		// 'meta' => json_encode($rec),
 	);
