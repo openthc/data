@@ -274,5 +274,5 @@ App_Menu::addMenuItem('main', '/b2c', '<i class="fas fa-users"></i> B2C');
 $res = $app->run();
 if (404 == $res->getStatusCode()) {
 	$html = file_get_contents(sprintf('%s/webroot/e/404.html', APP_ROOT));
-	_exit_html($html);
+	_exit_html($html, 404);
 }
