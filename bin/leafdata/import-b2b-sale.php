@@ -79,8 +79,8 @@ while ($rec = $csv->fetch()) {
 	try {
 		$add = array(
 			'id' => $rec['global_id'],
-			'license_id_source' => $rec['from_mme_id'],
-			'license_id_target' => $rec['to_mme_id'],
+			'source_license_id' => $rec['from_mme_id'],
+			'target_license_id' => $rec['to_mme_id'],
 			'created_at' => $rec['created_at'],
 			'execute_at' => $date,
 			'stat' => $stat,

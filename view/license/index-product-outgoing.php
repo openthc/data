@@ -21,7 +21,7 @@ default:
 	// Stuff They Are Selling
 	$sql = <<<SQL
 SELECT sum(qom_tx) AS q, sum(full_price) AS p
-FROM b2b_sale_item WHERE b2b_sale_id IN (SELECT id FROM b2b_sale WHERE license_id_source = :l0)
+FROM b2b_sale_item WHERE b2b_sale_id IN (SELECT id FROM b2b_sale WHERE source_license_id = :l0)
 LIMIT 100
 SQL;
 

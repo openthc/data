@@ -6,7 +6,7 @@
 
 $dbc = _dbc();
 
-$sql = 'SELECT count(id) AS c FROM b2b_sale WHERE license_id_source = :l';
+$sql = 'SELECT count(id) AS c FROM b2b_sale WHERE source_license_id = :l';
 $res = _select_via_cache($dbc, $sql, [ ':l' => $L['id'] ]);
 if (empty($res)) {
 	return(null);
@@ -24,7 +24,7 @@ SELECT count(id) AS c
 , date_trunc('month', execute_at) AS mon
 , sum(full_price) AS rev
 FROM b2b_sale
-WHERE license_id_source = ? AND stat IN ('in-transit', 'ready-for-pickup', 'received')
+WHERE source_license_id = ? AND stat IN ('in-transit', 'ready-for-pickup', 'received')
  AND b2b_sale.execute_at >= now() - '6 months'::interval
 GROUP BY date_trunc('month', execute_at)
 ORDER BY 2 DESC

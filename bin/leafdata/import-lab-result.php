@@ -257,9 +257,9 @@ foreach ($map_type as $t0 => $t1) {
 // Update the License ID Source on Lab Result
 // $sql = <<<SQL
 // UPDATE lab_result
-//  SET license_id_source = substr(meta->>'global_for_inventory_id', 3, 7)
-// WHERE license_id_source IS NULL
+//  SET source_license_id = substr(meta->>'global_for_inventory_id', 3, 7)
+// WHERE source_license_id IS NULL
 // SQL;
 
 // $sql = <<<SQL
-// UPDATE lab_result SET license_id_source = (SELECT id FROM license WHERE license.code = lab_result.license_id_source)
+// UPDATE lab_result SET source_license_id = (SELECT id FROM license WHERE license.code = lab_result.source_license_id)

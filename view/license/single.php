@@ -25,7 +25,7 @@ SELECT date_trunc('month', execute_at) AS execute_at
 END AS stat
 , sum(full_price) AS full_price
 FROM b2b_sale
-WHERE license_id_source = :l0
+WHERE source_license_id = :l0
 AND full_price > 0
 GROUP BY 1, 2
 ORDER BY 1, 2
@@ -94,7 +94,7 @@ SQL;
 SELECT date_trunc('month', execute_at) AS execute_at
 , sum(full_price) AS full_price
 FROM b2b_sale
-WHERE license_id_source = :l0
+WHERE source_license_id = :l0
 AND full_price > 0 AND stat IN ('open', 'ready-for-pickup', 'in-transit', 'received')
 GROUP BY 1
 ORDER BY 1
@@ -145,7 +145,7 @@ SELECT date_trunc('month', execute_at) AS mon
 , sum(full_price) AS exp
 , 0 AS tax
 FROM b2b_sale
-WHERE license_id_target = :l0 AND stat IN ('received')
+WHERE target_license_id = :l0 AND stat IN ('received')
 AND execute_at >= :dt0
 GROUP BY date_trunc('month', execute_at)
 ORDER BY 1 DESC

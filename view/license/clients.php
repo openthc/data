@@ -44,8 +44,8 @@ SELECT count(b2b_sale.id) AS c, sum(full_price) AS rev
 , license.code AS license_code
 , license.name AS license_name
 FROM b2b_sale
-JOIN license ON b2b_sale.license_id_target = license.id
-WHERE b2b_sale.license_id_source = :l
+JOIN license ON b2b_sale.target_license_id = license.id
+WHERE b2b_sale.source_license_id = :l
  $stat_filter
 AND execute_at >= :dt0
 AND full_price > 0

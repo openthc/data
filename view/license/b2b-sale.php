@@ -19,9 +19,9 @@ SELECT b2b_sale.*
 , license_source.name AS license_source_name
 , license_target.name AS license_target_name
 FROM b2b_sale
-JOIN license AS license_source ON b2b_sale.license_id_source = license_source.id
-JOIN license AS license_target ON b2b_sale.license_id_target = license_target.id
-WHERE (license_id_source = :l0 OR license_id_target = :l0) AND b2b_sale.full_price > 0
+JOIN license AS license_source ON b2b_sale.source_license_id = license_source.id
+JOIN license AS license_target ON b2b_sale.target_license_id = license_target.id
+WHERE (source_license_id = :l0 OR target_license_id = :l0) AND b2b_sale.full_price > 0
 ORDER BY execute_at
 SQL;
 
@@ -52,19 +52,19 @@ foreach ($res as $rec) {
 
 	printf('<td>%s</td><td>%s</td>', _date('m/d/y', $rec['execute_at']), $rec['stat']);
 
-	if ($License['id'] == $rec['license_id_source']) {
+	if ($License['id'] == $rec['source_license_id']) {
 		// Supply Side
 		printf('<td>%s</td><td style="font-weight:700;"><a href="/license/%s">%s</a></td>'
 			, $rec['license_source_name']
-			, $rec['license_id_target']
+			, $rec['target_license_id']
 			, $rec['license_target_name']
 		);
 		printf('<td></td><td style="font-weight:700; text-align: right;">%s</td>', number_format($rec['full_price'], 2));
 		$revenue += $rec['full_price'];
-	} elseif ($License['id'] == $rec['license_id_target']) {
+	} elseif ($License['id'] == $rec['target_license_id']) {
 		// Demand Side
 		printf('<td style="font-weight:700;"><a href="/license/%s">%s</a></td><td>%s</td>'
-			, $rec['license_id_source']
+			, $rec['source_license_id']
 			, $rec['license_source_name']
 			, $rec['license_target_name']
 		);

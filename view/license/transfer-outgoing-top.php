@@ -10,8 +10,8 @@ SELECT count(b2b_sale.id) AS c
 , license.id AS license_id
 , license.name AS license_name
 FROM b2b_sale
-JOIN license ON b2b_sale.license_id_target = license.id
-WHERE b2b_sale.license_id_source = :l0 AND b2b_sale.stat IN ('in-transit', 'ready-for-pickup', 'received')
+JOIN license ON b2b_sale.target_license_id = license.id
+WHERE b2b_sale.source_license_id = :l0 AND b2b_sale.stat IN ('in-transit', 'ready-for-pickup', 'received')
 AND execute_at >= :dt0
 AND full_price > 0
 GROUP BY license.id, license.name

@@ -35,7 +35,7 @@ SELECT count(id) AS c
 , sum(sale_item_full_price) AS full_price
 , product_name
 FROM b2b_sale_item_full
-WHERE license_id_source = :l0 AND license_id_target = :l1
+WHERE source_license_id = :l0 AND target_license_id = :l1
  $stat_filter
  AND execute_at >= :dt0
  AND sale_item_full_price > 0
@@ -62,7 +62,7 @@ SELECT sum(b2c_sale_item.qty) AS qty
 , meta->>'name' AS name
 FROM b2c_sale_item WHERE lot_id IN (
 	SELECT lot_id_target FROM b2b_sale_item_full
-	WHERE license_id_source = :l0 AND license_id_target = :l1
+	WHERE source_license_id = :l0 AND target_license_id = :l1
 	$stat_filter
 	AND execute_at >= :dt0
 )

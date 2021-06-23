@@ -26,26 +26,26 @@ function _create_missing_license($dbc)
 {
 	echo "_create_missing_license()\n";
 
-	$res = $dbc->fetchAll('SELECT DISTINCT license_id_source FROM b2b_sale WHERE license_id_source NOT IN (SELECT id FROM license)');
+	$res = $dbc->fetchAll('SELECT DISTINCT source_license_id FROM b2b_sale WHERE source_license_id NOT IN (SELECT id FROM license)');
 	foreach ($res as $rec) {
 		$dbc->insert('license', array(
-			'id' => $rec['license_id_source'],
-			'name' => sprintf('-orphan- %s', $rec['license_id_source'])
+			'id' => $rec['source_license_id'],
+			'name' => sprintf('-orphan- %s', $rec['source_license_id'])
 		));
 	}
 
 	// Brute Force Target Licenses into the License Table
-	$res = $dbc->fetchAll('SELECT DISTINCT license_id_target FROM b2b_sale WHERE license_id_target NOT IN (SELECT id FROM license)');
+	$res = $dbc->fetchAll('SELECT DISTINCT target_license_id FROM b2b_sale WHERE target_license_id NOT IN (SELECT id FROM license)');
 	foreach ($res as $rec) {
 		$dbc->insert('license', array(
-			'id' => $rec['license_id_target'],
-			'name' => sprintf('-orphan- %s', $rec['license_id_target'])
+			'id' => $rec['target_license_id'],
+			'name' => sprintf('-orphan- %s', $rec['target_license_id'])
 		));
 	}
 
 	// Link Source and Target Licenses
-	// $dbc->query('ALTER TABLE ONLY b2b_sale ADD FOREIGN KEY (license_id_source) REFERENCES license(id)');
-	// $dbc->query('ALTER TABLE ONLY b2b_sale ADD FOREIGN KEY (license_id_target) REFERENCES license(id)');
+	// $dbc->query('ALTER TABLE ONLY b2b_sale ADD FOREIGN KEY (source_license_id) REFERENCES license(id)');
+	// $dbc->query('ALTER TABLE ONLY b2b_sale ADD FOREIGN KEY (target_license_id) REFERENCES license(id)');
 
 }
 
@@ -82,13 +82,13 @@ function _update_b2b_path($dbc)
 
 	$sql = <<<SQL
 SELECT DISTINCT
-  license_id_source
+  source_license_id
   , l0.lat AS l0_lat, l0.lon AS l0_lon
-  , license_id_target
+  , target_license_id
   , l1.lat AS l1_lat, l1.lon AS l1_lon
 FROM b2b_sale
-LEFT JOIN license AS l0 ON b2b_sale.license_id_source = l0.id
-LEFT JOIN license AS l1 ON b2b_sale.license_id_target = l1.id
+LEFT JOIN license AS l0 ON b2b_sale.source_license_id = l0.id
+LEFT JOIN license AS l1 ON b2b_sale.target_license_id = l1.id
 WHERE l0.lat IS NOT NULL
   AND l0.lon IS NOT NULL
   AND l1.lat IS NOT NULL
@@ -99,24 +99,24 @@ SQL;
 
 	foreach ($res_transfer as $rec) {
 
-		if (empty($rec['license_id_source']) || empty($rec['license_id_target'])) {
+		if (empty($rec['source_license_id']) || empty($rec['target_license_id'])) {
 			continue;
 		}
 
 		if (empty($rec['l0_lat']) || empty($rec['l0_lon'])) {
-			echo "\nNo GEO: {$rec['license_id_source']}\n";
+			echo "\nNo GEO: {$rec['source_license_id']}\n";
 			continue;
 		}
 
 		if (empty($rec['l1_lat']) || empty($rec['l1_lon'])) {
-			echo "\nNo GEO: {$rec['license_id_target']}\n";
+			echo "\nNo GEO: {$rec['target_license_id']}\n";
 			continue;
 		}
 
-		$sql = 'SELECT * FROM b2b_path WHERE license_id_source = :l0 AND license_id_target = :l1';
+		$sql = 'SELECT * FROM b2b_path WHERE source_license_id = :l0 AND target_license_id = :l1';
 		$arg = [
-			':l0' => $rec['license_id_source'],
-			':l1' => $rec['license_id_target'],
+			':l0' => $rec['source_license_id'],
+			':l1' => $rec['target_license_id'],
 		];
 		$chk = $dbc->fetchRow($sql, $arg);
 		if (empty($chk['meta'])) {
@@ -147,9 +147,9 @@ SQL;
 			$m = $leg['distance']['value']; // meters
 			$s = $leg['duration']['value']; // seconds
 
-			$dbc->query('INSERT INTO b2b_path (license_id_source, license_id_target, meta) VALUES (:l0, :l1, :m0)', [
-				':l0' => $rec['license_id_source'],
-				':l1' => $rec['license_id_target'],
+			$dbc->query('INSERT INTO b2b_path (source_license_id, target_license_id, meta) VALUES (:l0, :l1, :m0)', [
+				':l0' => $rec['source_license_id'],
+				':l1' => $rec['target_license_id'],
 				':m0' => json_encode([
 					'distance' => [
 						'm' => $m,
@@ -188,14 +188,14 @@ function _update_b2b_revenue($dbc)
 {
 	echo "_update_b2b_revenue()\n";
 
-	$sql = 'SELECT DISTINCT license_id_source AS id FROM b2b_sale';
+	$sql = 'SELECT DISTINCT source_license_id AS id FROM b2b_sale';
 	$res_license = $dbc->fetchAll($sql);
 	foreach ($res_license as $L) {
 
 		$sql = <<<SQL
 SELECT sum(full_price) AS rev, date_trunc('month', execute_at) AS execute_at
 FROM b2b_sale
-WHERE license_id_source = :l0 AND stat IN ('in-transit', 'open', 'ready-for-pickup', 'received')
+WHERE source_license_id = :l0 AND stat IN ('in-transit', 'open', 'ready-for-pickup', 'received')
 GROUP BY 2
 ORDER BY 2
 SQL;
@@ -211,7 +211,7 @@ SQL;
 		$sql = <<<SQL
 SELECT sum(full_price) AS rev, date_trunc('month', execute_at) AS execute_at
 FROM b2b_sale
-WHERE license_id_source = :l0 AND stat LIKE 'VOID%'
+WHERE source_license_id = :l0 AND stat LIKE 'VOID%'
 GROUP BY 2
 ORDER BY 2
 SQL;
@@ -227,7 +227,7 @@ SQL;
 		$sql = <<<SQL
 SELECT sum(full_price) AS rev, date_trunc('month', execute_at) AS execute_at
 FROM b2b_sale
-WHERE license_id_source = :l0
+WHERE source_license_id = :l0
 GROUP BY 2
 ORDER BY 2
 SQL;

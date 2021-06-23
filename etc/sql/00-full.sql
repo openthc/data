@@ -22,8 +22,8 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE public.b2b_path (
-    license_id_source character varying(26) NOT NULL,
-    license_id_target character varying(26) NOT NULL,
+    source_license_id character varying(26) NOT NULL,
+    target_license_id character varying(26) NOT NULL,
     meta jsonb,
     pair character varying(64)
 );
@@ -37,8 +37,8 @@ ALTER TABLE public.b2b_path OWNER TO openthc;
 
 CREATE TABLE public.b2b_sale (
     id character varying(26) NOT NULL,
-    license_id_source character varying(26),
-    license_id_target character varying(26),
+    source_license_id character varying(26),
+    target_license_id character varying(26),
     execute_at timestamp with time zone,
     stat character varying(32),
     full_price numeric(12,2),
@@ -113,11 +113,11 @@ ALTER TABLE public.product OWNER TO openthc;
 CREATE VIEW public.b2b_sale_item_full AS
  SELECT b2b_sale.id,
     b2b_sale.execute_at,
-    b2b_sale.license_id_source,
-    b2b_sale.license_id_target,
+    b2b_sale.source_license_id,
+    b2b_sale.target_license_id,
     b2b_sale.stat,
-    b2b_sale.full_price AS sale_full_price,
-    b2b_sale.unit_price AS sale_unit_price,
+    b2b_sale_item.full_price AS sale_full_price,
+    b2b_sale_item.unit_price AS sale_unit_price,
     b2b_sale_item.lot_id_source,
     b2b_sale_item.lot_id_target,
     b2b_sale_item.full_price AS sale_item_full_price,
@@ -448,7 +448,7 @@ ALTER TABLE ONLY public.license_revenue ALTER COLUMN id SET DEFAULT nextval('pub
 --
 
 ALTER TABLE ONLY public.b2b_path
-    ADD CONSTRAINT b2b_path_pkey PRIMARY KEY (license_id_source, license_id_target);
+    ADD CONSTRAINT b2b_path_pkey PRIMARY KEY (source_license_id, target_license_id);
 
 
 --
