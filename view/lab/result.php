@@ -18,3 +18,18 @@ echo '<section>';
 echo '<h2>Linked Lots</h2>';
 echo '<p><strong>todo</strong></p>';
 echo '</section>';
+
+$dbc = _dbc();
+$sql = <<<SQL
+SELECT *
+FROM lot_lab_result_retail_cache
+WHERE lab_result_id = :lr0
+ORDER BY created_at DESC, lab_result_id DESC
+LIMIT 100
+SQL;
+$res = $dbc->fetchAll($sql, [ ':lr0' => $Lab_Result['id'] ]);
+echo '<table>';
+foreach ($res as $rec) {
+	printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $rec['id'], $rec['created_at'], $rec['license_retail']);
+}
+echo '</table>';
