@@ -156,3 +156,10 @@ This should enable a bunch of stuff I'll add to the document later today
 Chocolate vs Cookies
 Regions
 Strains on Sales
+
+
+## Business Intelligence Tools
+
+* [eBay TSV Tools](https://github.com/eBay/tsv-utils)
+* Metabase
+* [Poli](https://news.ycombinator.com/item?id=20507592)

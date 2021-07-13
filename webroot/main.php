@@ -116,6 +116,24 @@ $app->get('/lab/potency', function($REQ, $RES) {
 
 });
 
+$app->get('/lab/result/{id}', function($REQ, $RES, $ARG) {
+
+	$c = $this; // Container
+	$v = new class($c) extends \OpenTHC\Controller\Base {};
+
+	$_ENV['h1'] = $_ENV['title'] = sprintf('Lab Result :: Detail :: %s', $ARG['id']);
+
+	$dbc = _dbc();
+
+	$d = [
+		'Page' => [ 'title' => $_ENV['title'] ],
+		'Lab_Result' => $dbc->fetchRow('SELECT * FROM lab_result WHERE id = :lr0', [ ':lr0' => $ARG['id'] ] )
+	];
+
+	return $RES->write( $v->render('lab/result.php', $d) );
+
+});
+
 $app->get('/lab/usage', function($REQ, $RES) {
 
 	$c = $this; // Container
