@@ -11,6 +11,7 @@ require_once("$d/boot.php");
 
 $url_origin = $argv[1];
 
+
 // Get "all" pages
 $page_max = 2;
 for ($page_idx=1; $page_idx<=$page_max; $page_idx++) {
@@ -26,12 +27,18 @@ function _box_download_from_page($url_origin)
 	$req = _curl_init($url_origin);
 	$res_body = curl_exec($req);
 	$res_info = curl_getinfo($req);
-	// print_r($res_info);
-	// file_put_contents('box.html', $res_body);
 
-	if (200 != $res_info['http_code']) {
-		echo "Invalid Response from Box\n";
-		exit(1);
+	switch ($res_info['http_code']) {
+		case 200:
+			// Cool
+			break;
+		case 302:
+			echo "Try: {$res_info['redirect_url']}\n";
+			exit(1);
+		default:
+			var_dump($res_info);
+			echo "Invalid Response from Box\n";
+			exit(1);
 	}
 
 	$dom = new DOMDocument('1.0', 'utf-8');
@@ -63,6 +70,7 @@ function _box_download_page_script($dom)
 	}
 }
 
+
 /**
  * Emit Shell code to download all the things
  */
@@ -87,6 +95,7 @@ function _box_download_file_list($json_data)
 		if ('302' == $res_info['http_code']) {
 			$url = $res_info['redirect_url'];
 			$cmd = sprintf('curl %s --remote-name --remote-header-name --silent &', escapeshellarg($url));
+			echo "# Download {$file['name']}\n";
 			echo "$cmd\n";
 		}
 	}
