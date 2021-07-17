@@ -5,20 +5,49 @@
 
 $_ENV['title'] = 'B2B :: Wholesale :: Extract';
 
+echo \App\UI::b2b_tabs();
+
+
 $dbc = _dbc();
 
 
-// Stat
+// Stat Sum of All Dollars for All Deals
 $sql = <<<SQL
 SELECT sum(sale_item_full_price) AS c, product_type
 FROM b2b_sale_item_full
-WHERE product_type IN ('infused_cooking_medium', 'food_grade_solvent_concentrate', 'co2_concentrate', 'non-solvent_based_concentrate', 'hydrocarbon_concentrate', 'ethanol_concentrate')
+WHERE
+ product_type IN ('infused_cooking_medium', 'food_grade_solvent_concentrate', 'co2_concentrate', 'non-solvent_based_concentrate', 'hydrocarbon_concentrate', 'ethanol_concentrate')
 GROUP BY 2
 ORDER BY 1 DESC
 SQL;
 $res = _select_via_cache($dbc, $sql, null);
-// var_dump($res);
+$max = array_reduce($res, function($r, $v) {
+	return ($r + $v['c']);
+}, 0);
+?>
+<section>
+<h2>Total Dollars Per Category</h2>
+<div class="chart-wrap" style="height: 64px;">
+<table class="charts-css bar multiple stacked">
+<tbody>
+<tr>
+<?php
+foreach ($res as $rec) {
+	printf('<td style="--size: %0.6f"><span class="tooltip">%s %s</span></td>'
+		, $rec['c'] / $max
+		, number_format($rec['c'])
+		, $rec['product_type']
+	);
+}
+?>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 
+
+<?php
 
 // Data
 $sql = <<<SQL
@@ -29,15 +58,15 @@ SELECT count(id) AS lot_count
 , sum(sale_item_full_price) AS sale_item_full_price_sum
 , product_type
 FROM b2b_sale_item_full
-WHERE product_type IN ('infused_cooking_medium', 'food_grade_solvent_concentrate', 'co2_concentrate', 'non-solvent_based_concentrate', 'hydrocarbon_concentrate', 'ethanol_concentrate')
+WHERE
+ product_type IN ('infused_cooking_medium', 'food_grade_solvent_concentrate', 'co2_concentrate', 'non-solvent_based_concentrate', 'hydrocarbon_concentrate', 'ethanol_concentrate')
 GROUP BY 2, 6
 ORDER BY 2
 SQL;
 
 $res = _select_via_cache($dbc, $sql, null);
-// _res_to_table($res);
-// exit;
 
+$product_type_rank = [];
 $res_middle = [];
 foreach ($res as $rec) {
 
@@ -57,168 +86,186 @@ foreach ($res as $rec) {
 		$res_middle[$d][$t]['sale_item_full_price_sum'] += $rec['sale_item_full_price_sum'];
 	}
 
-	$col_list[$t] = $t;
+	$product_type_rank[$t] = intval($product_type_rank[$t]) + $rec['lot_count'];
 
 }
-// var_dump($res_middle);
-// _res_to_table($res_middle);
-// exit;
+// var_dump($product_type_rank);
+arsort($product_type_rank);
+// var_dump($product_type_rank);
+
+$product_type_list = array_keys($product_type_rank);
+// var_dump($product_type_list);
 
 
-$cht_data = [];
-$cht_data[] = [
-	[ 'label' => 'Date', 'type' => 'date' ],
-];
+// foreach ($res_middle as $dts => $rec_middle) {
 
-$cht_data_rev = [];
-$cht_data_rev[] = [
-	[ 'label' => 'Date', 'type' => 'date' ],
-];
+// 	// $rec = $rec_middle['flower'];
 
-$cht_data_vol = [];
-$cht_data_vol[] = [
-	[ 'label' => 'Date', 'type' => 'date' ],
-];
+// 	$t = strtotime($dts);
+// 	$d = sprintf("Date(%d)", $t * 1000); // Format for JS
 
+// 	$row = [];
+// 	$row_rev = [];
+// 	$row_vol = [];
 
-foreach ($col_list as $k => $v) {
-	$cht_data[0][] = $k;
-	$cht_data_rev[0][] = $k;
-	$cht_data_vol[0][] = $k;
-}
+// 	$row[] = $d;
+// 	$row_rev[] = $d;
+// 	$row_vol[] = $d;
 
-foreach ($res_middle as $dts => $rec_middle) {
+// 	foreach ($col_list as $k => $v) {
+// 		$row[] = floatval($rec_middle[$k]['lot_count']);
+// 		$row_rev[] = floatval($rec_middle[$k]['sale_item_full_price_sum']);
+// 		$row_vol[] = floatval($rec_middle[$k]['qty_rx_sum']);
+// 	}
 
-	// $rec = $rec_middle['flower'];
+// 	$cht_data[] = $row;
+// 	$cht_data_rev[] = $row_rev;
+// 	$cht_data_vol[] = $row_vol;
 
-	$t = strtotime($dts);
-	$d = sprintf("Date(%d)", $t * 1000); // Format for JS
-
-	$row = [];
-	$row_rev = [];
-	$row_vol = [];
-
-	$row[] = $d;
-	$row_rev[] = $d;
-	$row_vol[] = $d;
-
-	foreach ($col_list as $k => $v) {
-		$row[] = floatval($rec_middle[$k]['lot_count']);
-		$row_rev[] = floatval($rec_middle[$k]['sale_item_full_price_sum']);
-		$row_vol[] = floatval($rec_middle[$k]['qty_rx_sum']);
-	}
-
-	$cht_data[] = $row;
-	$cht_data_rev[] = $row_rev;
-	$cht_data_vol[] = $row_vol;
-
-}
+// }
 
 ?>
 
-<style>
-.chart-page h2 {
-	background: #777;
-	color: #fff;
-	margin: 0;
-	padding: 0.125em 0.25em;
+<hr>
+<section>
+<h2>Extract :: Lot Counts Sold per Month</h2>
+<div class="chart-wrap">
+<table class="charts-css column multiple stacked show-labels show-data-on-hover">
+<thead>
+<tr>
+	<th>Date</th>
+	<?php
+	foreach ($product_type_list as $x) {
+		printf('<th scope="col">%s</th>', h($x));
+	}
+	?>
+</tr>
+</thead>
+<tbody>
+<?php
+foreach ($res_middle as $cts => $row) {
+
+	$max = array_reduce($row, function($p, $v) {
+		return $p + $v['lot_count'];
+	}, 0);
+
+	echo '<tr>';
+	printf('<th scope="row">%s</th>', _date('Y-m', $cts));
+	foreach ($product_type_list as $x) {
+		$v = $row[ $x ]['lot_count'] / $max;
+		printf('<td style="--size: %0.6f;"><span class="data">%s</span><span class="tooltip">%s</span></td>'
+			, $v
+			, $row[ $x ]['lot_count']
+			, $x
+		);
+	}
+	echo '</tr>';
 }
-.chart-fill {
-	background: #eee;
-	border: 1px solid #333;
-}
-</style>
+?>
+</tbody>
+</table>
+</div>
+</section>
 
-<div class="container-fluid chart-page">
-
-<h1><?= $_ENV['title'] ?></h1>
-
-<?= \App\UI::b2b_tabs(); ?>
-
-<h2>Extract :: Dollars</h2>
-<div class="chart-fill" id="chart-extract-rev" style="height:360px; width:100%;"></div>
 
 <hr>
+<section>
+<h2>Extract :: Dollars Per Month</h2>
+<div class="chart-wrap">
+<table class="charts-css column multiple stacked show-labels">
+<thead>
+<tr>
+	<th>Date</th>
+	<?php
+	foreach ($product_type_list as $x) {
+		printf('<th scope="col">%s</th>', h($x));
+	}
+	?>
+</tr>
+</thead>
+<tbody>
+<?php
+foreach ($res_middle as $cts => $row) {
 
-<h2>Extract :: Lot Counts</h2>
-<div class="chart-fill" id="chart-extract-lot-count" style="height:360px; width:100%;"></div>
+	$max = array_reduce($row, function($p, $v) {
+		return $p + $v['sale_item_full_price_sum'];
+	}, 0);
+
+	echo '<tr>';
+	printf('<th scope="row">%s</th>', _date('Y-m', $cts));
+	foreach ($product_type_list as $x) {
+		$v = $row[ $x ]['sale_item_full_price_sum'] / $max;
+		printf('<td style="--size: %0.6f;"><span class="tooltip">$%s %s</span></td>'
+			, $v
+			, number_format($row[ $x ]['sale_item_full_price_sum'])
+			, $x
+		);
+	}
+	echo '</tr>';
+}
+?>
+</tbody>
+</table>
+</div>
+</section>
 
 <hr>
+<section>
+<h2>Extract :: Dollars per Gram per Month</h2>
+<div class="chart-wrap">
+<table class="charts-css column multiple stacked show-labels">
+<thead>
+<tr>
+	<th>Date</th>
+	<?php
+	foreach ($product_type_list as $x) {
+		printf('<th scope="col">%s</th>', h($x));
+	}
+	?>
+</tr>
+</thead>
+<tbody>
+<?php
+$row_prev = [];
+foreach ($res_middle as $cts => $row) {
+
+	$max = array_reduce($row, function($p, $v) {
+		return $p + ($v['sale_item_full_price_sum'] / $v['qty_tx_sum']);
+	}, 0);
+
+	echo '<tr>';
+	printf('<th scope="row">%s</th>', _date('Y-m', $cts));
+	foreach ($product_type_list as $x) {
+
+		$row[$x]['qty'] = floatval($row[ $x ]['qty_tx_sum']);
+		$row[$x]['ppg'] = 0;
+		if ($row[$x]['qty']) {
+			$row[$x]['ppg'] = $row[ $x ]['sale_item_full_price_sum'] / $row[$x]['qty'];
+		}
+
+		$row[$x]['size'] = $row[$x]['ppg'] / $max;
+		printf('<td style="--start: %0.4f; --size: %0.6f;"><span class="tooltip">$%s %s</span></td>'
+			, $row_prev[$x]['size']
+			, $row[$x]['size']
+			, number_format($row[$x]['ppg'], 2)
+			, $x
+		);
+	}
+	echo '</tr>';
+
+	$row_prev = $row;
+}
+?>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- <hr>
+<div class="chart-wrap" id="chart-extract-lot-count"></div> -->
+<!-- <hr>
 
 <h2>Extract :: Weight / Volume</h2>
-<div class="chart-fill" id="chart-extract-vol" style="height:360px; width:100%;"></div>
+<div class="chart-wrap" id="chart-extract-vol"></div> -->
 
 </div>
-
-<script>
-$(function() {
-google.charts.load("current", {packages:[ 'corechart', 'line' ]});
-google.charts.setOnLoadCallback(function() {
-
-	var cht_opts = {
-		axisTitlesPosition: 'none',
-		chartArea: {
-			top: 8,
-			right: 8,
-			bottom: 32,
-			left: 8
-		},
-		// fontName: 'sans-serif',
-		fontSize: '22px',
-		legend: {
-			position: 'none',
-		},
-		lineWidth: 4,
-		series: {
-			0: {
-				axis: 'Lots',
-				targetAxisIndex: 1,
-			},
-			// 1: {
-			// 	axis: 'Lots',
-			// 	targetAxisIndex: 0,
-			// },
-		},
-		vAxis: {
-			textPosition: 'in',
-		},
-		// bar: { groupWidth: "100%"},
-		isStacked: 'percent',
-	};
-
-	var node_lot = document.getElementById('chart-extract-lot-count');
-	var data_lot = google.visualization.arrayToDataTable(<?= json_encode($cht_data, JSON_NUMERIC_CHECK) ?>);
-	// var C = new google.visualization.LineChart(node_lot);
-	// cht_opts = google.charts.Line.convertOptions(cht_opts)
-	// var C = new google.charts.Line(div);
-	// C.draw(data_lot, cht_opts);
-
-	var C = new google.visualization.ColumnChart(node_lot);
-	C.draw(data_lot, cht_opts);
-
-
-	// Second Chart
-	var avg_node = document.getElementById('chart-extract-rev');
-	var avg_data = google.visualization.arrayToDataTable(<?= json_encode($cht_data_rev, JSON_NUMERIC_CHECK) ?>);
-	cht_opts.series = {
-		0: {
-			targetAxisIndex: 1
-		}
-	};
-	var C1 = new google.visualization.LineChart(avg_node);
-	C1.draw(avg_data, cht_opts);
-
-	// Second Chart
-	var node_vol = document.getElementById('chart-extract-vol');
-	var data_vol = google.visualization.arrayToDataTable(<?= json_encode($cht_data_vol, JSON_NUMERIC_CHECK) ?>);
-	cht_opts.series = {
-		0: {
-			targetAxisIndex: 1
-		}
-	};
-	var C2 = new google.visualization.LineChart(node_vol);
-	C2.draw(data_vol, cht_opts);
-
-});
-});
-</script>

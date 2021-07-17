@@ -65,193 +65,20 @@ $echo_session_flash = function()
 <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.openthc.com/bootstrap/4.4.1/bootstrap.css" integrity="sha256-L/W5Wfqfa0sdBNIKN9cG6QA5F2qx4qICmU2VgLruv9Y=">
 <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/charts.css@0.9.0/dist/charts.min.css">
 <!-- <link rel="stylesheet" crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/css/dataTables.bootstrap4.min.css" integrity="sha256-F+DaKAClQut87heMIC6oThARMuWne8+WzxIDT7jXuPA="> -->
-<!-- <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.openthc.com/css/www/0.0.1/www.css"> -->
+<link rel="stylesheet" href="https://cdn.openthc.com/css/www/0.0.2/main.css" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.openthc.com/css/www/0.0.2/menu-tlr.css" crossorigin="anonymous">
 <title><?= h(strip_tags($_ENV['title'])) ?></title>
 <style>
-:root {
-	--menu0-h: 64px;
-	--menu1-open-w: 240px;
-	--menu1-mini-w: 48px;
-	--menu2-w: 48px;
+h1, h2, h3, h4, h5, h6 {
+	margin-top: 0;
+	margin-bottom: 0.50rem;
 }
-* {
-	box-sizing: border-box;
-}
-body {
-	height: 100vh;
-	margin: 0;
-	overflow: hidden;
-	padding: 0;
-	width: 100%;
-}
-/* Body */
-div.body-wrap {
-	position: relative;
-	min-height: 100%;
-}
-/* Body Header */
-header.body-head {
-	height: var(--menu0-h);
-	padding: 8px;
-}
-header.body-head > nav {
-	display: flex;
-	justify-content: space-between;
-	position: relative;
-}
-header.body-head nav div.item {
-	height: 48px;
-	vertical-align: middle;
-	white-space: nowrap;
-}
-/* Body Header Logo */
-header.body-head nav div.logo {
-	display: flex; flex: 1 0 auto;
-	min-width: 120px;
-}
-header.body-head nav div.find {
-	display: flex;
-	flex: 1 1 100%;
-	justify-content: flex-start;
-}
-/* Body Header Tool */
-header.body-head nav div.tool {
-	display: flex;
-	flex: 0 0 auto;
-	justify-content: flex-end;
-}
-
-div.main-wrap {
-	display: flex;
-	width: 100%;
-}
-
-/* Left Menu */
-div.main-wrap nav.menu-l {
-	border-right: 2px solid #333;
-	display: flex;
-	flex-direction: column;
-	flex-flow: column nowrap;
-	flex-shrink: 0;
-	height: calc(100vh - var(--menu0-h));
-	overflow-x: hidden;
-	overflow-y: auto;
-	width: var(--menu1-open-w);
-	position: relative;
-}
-div.main-wrap nav.menu-l a {
-	color: #000000;
-	font-weight: bold;
-}
-div.main-wrap nav.menu-l button {
-	display: block;
-	width: 100%;
-}
-/* Menu Two(Left) Item */
-div.main-wrap nav.menu-l div.item {
-	display: block;
-	margin: 0;
-	/* padding: 4px; */
-	width: 100%;
-}
-div.main-wrap nav.menu-l a.nav-link {
-	align-items: center;
-	display: flex;
-	padding: 0.50rem;
-}
-div.main-wrap nav.menu-l a.nav-link div.nav-link-icon {
-	flex: 0 0 2rem;
-	margin: 0 auto;
-	max-width: 2rem;
-	text-align: center;
-}
-div.main-wrap nav.menu-l a.nav-link div.nav-link-text {
-	flex: 1 1 auto;
-}
-div.main-wrap nav.menu-l div.item a:hover {
-	background: #069420;
-}
-div.main-wrap nav.menu-l div.item a.active {
-	background: #06942099;
-}
-
-/* Menu Two - open, mini, shut */
-div.main-wrap #menu-left.mini {
-	max-width:  var(--menu1-mini-w);
-}
-/* Hide Text in Mini Mode */
-div.main-wrap nav.menu-l.mini a.nav-link div.nav-link-text {
-	display: none;
-}
-div.main-wrap #menu-left.open {
-	width: var(--menu1-open-w);
-}
-div.main-wrap #menu-left.shut {
-	overflow: hidden;
-	width: 0;
-}
-
-/* Main Wrap */
-div.main-wrap div.main-body {
-	overflow: hidden;
-	width: 100%;
-}
-/* Main Head */
-div.main-wrap div.main-body header.main-head {
-	background: #666;
-	display: flex;
-	flex-direction: row;
-	height: 48px;
-	justify-content: space-between;
-	padding: 2px;
-}
-/* Main Data */
-div.main-wrap div.main-body div.main-data {
-	height: calc(100vh - var(--menu0-h) - 48px);
-	overflow-y: auto;
-}
-/* Menu Right */
-div.main-wrap nav.menu-r {
-	align-items: center;
-	border-left: 2px solid #333;
-	/* display: none; */
-	/* display: flex; */
-	/* flex-direction: column; */
-	width: var(--menu2-w);
-	/* overflow: hidden; */
-}
-/* Menu Right Fly Out */
-div.main-wrap nav.menu-r div.item {
-	padding: 0.25em;
-	position: relative;
-}
-/* div.main-wrap nav.menu-r div.item h5 a {
-	display: block;
-} */
-div.main-wrap nav.menu-r div.item div.drawer-knob {
-	text-align: center;
-}
-div.main-wrap nav.menu-r div.item div.drawer {
-	background: #069420;
-	border-left: 4px solid #202020;
-	padding: 0.25em;
-	display: none;
-	width: 15em;
-}
-div.main-wrap nav.menu-r div.item:hover div.drawer {
-	position: absolute;
-	display: block;
-	top: 0;
-	right: 0;
-	/* right: calc(15rem - var(--menu2-w)); */
-}
-div.main-wrap nav.menu-r div.item:hover div.drawer a {
-	display: block;
-	text-align: left;
-	width: 100%;
-}
-div.main-wrap nav.menu-r div.item:hover div.drawer a:active {
-	color: #fff;
+.chart-wrap {
+	background: #e0e0e0;
+	border: 1px solid #333;
+	border-radius: 0.25rem;
+	height: 420px;
+	width:100%;
 }
 </style>
 </head>
@@ -262,11 +89,6 @@ div.main-wrap nav.menu-r div.item:hover div.drawer a:active {
 		<div class="item logo">
 			<div style="font-size: 32px;">
 				<a class="btn btn-sm" href="/"><img alt="OpenTHC Icon" src="https://cdn.openthc.com/img/icon/icon-w-32.png"></a>
-			</div>
-			<div>
-				<button class="btn menu-left-mode" data-mode="<?= $_SESSION['_ui']['menu'] ?>" style="height:48px;">
-					<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" role="img" title="Menu Icon"><g stroke="none" stroke-width="1" fill="inherit" fill-rule="evenodd"><g transform="translate(-188.000000, -38.000000)" fill-rule="nonzero" fill="inherit"><g><g><g transform="translate(188.000000, 38.000000)"><path d="M15.5,0 C15.776,0 16,0.224 16,0.5 L16,1.5 C16,1.776 15.776,2 15.5,2 L0.5,2 C0.224,2 0,1.776 0,1.5 L0,0.5 C0,0.224 0.224,0 0.5,0 L15.5,0 Z M15.5,4 C15.776,4 16,4.224 16,4.5 L16,5.5 C16,5.776 15.776,6 15.5,6 L0.5,6 C0.224,6 0,5.776 0,5.5 L0,4.5 C0,4.224 0.224,4 0.5,4 L15.5,4 Z M15.5,8 C15.776,8 16,8.224 16,8.5 L16,9.5 C16,9.776 15.776,10 15.5,10 L0.5,10 C0.224,10 0,9.776 0,9.5 L0,8.5 C0,8.224 0.224,8 0.5,8 L15.5,8 Z"></path></g></g></g></g></g></svg>
-				</button>
 			</div>
 		</div>
 		<div class="item find">
@@ -315,23 +137,22 @@ div.main-wrap nav.menu-r div.item:hover div.drawer a:active {
 	<div class="main-body">
 		<header class="main-head">
 			<div>
-				<button class="btn menu-left-mode" style="height:48px;">
-					<i class="fas fa-bars"></i>
-				</button>
-			</div>
-			<div>
 				<h1><?= $_ENV['h1'] ?></h1>
 			</div>
 		</header>
 		<div class="main-data">
-		<?= $echo_session_flash(); ?>
-		<div class="container-fluid">
-		<?= $this->body; ?>
-		</div>
-
+			<?= $echo_session_flash(); ?>
+			<div class="container-fluid">
+			<?= $this->body; ?>
+			</div>
 		</div>
 	</div>
+	<!-- <nav class="menu2 menu-r"></nav> -->
 </div>
+</div>
+
+<div style="bottom: 0.25rem; left: 0; position: absolute; text-align:center; width: var(--menu1-mini-w);">
+	<button class="btn menu-left-mode"><i class="fas fa-bars"></i></button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js" integrity="sha256-VeNaFBVDhoX3H+gJ37DpT/nTuZTdjYro9yBruHjVmoQ=" crossorigin="anonymous"></script>
@@ -342,14 +163,13 @@ div.main-wrap nav.menu-r div.item:hover div.drawer a:active {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/jquery.dataTables.min.js" integrity="sha256-t5ZQTZsbQi8NxszC10CseKjJ5QeMw5NINtOXQrESGSU=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/dataTables.bootstrap4.min.js" integrity="sha256-hJ44ymhBmRPJKIaKRf3DSX5uiFEZ9xB/qx8cNbJvIMU=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha512-hDWGyh+Iy4Mr9AHOzUP2+Y0iVPn/BwxxaoSleEjH/i1o4EVTF/sh0/A1Syii8PWOae+uPr+T/KHwynoebSuAhw==" crossorigin="anonymous"></script>
-<!-- <script src="https://www.gstatic.com/charts/loader.js"></script> -->
 <script>
 var Clippy;
 $(function() {
 
 	// Menu Toggler
 	$('.menu-left-mode').on('click', function() {
-		debugger;
+
 		var mode0 = document.body.dataset.menuLeftMode || 'open';
 
 		var mode1 = '';

@@ -1,9 +1,9 @@
 <?php
 /**
- *
+ * B2B Sales for Flower Things
  */
 
-$_ENV['title'] = 'B2B :: Wholesale :: Flower';
+$_ENV['h1'] = $_ENV['title'] = 'B2B :: Wholesale :: Flower';
 
 $dbc = _dbc();
 
@@ -16,11 +16,13 @@ SELECT count(id) AS lot_count
 , product_type
 FROM b2b_sale_item_full
 WHERE product_type IN ('flower', 'flower_lots', 'other_material', 'other_material_lots', 'marijuana_mix')
+--  AND stat NOT IN
 GROUP BY 2, 6
 ORDER BY 2
 SQL;
 
 $res = _select_via_cache($dbc, $sql, null);
+
 
 $res_middle = [];
 foreach ($res as $rec) {
@@ -44,176 +46,199 @@ foreach ($res as $rec) {
 	}
 
 }
+?>
 
+<div class="container-fluid">
+<?= \App\UI::b2b_tabs(); ?>
 
-$cht_data_buds = [];
-$cht_data_buds[] = [
-	[ 'label' => 'Date', 'type' => 'date' ],
-	'Lots',
-	'Grams TX',
-	'Grams RX',
-	'Revenue',
-];
+<style>
+.charts-css {
+	height: 420px;
+	max-width: 1920px;
+	margin: 0 auto;
+}
+</style>
 
-$cht_data_buds_avg = [];
-$cht_data_buds_avg[] = [
-	[ 'label' => 'Date', 'type' => 'date' ],
-	'Grams / Lot',
-	'Dollars / Gram',
-];
+<h2>Grade A :: Wholesale <small>flower / flower_lots</small></h2>
+<p>Lot Counts, Sent and Received Quantities
+<table class="charts-css column multiple show-labels show-data-axes hide-data">
+<thead>
+<tr>
+	<th>Date</th>
+	<th scope="col">Lot</th>
+	<th scope="col">TX</th>
+	<th scope="col">RX</th>
+	<th scope="col">$$</th>
+</tr>
+</thead>
+<tbody>
+<?php
+$rec_prev = [];
+$prev_0 = 0;
+$prev_1 = 0;
+$prev_2 = 0;
+$prev_3 = 0;
+foreach ($res_middle as $rec_middle) {
 
-$cht_data_grade_b_raw = [];
-$cht_data_grade_b_raw[] = [
-	[ 'label' => 'Date', 'type' => 'date' ],
-	'Lots',
-	'Grams TX',
-	'Grams RX',
-	'Revenue',
-];
+	// var_dump($rec_middle); exit;
+	$curr_0 = $rec_middle['flower']['lot_count'] / 100000;
+	$curr_1 = $rec_middle['flower']['qty_tx_sum'] / 1000000000;
+	$curr_2 = $rec_middle['flower']['qty_rx_sum'] / 1000000000;
+	$curr_3 = $rec_middle['flower']['sale_item_full_price_sum'] / 100000000;
 
-$cht_data_grade_b_avg = [];
-$cht_data_grade_b_avg[] = [
-	[ 'label' => 'Date', 'type' => 'date' ],
-	'Grams / Lot',
-	'Dollars / Gram',
-];
+	$tool0 = sprintf('%0.1f k Lots', $rec_middle['flower']['lot_count'] / 1000);
+	$tool1 = sprintf('%0.1f Mg Outgoing', $rec_middle['flower']['qty_tx_sum'] / 1000000);
+	$tool2 = sprintf('%0.1f Mg Incoming', $rec_middle['flower']['qty_rx_sum'] / 1000000);
+	$tool3 = sprintf('%s USD', number_format($rec_middle['flower']['sale_item_full_price_sum']));
 
+	echo '<tr>';
+	printf('<th>%s</th>', _date('m/Y', $rec_middle['flower']['execute_at']));
+	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%d</span><span class="tooltip">%s</span></td>', $prev_0, $curr_0, $rec_middle['flower']['lot_count'], $tool0);
+	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%d</span><span class="tooltip">%s</span></td>', $prev_1, $curr_1, $rec_middle['flower']['qty_tx_sum'], $tool1);
+	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%d</span><span class="tooltip">%s</span></td>', $prev_2, $curr_2, $rec_middle['flower']['qty_rx_sum'], $tool2);
+	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%d</span><span class="tooltip">%s</span></td>', $prev_3, $curr_3, $rec_middle['flower']['sale_item_full_price_sum'], $tool3);
+	echo '</tr>';
 
+	$prev_0 = $curr_0;
+	$prev_1 = $curr_1;
+	$prev_2 = $curr_2;
+	$prev_3 = $curr_3;
+
+}
+?>
+</tbody>
+</table>
+
+<h2>Grade A :: Wholesale Averages</h2>
+<table class="charts-css column multiple show-labels show-data-axes hide-data">
+<thead>
+	<tr>
+		<th>Date</th>
+		<th>Grams/Lot</th>
+		<th>Dollars/Gram</th>
+</tr>
+</thead>
+<tbody>
+<?php
+$prev0 = 0;
+$prev1 = 0;
 foreach ($res_middle as $rec_middle) {
 
 	$rec = $rec_middle['flower'];
 
-	$t = strtotime($rec['execute_at']);
-	$d = sprintf("Date(%d)", $t * 1000); // Format for JS
+	$data0 = $rec['qty_rx_sum'] / $rec['lot_count'];
+	$data1 = $rec['sale_item_full_price_sum'] / $rec['qty_rx_sum'];
 
-	$cht_data_buds[] = [
-		$d,
-		$rec['lot_count'],
-		floatval($rec['qty_tx_sum']),
-		floatval($rec['qty_rx_sum']),
-		floatval($rec['sale_item_full_price_sum']),
-	];
+	$size0 = $data0 / 10000;
+	$size1 = $data1 / 10;
 
-	$cht_data_buds_avg[] = [
-		$d,
-		floatval($rec['qty_rx_sum'] / $rec['lot_count']),
-		floatval($rec['sale_item_full_price_sum'] / $rec['qty_rx_sum'])
-	];
+	$tool0 = sprintf('%0.2f Grams per Lot', $data0);
+	$tool1 = sprintf('%0.3f Dollars per Gram', $data1);
 
+	echo '<tr>';
+	printf('<th>%s</th>', _date('m/Y', $rec_middle['flower']['execute_at']));
+	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%f</span><span class="tooltip">%s</span></td>', $prev0, $size0, $data0, $tool0);
+	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%f</span><span class="tooltip">%s</span></td>', $prev1, $size1, $data1, $tool1);
+	echo '</tr>';
 
-	$rec = $rec_middle['other_material'];
-
-	// $t = strtotime($rec['execute_at']);
-	// $d = sprintf("Date(%d)", $t * 1000); // Format for JS
-	$cht_data_grade_b_raw[] = [
-		$d,
-		$rec['lot_count'],
-		floatval($rec['qty_tx_sum']),
-		floatval($rec['qty_rx_sum']),
-		floatval($rec['sale_item_full_price_sum']),
-	];
-
-	if ($rec['lot_count'] > 0) {
-		$cht_data_grade_b_avg[] = [
-			$d,
-			floatval($rec['qty_rx_sum'] / $rec['lot_count']),
-			floatval($rec['sale_item_full_price_sum'] / $rec['qty_rx_sum'])
-		];
-	} else {
-		$cht_data_grade_b_avg[] = [ $d, 0, 0 ];
-	}
+	$prev0 = $size0;
+	$prev1 = $size1;
 
 }
-
 ?>
+</tbody>
+</table>
 
-<div class="container-fluid">
-<h1><?= $_ENV['title'] ?></h1>
-<?= \App\UI::b2b_tabs(); ?>
-
-<h2>Grade A :: Wholesale <small>flower / flower_lots</small></h2>
-<div id="chart-flower" style="height:360px; width:100%;"></div>
-
-<hr>
-
-<h2>Grade A :: Wholesale Averages</h2>
-<div id="chart-flower-avg" style="height:360px; width:100%;"></div>
 
 <hr>
 
 <h2>Grade B :: Wholesale <small>other_material / other_material_lots / marijuana_mix</h2>
-<div id="chart-grade-b-raw" style="height:360px; width:100%;"></div>
+<table class="charts-css column multiple show-labels show-data-axes hide-data">
+<thead>
+	<tr>
+		<th>Date</th>
+		<th>Grams/Lot</th>
+		<th>Dollars/Gram</th>
+</tr>
+</thead>
+<tbody>
+<?php
+$prev_0 = 0;
+$prev_1 = 0;
+$prev_2 = 0;
+$prev_3 = 0;
+foreach ($res_middle as $rec_middle) {
+
+	$rec = $rec_middle['other_material'];
+
+	// var_dump($rec_middle); exit;
+	$curr_0 = $rec['lot_count'] / 100000 * 2;
+	$curr_1 = $rec['qty_tx_sum'] / 1000000000 * 2;
+	$curr_2 = $rec['qty_rx_sum'] / 1000000000 * 2;
+	$curr_3 = $rec['sale_item_full_price_sum'] / 100000000 * 2;
+
+	$tool0 = sprintf('%0.1f k Lots', $rec['lot_count'] / 1000);
+	$tool1 = sprintf('%0.1f Mg Outgoing', $rec['qty_tx_sum'] / 1000000);
+	$tool2 = sprintf('%0.1f Mg Incoming', $rec['qty_rx_sum'] / 1000000);
+	$tool3 = sprintf('%s USD', number_format($rec['sale_item_full_price_sum']));
+
+	echo '<tr>';
+	printf('<th>%s</th>', _date('m/Y', $rec['execute_at']));
+	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%d</span><span class="tooltip">%s</span></td>', $prev_0, $curr_0, $rec['lot_count'], $tool0);
+	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%d</span><span class="tooltip">%s</span></td>', $prev_1, $curr_1, $rec['qty_tx_sum'], $tool1);
+	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%d</span><span class="tooltip">%s</span></td>', $prev_2, $curr_2, $rec['qty_rx_sum'], $tool2);
+	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%d</span><span class="tooltip">%s</span></td>', $prev_3, $curr_3, $rec['sale_item_full_price_sum'], $tool3);
+	echo '</tr>';
+
+	$prev_0 = $curr_0;
+	$prev_1 = $curr_1;
+	$prev_2 = $curr_2;
+	$prev_3 = $curr_3;
+
+}
+
+?>
+</tbody>
+</table>
 
 <hr>
 
 <h2>Grade B :: Wholesale Averages</h2>
-<div id="chart-grade-b-avg" style="height:360px; width:100%;"></div>
+<table class="charts-css column multiple show-labels show-data-axes hide-data">
+<thead>
+	<tr>
+		<th>Date</th>
+		<th>Grams/Lot</th>
+		<th>Dollars/Gram</th>
+</tr>
+</thead>
+<tbody>
+<?php
+$prev0 = 0;
+$prev1 = 0;
+foreach ($res_middle as $rec_middle) {
 
-</div>
+	$rec = $rec_middle['other_material'];
 
-<script>
-$(function() {
-google.charts.load("current", {packages:[ 'corechart', 'line' ]});
-google.charts.setOnLoadCallback(function() {
+	$data0 = $rec['qty_rx_sum'] / $rec['lot_count'];
+	$data1 = $rec['sale_item_full_price_sum'] / $rec['qty_rx_sum'];
 
-	var cht_opts = {
-		axisTitlesPosition: 'none',
-		chartArea: {
-			top: 16,
-			right: 8,
-			bottom: 32,
-			left: 8
-		},
-		// fontName: 'sans-serif',
-		fontSize: '22px',
-		legend: {
-			position: 'none',
-		},
-		lineWidth: 4,
-		series: {
-			0: {
-				axis: 'Lots',
-				targetAxisIndex: 1,
-			},
-			// 1: {
-			// 	axis: 'Lots',
-			// 	targetAxisIndex: 0,
-			// },
-		},
-		vAxis: {
-			textPosition: 'in',
-		}
-	};
+	$size0 = $data0 / 10000;
+	$size1 = $data1 / 10;
 
-	var data = google.visualization.arrayToDataTable(<?= json_encode($cht_data_buds, JSON_NUMERIC_CHECK) ?>);
-	var div = document.getElementById('chart-flower');
-	var C = new google.visualization.LineChart(div);
-	// cht_opts = google.charts.Line.convertOptions(cht_opts)
-	// var C = new google.charts.Line(div);
-	C.draw(data, cht_opts);
+	$tool0 = sprintf('%0.2f Grams per Lot', $data0);
+	$tool1 = sprintf('%0.3f Dollars per Gram', $data1);
 
-	// Second Chart
-	var avg_node = document.getElementById('chart-flower-avg');
-	var avg_data = google.visualization.arrayToDataTable(<?= json_encode($cht_data_buds_avg, JSON_NUMERIC_CHECK) ?>);
-	cht_opts.series = {
-		0: {
-			targetAxisIndex: 1
-		}
-	};
-	var C1 = new google.visualization.LineChart(avg_node);
-	C1.draw(avg_data, cht_opts);
+	echo '<tr>';
+	printf('<th>%s</th>', _date('m/Y', $rec_middle['flower']['execute_at']));
+	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%f</span><span class="tooltip">%s</span></td>', $prev0, $size0, $data0, $tool0);
+	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%f</span><span class="tooltip">%s</span></td>', $prev1, $size1, $data1, $tool1);
+	echo '</tr>';
 
-	// Third Chart
-	var grade_b_raw_node = document.getElementById('chart-grade-b-raw');
-	var grade_b_raw_data = google.visualization.arrayToDataTable(<?= json_encode($cht_data_grade_b_raw, JSON_NUMERIC_CHECK) ?>);
-	var C2 = new google.visualization.LineChart(grade_b_raw_node);
-	C2.draw(grade_b_raw_data, cht_opts);
+	$prev0 = $size0;
+	$prev1 = $size1;
 
-	var grade_b_avg_node = document.getElementById('chart-grade-b-avg');
-	var grade_b_avg_data = google.visualization.arrayToDataTable(<?= json_encode($cht_data_grade_b_avg, JSON_NUMERIC_CHECK) ?>);
-	var C3 = new google.visualization.LineChart(grade_b_avg_node);
-	C3.draw(grade_b_avg_data, cht_opts);
-
-});
-});
-</script>
+}
+?>
+</tbody>
+</table>
