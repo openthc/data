@@ -136,7 +136,7 @@ foreach ($res_middle as $rec_middle) {
 	$tool1 = sprintf('%0.3f Dollars per Gram', $data1);
 
 	echo '<tr>';
-	printf('<th>%s</th>', _date('m/Y', $rec_middle['flower']['execute_at']));
+	printf('<th>%s</th>', _date('m/y', $rec_middle['flower']['execute_at']));
 	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%f</span><span class="tooltip">%s</span></td>', $prev0, $size0, $data0, $tool0);
 	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%f</span><span class="tooltip">%s</span></td>', $prev1, $size1, $data1, $tool1);
 	echo '</tr>';
@@ -183,7 +183,7 @@ foreach ($res_middle as $rec_middle) {
 	$tool3 = sprintf('%s USD', number_format($rec['sale_item_full_price_sum']));
 
 	echo '<tr>';
-	printf('<th>%s</th>', _date('m/Y', $rec['execute_at']));
+	printf('<th>%s</th>', _date('m/y', $rec['execute_at']));
 	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%d</span><span class="tooltip">%s</span></td>', $prev_0, $curr_0, $rec['lot_count'], $tool0);
 	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%d</span><span class="tooltip">%s</span></td>', $prev_1, $curr_1, $rec['qty_tx_sum'], $tool1);
 	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%d</span><span class="tooltip">%s</span></td>', $prev_2, $curr_2, $rec['qty_rx_sum'], $tool2);
@@ -230,7 +230,7 @@ foreach ($res_middle as $rec_middle) {
 	$tool1 = sprintf('%0.3f Dollars per Gram', $data1);
 
 	echo '<tr>';
-	printf('<th>%s</th>', _date('m/Y', $rec_middle['flower']['execute_at']));
+	printf('<th>%s</th>', _date('m/y', $rec_middle['flower']['execute_at']));
 	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%f</span><span class="tooltip">%s</span></td>', $prev0, $size0, $data0, $tool0);
 	printf('<td style="--start:%0.8f; --size:%0.8f;"><span class="data">%f</span><span class="tooltip">%s</span></td>', $prev1, $size1, $data1, $tool1);
 	echo '</tr>';

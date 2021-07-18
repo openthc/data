@@ -4,6 +4,7 @@
  */
 
 $_ENV['title'] = 'B2B :: Wholesale :: Extract';
+$_ENV['h1'] = $_ENV['title'];
 
 echo \App\UI::b2b_tabs();
 
@@ -48,8 +49,9 @@ foreach ($res as $rec) {
 
 
 <?php
-
-// Data
+/**
+ * Data
+ */
 $sql = <<<SQL
 SELECT count(id) AS lot_count
 , date_trunc('month', execute_at) AS execute_at
@@ -150,7 +152,7 @@ foreach ($res_middle as $cts => $row) {
 	}, 0);
 
 	echo '<tr>';
-	printf('<th scope="row">%s</th>', _date('Y-m', $cts));
+	printf('<th scope="row">%s</th>', _date('m/y', $cts));
 	foreach ($product_type_list as $x) {
 		$v = $row[ $x ]['lot_count'] / $max;
 		printf('<td style="--size: %0.6f;"><span class="data">%s</span><span class="tooltip">%s</span></td>'
@@ -192,7 +194,7 @@ foreach ($res_middle as $cts => $row) {
 	}, 0);
 
 	echo '<tr>';
-	printf('<th scope="row">%s</th>', _date('Y-m', $cts));
+	printf('<th scope="row">%s</th>', _date('m/y', $cts));
 	foreach ($product_type_list as $x) {
 		$v = $row[ $x ]['sale_item_full_price_sum'] / $max;
 		printf('<td style="--size: %0.6f;"><span class="tooltip">$%s %s</span></td>'
@@ -234,7 +236,7 @@ foreach ($res_middle as $cts => $row) {
 	}, 0);
 
 	echo '<tr>';
-	printf('<th scope="row">%s</th>', _date('Y-m', $cts));
+	printf('<th scope="row">%s</th>', _date('m/y', $cts));
 	foreach ($product_type_list as $x) {
 
 		$row[$x]['qty'] = floatval($row[ $x ]['qty_tx_sum']);
