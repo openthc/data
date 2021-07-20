@@ -13,7 +13,7 @@ SELECT count(b2b_sale.id) AS c
 , license.name AS license_name
 FROM b2b_sale
 JOIN license ON b2b_sale.target_license_id = license.id
-WHERE b2b_sale.source_license_id = ? AND b2b_sale.stat IN ('in-transit', 'ready-for-pickup', 'received')
+WHERE b2b_sale.source_license_id = ? AND b2b_sale.stat IN ('open', 'ready-for-pickup', 'in-transit', 'received')
 -- AND execute_at >= now() - '12 months'::interval
 AND full_price > 0
 GROUP BY date_trunc('month', execute_at), license.id, license.name

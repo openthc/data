@@ -195,7 +195,7 @@ function _update_b2b_revenue($dbc)
 		$sql = <<<SQL
 SELECT sum(full_price) AS rev, date_trunc('month', execute_at) AS execute_at
 FROM b2b_sale
-WHERE source_license_id = :l0 AND stat IN ('in-transit', 'open', 'ready-for-pickup', 'received')
+WHERE source_license_id = :l0 AND stat IN ('open', 'ready-for-pickup', 'in-transit', 'received')
 GROUP BY 2
 ORDER BY 2
 SQL;

@@ -24,14 +24,17 @@ SELECT count(id) AS c
 , date_trunc('month', execute_at) AS mon
 , sum(full_price) AS rev
 FROM b2b_sale
-WHERE source_license_id = ? AND stat IN ('in-transit', 'ready-for-pickup', 'received')
- AND b2b_sale.execute_at >= now() - '6 months'::interval
+WHERE source_license_id = ? AND stat IN ('open', 'ready-for-pickup', 'in-transit', 'received')
+ AND b2b_sale.execute_at >= now() - '12 months'::interval
 GROUP BY date_trunc('month', execute_at)
 ORDER BY 2 DESC
 LIMIT 6
 SQL;
 $res = _select_via_cache($dbc, $sql, [ $L['id'] ]);
-// var_dump($res);
+if (empty($res)) {
+	return(null);
+}
+
 ?>
 
 <section>

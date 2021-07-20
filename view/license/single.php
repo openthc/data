@@ -148,7 +148,7 @@ SELECT date_trunc('month', execute_at) AS mon
 , sum(full_price) AS exp
 , 0 AS tax
 FROM b2b_sale
-WHERE target_license_id = :l0 AND stat IN ('received')
+WHERE target_license_id = :l0 AND stat IN ('open', 'ready-for-pickup', 'in-transit', 'received')
 AND execute_at >= :dt0
 GROUP BY date_trunc('month', execute_at)
 ORDER BY 1 DESC

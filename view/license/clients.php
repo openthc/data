@@ -29,7 +29,7 @@ $show_void = intval($_GET['void']);
 
 $max = 100;
 
-$stat_filter = "AND b2b_sale.stat IN ('in-transit', 'ready-for-pickup', 'received')";
+$stat_filter = "AND b2b_sale.stat IN ('open', 'ready-for-pickup', 'in-transit', 'received')";
 if ($show_void) {
 	$stat_filter = null;
 }

@@ -39,7 +39,7 @@ $_ENV['title'] = $_ENV['h1'];
 
 <?php
 
-$stat_filter = "AND stat IN ('open', 'in-transit', 'ready-for-pickup', 'received')";
+$stat_filter = "AND stat IN ('open', 'ready-for-pickup', 'in-transit', 'received')";
 if ($show_void) {
 	$stat_filter = null;
 }

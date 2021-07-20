@@ -14,14 +14,17 @@ SELECT count(b2b_sale.id) AS c, sum(full_price) AS rev
 , license.name AS license_name
 FROM b2b_sale
 JOIN license ON b2b_sale.source_license_id = license.id
-WHERE b2b_sale.target_license_id = :l AND b2b_sale.stat IN ('in-transit', 'ready-for-pickup', 'received')
-AND execute_at >= now() - '7 months'::interval
+WHERE b2b_sale.target_license_id = :l AND b2b_sale.stat IN ('open', 'ready-for-pickup', 'in-transit', 'received')
+AND execute_at >= now() - '12 months'::interval
 GROUP BY license.id, license.name
 ORDER BY 2 DESC
 LIMIT $max
 SQL;
 $res = _select_via_cache($dbc, $sql, [ ':l' => $L['id'] ]);
-if (count($res)) {
+if (empty($res)) {
+	return(null);
+}
+
 ?>
 
 <section>
@@ -34,7 +37,7 @@ if (count($res)) {
 			</div>
 		</div>
 	</div>
-	<p>Top <?= $max ?> suppliers, last ~6 months</p>
+	<p>Top <?= $max ?> suppliers, last ~12 months</p>
 
 	<table class="table table-sm">
 	<thead class="thead-dark">
@@ -57,5 +60,3 @@ if (count($res)) {
 	?>
 	</table>
 </section>
-<?php
-}
