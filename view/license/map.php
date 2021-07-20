@@ -70,14 +70,11 @@ SQL;
 
 ?>
 
-<div class="container-fluid mt-2">
 <?= App\UI::license_info($L) ?>
 <?= App\UI::license_tabs($L) ?>
-</div>
 
 <div id="google-map" style="background: #999; border: 1px solid #333; height: 85vh; width: 100%;"></div>
 
-<div class="container-fluid mt-2">
 <div class="row">
 
 <div class="col-md-6">
@@ -118,9 +115,8 @@ foreach ($res_client_list as $c) {
 </div>
 
 </div>
-</div>
 
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&amp;key=<?= \OpenTHC\Config::get('google/api_key_js') ?>"></script>
+
 <script>
 var head = document.getElementsByTagName('head')[0];
 
@@ -138,6 +134,7 @@ head.insertBefore = function (newElement, referenceElement) {
 	insertBefore.call(head, newElement, referenceElement);
 };
 </script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&amp;key=<?= \OpenTHC\Config::get('google/api_key_js') ?>"></script>
 <script type="text/javascript" src="https://directory.openthc.com/js/map-marker.js"></script>
 <script>
 
@@ -202,7 +199,7 @@ $(function() {
 		}
 	};
 
-	var pt0 = new google.maps.LatLng(<?= $L['lat'] ?>, <?= $L['lon'] ?>);
+	var pt0 = new google.maps.LatLng(L0.lat, L0.lon);
 
 	G_Map = new google.maps.Map(div, opt);
 	G_Map.setCenter(pt0);
