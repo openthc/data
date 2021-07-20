@@ -10,6 +10,8 @@ $dbc = _dbc();
 
 if ('rebuild' == $_GET['a']) {
 
+	// $res = $dbc->query('TRUNCATE TABLE b2b_sale_carrier');
+
 	$sql = <<<SQL
 INSERT INTO b2b_sale_carrier
  SELECT id, source_license_id, target_license_id, execute_at, meta->>'transporting_mme_id' AS carrier_id
@@ -41,8 +43,8 @@ HAVING count(b2b_sale_carrier.id) > 50
 SQL;
 
 $arg = [];
-$res_source = $dbc->fetchAll($sql);
-// $res_source = _select_via_cache($dbc, $sql, $arg);
+// $res_source = $dbc->fetchAll($sql);
+$res_source = _select_via_cache($dbc, $sql, $arg);
 
 //
 $carrier_list = [];

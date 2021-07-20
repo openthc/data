@@ -27,8 +27,12 @@ WHERE lab_result_id = :lr0
 ORDER BY created_at DESC, lab_result_id DESC
 LIMIT 100
 SQL;
-$res = $dbc->fetchAll($sql, [ ':lr0' => $Lab_Result['id'] ]);
-echo '<table>';
+
+$arg = [ ':lr0' => $Lab_Result['id'] ];
+
+// $res = $dbc->fetchAll($sql, $arg);
+$res = _select_via_cache($dbc, $sql, $arg);
+echo '<table class="table table-sm">';
 foreach ($res as $rec) {
 	printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $rec['id'], $rec['created_at'], $rec['license_retail']);
 }

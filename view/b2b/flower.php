@@ -48,19 +48,11 @@ foreach ($res as $rec) {
 }
 ?>
 
-<div class="container-fluid">
 <?= \App\UI::b2b_tabs(); ?>
 
-<style>
-.charts-css {
-	height: 420px;
-	max-width: 1920px;
-	margin: 0 auto;
-}
-</style>
-
 <h2>Grade A :: Wholesale <small>flower / flower_lots</small></h2>
-<p>Lot Counts, Sent and Received Quantities
+<p>Lot Counts, Sent and Received Quantities, Dollars per Month</p>
+<div class="chart-wrap">
 <table class="charts-css column multiple show-labels show-data-axes hide-data">
 <thead>
 <tr>
@@ -87,8 +79,8 @@ foreach ($res_middle as $rec_middle) {
 	$curr_3 = $rec_middle['flower']['sale_item_full_price_sum'] / 100000000;
 
 	$tool0 = sprintf('%0.1f k Lots', $rec_middle['flower']['lot_count'] / 1000);
-	$tool1 = sprintf('%0.1f Mg Outgoing', $rec_middle['flower']['qty_tx_sum'] / 1000000);
-	$tool2 = sprintf('%0.1f Mg Incoming', $rec_middle['flower']['qty_rx_sum'] / 1000000);
+	$tool1 = sprintf('%0d kg Outgoing', $rec_middle['flower']['qty_tx_sum'] / 1000);
+	$tool2 = sprintf('%0d kg Incoming', $rec_middle['flower']['qty_rx_sum'] / 1000);
 	$tool3 = sprintf('%s USD', number_format($rec_middle['flower']['sale_item_full_price_sum']));
 
 	echo '<tr>';
@@ -108,8 +100,10 @@ foreach ($res_middle as $rec_middle) {
 ?>
 </tbody>
 </table>
+</div>
 
 <h2>Grade A :: Wholesale Averages</h2>
+<div class="chart-wrap">
 <table class="charts-css column multiple show-labels show-data-axes hide-data">
 <thead>
 	<tr>
@@ -148,11 +142,14 @@ foreach ($res_middle as $rec_middle) {
 ?>
 </tbody>
 </table>
+</div>
 
 
 <hr>
 
+
 <h2>Grade B :: Wholesale <small>other_material / other_material_lots / marijuana_mix</h2>
+<div class="chart-wrap">
 <table class="charts-css column multiple show-labels show-data-axes hide-data">
 <thead>
 	<tr>
@@ -200,10 +197,29 @@ foreach ($res_middle as $rec_middle) {
 ?>
 </tbody>
 </table>
+</div>
 
 <hr>
 
+<section>
+<?php
+
+$max = array_reduce($res_middle, function($r, $v) {
+	$v = $v['other_material'];
+	if ($v['lot_count']) {
+		$r['gpl'] = max($r['gpl'], $v['qty_tx_sum'] / $v['lot_count']);
+	}
+	if ($v['qty_tx_sum']) {
+		$r['ppg'] = max($r['ppg'], $v['sale_item_full_price_sum'] / $v['qty_tx_sum']);
+	}
+	return $r;
+}, [ 'gpl' => 0, 'ppg' => 0 ]);
+var_dump($max);
+
+$rec_prev = [];
+?>
 <h2>Grade B :: Wholesale Averages</h2>
+<div class="chart-wrap">
 <table class="charts-css column multiple show-labels show-data-axes hide-data">
 <thead>
 	<tr>
@@ -214,17 +230,15 @@ foreach ($res_middle as $rec_middle) {
 </thead>
 <tbody>
 <?php
-$prev0 = 0;
-$prev1 = 0;
 foreach ($res_middle as $rec_middle) {
 
 	$rec = $rec_middle['other_material'];
 
-	$data0 = $rec['qty_rx_sum'] / $rec['lot_count'];
-	$data1 = $rec['sale_item_full_price_sum'] / $rec['qty_rx_sum'];
+	$data0 = $rec['qty_tx_sum'] / $rec['lot_count'];
+	$data1 = $rec['sale_item_full_price_sum'] / $rec['qty_tx_sum'];
 
-	$size0 = $data0 / 10000;
-	$size1 = $data1 / 10;
+	$size0 = $data0 / $max['gpl'];
+	$size1 = $data1 / $max['ppg'];
 
 	$tool0 = sprintf('%0.2f Grams per Lot', $data0);
 	$tool1 = sprintf('%0.3f Dollars per Gram', $data1);
@@ -242,3 +256,5 @@ foreach ($res_middle as $rec_middle) {
 ?>
 </tbody>
 </table>
+</div>
+</section>
