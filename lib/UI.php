@@ -50,7 +50,7 @@ class UI
 	<a class="nav-link" href="/b2b/transfer?<?= http_build_query($_GET) ?>">Overview</a>
 	</li>
 	<li class="nav-item">
-	<a class="nav-link" href="/b2b/transfer-detail?<?= http_build_query($_GET) ?>"> Transfer Details</a>
+	<a class="nav-link" href="/b2b/transfer-detail?<?= http_build_query($_GET) ?>"> B2B Sale Details</a>
 	</li>
 </ul>
 <?php
@@ -128,18 +128,15 @@ class UI
 <!--
 <p><?= $m['full'] ?> <a href="https://directory.openthc.com/map?<?= http_build_query([ 'q' => $m['full'] ]) ?>" target="_blank"><i class="fas fa-map"></i></a></p>
 -->
-<!-- <pre>
-	<?php
-	var_dump($L);
-	?>
-</pre> -->
 </div>
 <?php
 		return ob_get_clean();
 	}
 
 
-
+	/**
+	 *
+	 */
 	static function license_tabs($L)
 	{
 		$active = 'single';
@@ -148,6 +145,7 @@ class UI
 		$b = basename($p);
 		switch ($b) {
 			case 'clients':
+			case 'product':
 			case 'vendors':
 			case 'map':
 				$active = $b;
@@ -157,16 +155,19 @@ class UI
 	?>
 <ul class="nav nav-tabs">
 	<li class="nav-item">
-	<a class="nav-link<?= ('single' == $active ? ' active' : null) ?>" href="/license/<?= $L['id'] ?>">Overview</a>
+		<a class="nav-link<?= ('single' == $active ? ' active' : null) ?>" href="/license/<?= $L['id'] ?>">Overview</a>
 	</li>
 	<li class="nav-item">
-	<a class="nav-link<?= ('vendors' == $active ? ' active' : null) ?>" href="/license/<?= $L['id'] ?>/vendors">Vendors</a>
+		<a class="nav-link<?= ('vendors' == $active ? ' active' : null) ?>" href="/license/<?= $L['id'] ?>/vendors">Vendors</a>
 	</li>
 	<li class="nav-item">
-	<a class="nav-link<?= ('clients' == $active ? ' active' : null) ?>" href="/license/<?= $L['id'] ?>/clients">Clients</a>
+		<a class="nav-link<?= ('product' == $active ? ' active' : null) ?>" href="/license/<?= $L['id'] ?>/product">Products</a>
 	</li>
 	<li class="nav-item">
-	<a class="nav-link<?= ('map' == $active ? ' active' : null) ?>" href="/license/<?= $L['id'] ?>/map">Map</a>
+		<a class="nav-link<?= ('clients' == $active ? ' active' : null) ?>" href="/license/<?= $L['id'] ?>/clients">Clients</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link<?= ('map' == $active ? ' active' : null) ?>" href="/license/<?= $L['id'] ?>/map">Map</a>
 	</li>
 </ul>
 	<?php
