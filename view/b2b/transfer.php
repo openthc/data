@@ -136,7 +136,7 @@ foreach ($res_b2b as $rec) {
 
 ?>
 	<tr>
-		<td><?= h($rec['product_name']) ?></td>
+		<td><a href="/b2b/product?vendor=<?= $L_Vendor['id'] ?>&amp;name=<?= rawurlencode($rec['product_name']) ?>"><?= h($rec['product_name']) ?></a></td>
 		<td class="r"><?= $rec['qty_tx'] ?></td>
 		<td class="r"><?= $rec['qty_rx'] ?></td>
 		<td class="r"><?= $rec['full_price'] ?></td>

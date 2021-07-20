@@ -35,12 +35,21 @@ $res_client_list = [];
 if ($do_client) {
 
 	$sql = <<<SQL
-SELECT DISTINCT license.id AS license_id, license.name AS license_name, license.lat, license.lon
+SELECT license.id
+ , license.name
+ , license.lat
+ , license.lon
+ , sum(full_price) AS full_price
 FROM b2b_sale
 JOIN license ON b2b_sale.target_license_id = license.id
 WHERE b2b_sale.source_license_id = :l0 AND b2b_sale.stat IN ('in-transit', 'ready-for-pickup', 'received')
 AND execute_at >= now() - '12 months'::interval
 AND full_price > 0
+GROUP BY license.id
+ , license.name
+ , license.lat
+ , license.lon
+ORDER BY full_price DESC
 LIMIT 100
 SQL;
 
@@ -57,12 +66,21 @@ $res_vendor_list = [];
 if ($do_vendor) {
 
 	$sql = <<<SQL
-SELECT DISTINCT license.id AS license_id, license.name AS license_name, license.lat, license.lon
+SELECT license.id
+ , license.name
+ , license.lat
+ , license.lon
+ , sum(full_price) AS full_price
 FROM b2b_sale
 JOIN license ON b2b_sale.source_license_id = license.id
 WHERE b2b_sale.target_license_id = :l0 AND b2b_sale.stat IN ('in-transit', 'ready-for-pickup', 'received')
 AND execute_at >= now() - '12 months'::interval
 AND full_price > 0
+GROUP BY license.id
+ , license.name
+ , license.lat
+ , license.lon
+ORDER BY full_price DESC
 LIMIT 100
 SQL;
 
@@ -91,8 +109,8 @@ foreach ($res_vendor_list as $c) {
 ?>
 	<tr>
 		<td><?= $idx ?></td>
-		<td><a href="/license/<?= $c['license_id'] ?>"><?= h($c['license_name']) ?></a></td>
-		<td>
+		<td><a href="/license/<?= $c['id'] ?>"><?= h($c['name']) ?></a></td>
+		<td class="r"><?= number_format($c['full_price']) ?></td>
 	</tr>
 <?php
 }
@@ -105,13 +123,12 @@ foreach ($res_vendor_list as $c) {
 <?php
 $idx = 0;
 foreach ($res_client_list as $c) {
-// foreach ([] as $c) {
 	$idx++;
 ?>
 	<tr>
 		<td><?= $idx ?></td>
-		<td><a href="/license/<?= $c['license_id'] ?>"><?= h($c['license_name']) ?></a></td>
-		<td>
+		<td><a href="/license/<?= $c['id'] ?>"><?= h($c['name']) ?></a></td>
+		<td class="r"><?= number_format($c['full_price']) ?></td>
 	</tr>
 <?php
 }
@@ -241,8 +258,8 @@ $(function() {
 			},
 			position: pt1,
 			license: {
-				id: l1.license_id,
-				name: l1.license_name
+				id: l1.id,
+				name: l1.name
 			}
 		});
 		mk1.addListener('click', function() {
@@ -289,8 +306,8 @@ $(function() {
 			},
 			position: pt1,
 			license: {
-				id: l1.license_id,
-				name: l1.license_name
+				id: l1.id,
+				name: l1.name
 			}
 		});
 		mk1.addListener('click', function() {

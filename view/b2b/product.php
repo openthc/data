@@ -58,6 +58,7 @@ SELECT id AS b2b_sale_id
 , package_size
 FROM b2b_sale_item_full
 WHERE product_name = :p0 AND source_license_id = :v0
+ORDER BY execute_at DESC
 SQL;
 
 $arg = [
