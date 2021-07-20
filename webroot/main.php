@@ -18,6 +18,10 @@ $app->get('/b2b', function($REQ, $RES) {
 	return render_view($this, $RES, 'b2b/main.php');
 });
 
+$app->get('/b2b/carrier', function($REQ, $RES, $ARG) {
+	return render_view($this, $RES, 'b2b/carrier.php');
+});
+
 $app->get('/b2b/flower', function($REQ, $RES) {
 	return render_view($this, $RES, 'b2b/flower.php');
 });
