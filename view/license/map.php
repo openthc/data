@@ -12,14 +12,20 @@ if (empty($L['id'])) {
 	_exit_text('Invalid License', 400);
 }
 
+$_ENV['h1'] = sprintf('License :: %s :: Map', h($L['name']));
+$_ENV['title'] = $_ENV['h1'];
+
+
 $do_client = true;
 $do_vendor = true;
 
 switch ($_GET['view']) {
 case 'clients':
 	$do_client = true;
+	$do_vendor = false;
 	break;
 case 'vendors':
+	$do_client = false;
 	$do_vendor = true;
 	break;
 }
@@ -70,7 +76,6 @@ SQL;
 
 ?>
 
-<?= App\UI::license_info($L) ?>
 <?= App\UI::license_tabs($L) ?>
 
 <div id="google-map" style="background: #999; border: 1px solid #333; height: 85vh; width: 100%;"></div>

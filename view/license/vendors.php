@@ -10,8 +10,8 @@ if (empty($L['id'])) {
 	_exit_text('Invalid License', 400);
 }
 
-$_ENV['h1'] = sprintf('License :: <a href="/license/%s">%s</a> :: Vendors', $L['id'], $L['name']);
-$_ENV['title'] = strip_tags($_ENV['h1']);
+$_ENV['h1'] = sprintf('License :: %s :: Vendors', h($L['name']));
+$_ENV['title'] = $_ENV['h1'];
 
 echo App\UI::license_tabs($L);
 

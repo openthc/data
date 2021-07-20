@@ -102,7 +102,6 @@ ORDER BY 1
 SQL;
 
 	$arg = [ ':l0' => $L['id'] ];
-	// $res = $dbc->fetchAll($sql, $arg);
 	$res = _select_via_cache($dbc, $sql, $arg);
 
 	$max = array_reduce($res, function($prev, $item) {
@@ -110,11 +109,14 @@ SQL;
 	}, 0);
 	$max = ($max * 1.20);
 
-	echo '<div style="border: 2px solid #333; height: 320px;">';
+	echo '<div class="chart-wrap">';
 	echo '<table class="charts-css column multiple show-data-on-hover show-heading show-labels">';
 	echo '<caption>Monthly Revenue (in-transit, received) <a href="?stat=*">show-all</a></caption>';
 
-	$v0 = $res[0]['full_price'] / $max;
+	$v0 = 0;
+	if ($max) {
+		$v0 = $res[0]['full_price'] / $max;
+	}
 
 	foreach ($res as $rec) {
 		// <td style="--start: 0.0; --size: 0.4"> <span class="data"> $ 40K </span> </td>
