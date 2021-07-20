@@ -43,10 +43,13 @@ function _dbc()
 
 /**
  * El-Cheapo Render Helper
+ * @param $c Container
+ * @param $RES REsponse Object
+ * @param $ARG
+ * @param $f View Script
  */
 function render_view($c, $RES, $f)
 {
-	// $c = $this; // Container
 	$v = new class($c) extends \OpenTHC\Controller\Base {};
 	$d = [];
 	return $RES->write( $v->render($f, $d) );
@@ -58,6 +61,7 @@ function _select_via_cache($dbc, $sql, $arg)
 	$hash = sprintf('%s-%s', md5($sql), md5(json_encode($arg)));
 	$file = sprintf('%s/var/cache/sql/%s', APP_ROOT, $hash);
 
+	// Use Cache?
 	if (is_file($file)) {
 		$age = $_SERVER['REQUEST_TIME'] - filemtime($file);
 		if ($age < 1209600) { // 2 Weeks
@@ -71,6 +75,13 @@ function _select_via_cache($dbc, $sql, $arg)
 	if (!empty($res)) {
 		file_put_contents($file, json_encode($res));
 	}
+
+	// file_put_contents($file, json_encode(array(
+	// 	'sql' => $sql,
+	// 	'arg' => $arg,
+	// 	'err' => SQL::lastError(),
+	// 	'res' => $res,
+	// )));
 
 	return $res;
 

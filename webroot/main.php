@@ -15,105 +15,47 @@ unset($con['phpErrorHandler']);
 // unset($con['notFoundHandler']);
 
 $app->get('/b2b', function($REQ, $RES) {
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'b2b/main.php';
-	$d = [];
-	return $RES->write( $v->render($f, $d) );
-
+	return render_view($this, $RES, 'b2b/main.php');
 });
 
 $app->get('/b2b/flower', function($REQ, $RES) {
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'b2b/flower.php';
-	$d = [];
-	return $RES->write( $v->render($f, $d) );
-
+	return render_view($this, $RES, 'b2b/flower.php');
 });
 
 $app->get('/b2b/extract', function($REQ, $RES) {
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'b2b/extract.php';
-	$d = [];
-	return $RES->write( $v->render($f, $d) );
-
+	return render_view($this, $RES, 'b2b/extract.php');
 });
 
 $app->get('/b2b/edible', function($REQ, $RES) {
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'b2b/edible.php';
-	$d = [];
-	return $RES->write( $v->render($f, $d) );
-
+	return render_view($this, $RES, 'b2b/edible.php');
 });
 
+$app->get('/b2b/product', function($REQ, $RES, $ARG) {
+	return render_view($this, $RES, 'b2b/product.php');
+});
 
 $app->get('/b2b/transfer', function($REQ, $RES) {
-
-	$c = $this;
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'b2b/transfer.php';
-	$d = [];
-	return $RES->write( $v->render($f, $d) );
-
+	return render_view($this, $RES, 'b2b/transfer.php');
 });
 
 $app->get('/b2b/transfer-detail', function($REQ, $RES) {
-
-	$c = $this;
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'b2b/transfer-detail.php';
-	$d = [];
-	return $RES->write( $v->render($f, $d) );
-
+	return render_view($this, $RES, 'b2b/transfer-detail.php');
 });
 
-
 $app->get('/b2c', function($REQ, $RES) {
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'b2c/main.php';
-	$d = [];
-	return $RES->write( $v->render($f, $d) );
-
+	return render_view($this, $RES, 'b2c/main.php');
 });
 
 $app->get('/lab', function($REQ, $RES) {
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'lab/main.php';
-	$d = [];
-	return $RES->write( $v->render($f, $d) );
-
+	return render_view($this, $RES, 'lab/main.php');
 });
 
 $app->get('/lab/frequency', function($REQ, $RES) {
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'lab/frequency.php';
-	$d = [];
-	return $RES->write( $v->render($f, $d) );
-
+	return render_view($this, $RES, 'lab/frequency.php');
 });
 
 $app->get('/lab/potency', function($REQ, $RES) {
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'lab/potency.php';
-	$d = [];
-	return $RES->write( $v->render($f, $d) );
-
+	return render_view($this, $RES, 'lab/potency.php');
 });
 
 $app->get('/lab/result/{id}', function($REQ, $RES, $ARG) {
@@ -135,145 +77,66 @@ $app->get('/lab/result/{id}', function($REQ, $RES, $ARG) {
 });
 
 $app->get('/lab/usage', function($REQ, $RES) {
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'lab/usage.php';
-	$d = [];
-	return $RES->write( $v->render($f, $d) );
-
+	return render_view($this, $RES, 'lab/usage.php');
 });
 
 $app->get('/lab/attested', function($REQ, $RES) {
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'lab/attested.php';
-	$d = [];
-	return $RES->write( $v->render($f, $d) );
-
+	return render_view($this, $RES, 'lab/attested.php');
 });
 
 $app->get('/license/{id}', function($REQ, $RES, $ARG) {
-
 	$_GET['id'] = $ARG['id'];
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'license/single.php';
-	$d = [];
-
-	return $RES->write( $v->render($f, $d) );
-
-} );
+	return render_view($this, $RES, 'license/single.php');
+});
 
 $app->get('/license/{id}/clients', function($REQ, $RES, $ARG) {
-
 	$_GET['id'] = $ARG['id'];
+	return render_view($this, $RES, 'license/clients.php');
+});
 
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'license/clients.php';
-	$d = [];
-
-	return $RES->write( $v->render($f, $d) );
-
-} );
+$app->get('/license/{id}/product', function($REQ, $RES, $ARG) {
+	$_GET['id'] = $ARG['id'];
+	return render_view($this, $RES, 'license/product-name.php');
+});
 
 $app->get('/license/{id}/map', function($REQ, $RES, $ARG) {
-
 	$_GET['id'] = $ARG['id'];
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'license/map.php';
-	$d = [];
-
-	return $RES->write( $v->render($f, $d) );
-
-} );
+	return render_view($this, $RES, 'license/map.php');
+});
 
 $app->get('/license/{id}/b2b', function($REQ, $RES, $ARG) {
-
 	$_GET['id'] = $ARG['id'];
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'license/b2b-sale.php';
-	$d = [];
-
-	return $RES->write( $v->render($f, $d) );
-
-} );
+	return render_view($this, $RES, 'license/b2b-sale.php');
+});
 
 $app->get('/license/{id}/b2b-detail', function($REQ, $RES, $ARG) {
-
 	$_GET['id'] = $ARG['id'];
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'license/b2b-sale-detail.php';
-	$d = [];
-
-	return $RES->write( $v->render($f, $d) );
-
-} );
-
+	return render_view($this, $RES, 'license/b2b-sale-detail.php');
+});
 
 $app->get('/license/{id}/vendors', function($REQ, $RES, $ARG) {
-
 	$_GET['id'] = $ARG['id'];
+	return render_view($this, $RES, 'license/vendors.php');
+});
 
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'license/vendors.php';
-	$d = [];
-
-	return $RES->write( $v->render($f, $d) );
-
-} );
+$app->get('/product', function($REQ, $RES, $ARG) {
+	return render_view($this, $RES, 'product/main.php');
+});
 
 $app->get('/revenue', function($REQ, $RES) {
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'revenue/main.php';
-	$d = [];
-
-	return $RES->write( $v->render($f, $d) );
-
-} );
+	return render_view($this, $RES, 'revenue/main.php');
+});
 
 $app->get('/revenue/company', function($REQ, $RES) {
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'revenue/company.php';
-	$d = [];
-
-	return $RES->write( $v->render($f, $d) );
-
-} );
+	return render_view($this, $RES, 'revenue/company.php');
+});
 
 $app->get('/revenue/license', function($REQ, $RES) {
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'revenue/license.php';
-	$d = [];
-
-	return $RES->write( $v->render($f, $d) );
-
-} );
+	return render_view($this, $RES, 'revenue/license.php');
+});
 
 $app->get('/search', function($REQ, $RES) {
-
-	$c = $this; // Container
-	$v = new class($c) extends \OpenTHC\Controller\Base {};
-	$f = 'search.php';
-	$d = [];
-	return $RES->write( $v->render($f, $d) );
-
+	return render_view($this, $RES, 'search.php');
 });
 
 $app->get('/sql', function($REQ, $RES) {
