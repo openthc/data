@@ -10,9 +10,10 @@ if (empty($L['id'])) {
 	_exit_text('Invalid License', 400);
 }
 
-$_ENV['h1'] = sprintf('License :: %s - %s', $L['code'], $L['name']);
+$_ENV['h1'] = sprintf('License :: %s - %s', $L['name'], $L['code']);
 $_ENV['title'] = $_ENV['h1'];
 
+echo \App\UI::license_tabs($L);
 
 // Revenue Chart
 if ('*' == $_GET['stat']) {
@@ -68,15 +69,15 @@ SQL;
 
 		echo '<tr>';
 		printf('<th scope="row">%s</th>', _date('m/Y', $dts));
-		printf('<td style="--start: %0.6f; --size: %0.6f"><span class="data" style="font-weight:700; z-index: 30">%s</span></td>'
-			, $void_v0
-			, $void_v1
-			, number_format($rec['VOID'], 2)
-		);
-		printf('<td style="--start: %0.6f; --size: %0.6f"><span class="data" style="font-weight:700; z-index: 30">%s</span></td>'
+		printf('<td style="--start: %0.6f; --size: %0.6f"><span class="data" style="font-weight:700; z-index: 30">%s</span><span class="tooltip">Dollars in Live</span></td>'
 			, $live_v0
 			, $live_v1
 			, number_format($rec['Live'], 2)
+		);
+		printf('<td style="--start: %0.6f; --size: %0.6f"><span class="data" style="font-weight:700; z-index: 30">%s</span><span class="tooltip">Dollars in VOID</span></td>'
+			, $void_v0
+			, $void_v1
+			, number_format($rec['VOID'], 2)
 		);
 		echo '</tr>';
 
@@ -254,21 +255,15 @@ foreach ($res_middle as $rec) {
 
 ?>
 
-<div class="container-fluid mt-2">
-<div class="row">
-	<div class="col-md-6">
-		<?= \App\UI::license_info($L) ?>
-	</div>
-</div>
-<?= \App\UI::license_tabs($L) ?>
-</div>
 
 <!-- <div class="container-fluid">
 	<h2 style="margin:0;padding:0;">Expense &amp; Revenue</h2>
 	<div id="chart-revenue" style="border 1px solid #333; height:240px; width:100%;"></div>
 </div> -->
 
-<div class="container-fluid">
+<hr>
+
+
 <div class="row">
 <div class="col-md-6">
 <?php
@@ -279,7 +274,6 @@ require_once(__DIR__ . '/single-b2b-incoming.php');
 <?php
 require_once(__DIR__ . '/single-b2b-outgoing.php');
 ?>
-</div>
 </div>
 </div>
 
@@ -299,36 +293,3 @@ require_once(__DIR__ . '/single-b2b-outgoing.php');
 </div>
 </div>
 -->
-
-
-<script>
-$(function() {
-	google.charts.load("current", {packages:[ 'corechart', 'line' ]});
-	google.charts.setOnLoadCallback(function() {
-		var data = google.visualization.arrayToDataTable(<?= json_encode($cht_data, JSON_NUMERIC_CHECK) ?>);
-		var div = document.getElementById('chart-revenue');
-		var cht_opts = {
-			axisTitlesPosition: 'none',
-			// chartArea: {
-			// 	top: 8,
-			// 	right: 8,
-			// 	bottom: 32,
-			// 	left: 8
-			// },
-			fontName: 'sans-serif',
-			fontSize: '22px',
-			// legend: {
-			// 	position: 'none',
-			// },
-			lineWidth: 4,
-			vAxis: {
-				textPosition: 'in',
-			}
-		};
-		var C = new google.visualization.LineChart(div);
-		// cht_opts = google.charts.Line.convertOptions(cht_opts)
-		// var C = new google.charts.Line(div);
-		C.draw(data, cht_opts);
-	});
-});
-</script>

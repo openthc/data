@@ -51,9 +51,7 @@ ob_start();
 	<tr>
 		<th scope="col">Month</th>
 		<?php
-		$idx = 0;
 		foreach ($license_rank as $k => $v) {
-			$idx++;
 			printf('<th scope="col">%s</th>', h($k));
 		}
 		?>

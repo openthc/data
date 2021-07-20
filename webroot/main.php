@@ -96,7 +96,7 @@ $app->get('/license/{id}/clients', function($REQ, $RES, $ARG) {
 
 $app->get('/license/{id}/product', function($REQ, $RES, $ARG) {
 	$_GET['id'] = $ARG['id'];
-	return render_view($this, $RES, 'license/product-name.php');
+	return render_view($this, $RES, 'license/product.php');
 });
 
 $app->get('/license/{id}/map', function($REQ, $RES, $ARG) {

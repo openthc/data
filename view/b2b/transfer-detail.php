@@ -5,8 +5,6 @@
 
 $_ENV['title'] = 'B2B Detail :: Product';
 
-session_write_close();
-
 $dbc = _dbc();
 
 $L_Vendor = $dbc->fetchRow('SELECT * FROM license WHERE id = ?', [ $_GET['vendor'] ]);
@@ -18,6 +16,10 @@ $L_Client = $dbc->fetchRow('SELECT * FROM license WHERE id = ?', [ $_GET['client
 if (empty($L_Client['id'])) {
 	_exit_text('Invalid License', 400);
 }
+
+$_ENV['h1'] = 'B2B :: ' . $L_Vendor['name'] . ' to ' . $L_Client['name'] . ' :: Details';
+$_ENV['title'] = $_ENV['h1'];
+
 
 // Chart Data
 $sql = <<<SQL
@@ -77,9 +79,6 @@ $arg = [
 
 ?>
 
-<div class="container-fluid mt-2">
-<h1>B2B Sale Item Details <small><a href="?<?= http_build_query(array_merge($_GET, [ 't' => 'text/csv' ])) ?>"><i class="fas fa-download"></i></a></small></h1>
-
 <div class="row">
 	<div class="col-md-6">
 		<h2>Vendor: <a href="/license/<?= $L_Vendor['id'] ?>"><?= h($L_Vendor['name']) ?></a>  <small><?= h($L_Vendor['code']) ?></small></h2>
@@ -88,10 +87,11 @@ $arg = [
 		<h2>Client: <a href="/license/<?= $L_Client['id'] ?>"><?= h($L_Client['name']) ?></a>  <small><?= h($L_Client['code']) ?></small></h2>
 	</div>
 </div>
-
+<div>
+<?= App\UI::b2b_transfer_tabs() ?>
 </div>
 
-<div class="container-fluid mt-2">
+
 <?php
 $sql = <<<SQL
 SELECT *
@@ -123,6 +123,8 @@ if ('text/csv' == $_GET['t']) {
 }
 
 ?>
+
+<a href="?<?= http_build_query(array_merge($_GET, [ 't' => 'text/csv' ])) ?>"><i class="fas fa-download"></i></a>
 
 <table class="table table-sm">
 <thead class="thead-dark">
@@ -159,7 +161,7 @@ foreach ($res as $rec) {
 		<td><?= $guid ?></td>
 		<td>
 			<!-- <?= preg_replace('/^WA\w+\./', null, $rec['lot_id_source']) ?> -->
-			<?= h($rec['product_name']) ?>
+			<a href="/b2b/product?vendor=<?= $L_Vendor['id'] ?>&amp;name=<?= rawurlencode($rec['product_name']) ?>"><?= h($rec['product_name']) ?></a>
 		</td>
 		<td class="r"><?= $rec['qty_tx'] ?></td>
 		<td class="r"><?= $rec['qty_rx'] ?></td>

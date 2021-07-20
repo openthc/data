@@ -19,8 +19,25 @@ if (empty($L_Target['id'])) {
 	_exit_text('Invalid Client License', 400);
 }
 
-$_ENV['h1'] = 'B2B :: Details :: ' . $L_Vendor['name'] . ' :: ' . $L_Target['name'];
+$_ENV['h1'] = 'B2B :: ' . $L_Vendor['name'] . ' to ' . $L_Target['name'];
 $_ENV['title'] = $_ENV['h1'];
+
+?>
+
+<div class="row">
+	<div class="col-md-6">
+		<h2>Vendor: <a href="/license/<?= $L_Vendor['id'] ?>"><?= h($L_Vendor['name']) ?></a>  <small><?= h($L_Vendor['code']) ?></small></h2>
+	</div>
+	<div class="col-md-6">
+		<h2>Client: <a href="/license/<?= $L_Target['id'] ?>"><?= h($L_Target['name']) ?></a>  <small><?= h($L_Target['code']) ?></small></h2>
+	</div>
+</div>
+<div>
+<?= App\UI::b2b_transfer_tabs() ?>
+</div>
+
+
+<?php
 
 $stat_filter = "AND stat IN ('open', 'in-transit', 'ready-for-pickup', 'received')";
 if ($show_void) {
@@ -82,23 +99,7 @@ SQL;
 }
 ?>
 
-<div class="container-fluid mt-2">
-<div class="row">
-	<div class="col-md-6">
-		<h2>Vendor: <a href="/license/<?= $L_Vendor['id'] ?>"><?= h($L_Vendor['name']) ?></a>  <small><?= h($L_Vendor['code']) ?></small></h2>
-	</div>
-	<div class="col-md-6">
-		<h2>Client: <a href="/license/<?= $L_Target['id'] ?>"><?= h($L_Target['name']) ?></a>  <small><?= h($L_Target['code']) ?></small></h2>
-	</div>
-</div>
-<div class="row">
-<div class="col-12">
-<?= App\UI::b2b_transfer_tabs() ?>
-</div>
-</div>
-</div>
 
-<div class="ui container">
 <?php
 if ($show_void) {
 ?>
@@ -154,5 +155,3 @@ foreach ($res_b2b as $rec) {
 ?>
 </tbody>
 </table>
-
-</div>
