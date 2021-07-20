@@ -258,11 +258,6 @@ foreach ($res_middle as $rec) {
 ?>
 
 
-<!-- <div class="container-fluid">
-	<h2 style="margin:0;padding:0;">Expense &amp; Revenue</h2>
-	<div id="chart-revenue" style="border 1px solid #333; height:240px; width:100%;"></div>
-</div> -->
-
 <hr>
 
 
@@ -280,7 +275,6 @@ require_once(__DIR__ . '/single-b2b-outgoing.php');
 </div>
 
 <!--
-<div class="container-fluid">
 <div class="row">
 <div class="col-md-6">
 	<?php
@@ -291,7 +285,6 @@ require_once(__DIR__ . '/single-b2b-outgoing.php');
 	<?php
 	// require_once(__DIR__ . '/index-product-outgoing.php');
 	?>
-</div>
 </div>
 </div>
 -->

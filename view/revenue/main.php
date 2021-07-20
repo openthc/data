@@ -101,17 +101,15 @@ echo App\UI::revenue_nav_tabs();
 ?>
 
 <!--
-<div class="container">
 <div class="card">
 	<div class="card-header"><h2>Active Companes and Monthly Revenue</h2></div>
 	<div class="card-body">
 		<div id="active-monthly-chart" style="height:480px;"></div>
 	</div>
 </div>
-</div>
 -->
 
-<div class="ui segment">
+<section>
 <div class="card">
 	<div class="card-header">
 		<h2>Timeline of <?= $obj_name ?> filing Revenue Reports</h2>
@@ -139,7 +137,7 @@ echo App\UI::revenue_nav_tabs();
 		<p><?= $obj_name ?> count shown in blue, in absolute count. Revenue shown in red, factored in millions of dollars, second Y-axis.</p>
 	</div>
 </div>
-</div>
+</section>
 
 <script>
 $(function() {

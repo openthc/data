@@ -146,7 +146,6 @@ echo App\UI::revenue_nav_tabs();
 .dataTables_filter, .dataTables_info { display: none; }
 </style>
 
-<div class="container-fluid">
 
 <p>Showing 1 - <?= $limit_count ?> of <?= $max_license ?> </p>
 
@@ -197,7 +196,6 @@ foreach ($rev_license as $rev) {
 </table>
 </div>
 
-</div>
 
 <script>
 $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {

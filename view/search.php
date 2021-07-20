@@ -11,9 +11,8 @@ $_ENV['h1'] = $_ENV['title'] = 'Search';
 
 ?>
 
-<div class="justify-center">
-<div class="col-md-6">
 
+<!--
 <form action="/search" class="form-inline mr-auto" id="search-form">
 	<div class="input-group input-group-lg">
 		<div class="input-group-prepend">
@@ -25,9 +24,7 @@ $_ENV['h1'] = $_ENV['title'] = 'Search';
 		</div>
 	</div>
 </form>
-
-</div>
-</div>
+ -->
 
 
 <?php
@@ -86,9 +83,10 @@ case 1:
 	break;
 default:
 
-	echo '<div class="container">';
+	echo '<section>';
 	foreach ($res as $rec) {
 		printf('<h2><a href="/license/%s">%s</a> <code>%s</code></h2>', $rec['license_id'], h($rec['license_name']), $rec['license_code']);
 	}
-	echo '</div>';
+	echo '</section>';
+
 }

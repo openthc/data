@@ -89,8 +89,6 @@ echo App\UI::revenue_nav_tabs();
 
 ?>
 
-<div class="container-fluid">
-
 <p>Showing 1 - 50 of <?= $max_company ?></p>
 
 <div class="table-responsive">
@@ -131,7 +129,6 @@ foreach ($rev_company as $rev) {
 </table>
 </div>
 
-</div>
 
 <script>
 $(function() {

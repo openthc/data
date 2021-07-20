@@ -152,14 +152,12 @@ if ('csv' == $_GET['o']) {
 // Chart
 ?>
 
-<div class="container-fluid mt-2">
-	<h2>Active Licenses, By Type, By Quarter <small><a href="?o=csv">[csv]</a></small></h2>
-	<div>
-		<div class="otd-chart" id="license-active-type-quarter-chart"></div>
-	</div>
+<h2>Active Licenses, By Type, By Quarter <small><a href="?o=csv">[csv]</a></small></h2>
+<div>
+	<div class="otd-chart" id="license-active-type-quarter-chart"></div>
 </div>
 
-<div class="container-fluid mt-2">
+
 <table class="table table-sm">
 <thead class="thead-dark">
 <tr>
@@ -195,7 +193,7 @@ foreach ($res_activity as $l) {
 ?>
 </tbody>
 </table>
-</div>
+
 
 <?php
 // Fold to Chart Data

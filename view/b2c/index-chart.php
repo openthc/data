@@ -52,10 +52,10 @@ foreach ($res as $rec) {
 
 ?>
 
-<div class="container-fluid">
+<section>
 <div class="otd-chart" id="b2c-weekly-chart"></div>
 <p>This chart is built from the LeafData information, so it may not match the LCB spreadsheet</p>
-</div>
+</section>
 
 <script>
 google.charts.load("current", {packages:["line"]});

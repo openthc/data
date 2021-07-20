@@ -31,7 +31,7 @@ return(0);
 
 ?>
 
-<!-- <div class="container-fluid mt-2">
+<!--
 <iframe
     allowtransparency
     src="https://meta.openthc.com/public/question/ad1b938a-7c5f-48ab-99dc-a28676d04647#theme=night&bordered=false&titled=false"
@@ -39,7 +39,7 @@ return(0);
     height="600"
 	style="width:100%;"
 ></iframe>
-</div> -->
+-->
 
 <?php
 
@@ -75,10 +75,10 @@ SQL;
 //$res = $dbc->fetch_all($sql);
 $res = _select_via_cache($dbc, $sql, null);
 
-echo '<div class="container mt-2">';
+echo '<section>';
 echo '<h2>Samples Count by Type</h2>';
 echo _res_to_table($res);
-echo '</div>';
+echo '</section>';
 
 
 $sql = <<<SQL
@@ -97,7 +97,7 @@ SQL;
 $res = _select_via_cache($dbc, $sql, null);
 
 // var_dump($res);
-echo '<div class="container mt-2">';
+echo '<section>';
 echo '<h2>Samples Count by Lab</h2>';
 _res_to_table($res);
-echo '</div>';
+echo '</section>';

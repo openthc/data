@@ -136,7 +136,7 @@ $rev_license = array_slice($rev_license, 0, $limit_count);
 $mon_list = array_reverse($mon_list);
 ?>
 
-<div class="container-fluid">
+<section>
 
 <p>Showing Top 50 for most recent month, with history - average per month, and sum of previous <?= $month_count ?> counts</p>
 
@@ -153,7 +153,7 @@ $mon_list = array_reverse($mon_list);
 </div>
 </form>
 
-<table class="ui table">
+<table class="table table-sm">
 <thead>
 	<tr>
 		<th>Name</th>
@@ -194,4 +194,4 @@ foreach ($rev_license as $lic) {
 </tbody>
 </table>
 
-</div>
+</section>

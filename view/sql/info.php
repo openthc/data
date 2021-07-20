@@ -56,7 +56,6 @@ $sum_stat = [
 
 ?>
 
-<div class="container">
 
 <table class="table table-sm">
 <thead class="thead-dark">
@@ -103,5 +102,3 @@ foreach ($res as $rec) {
 	</tr>
 </tfoot>
 </table>
-
-</div>

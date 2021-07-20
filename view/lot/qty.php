@@ -203,9 +203,9 @@ You can <a href="?f=csv&amp;top=ALL"><i class="fas fa-download"></i> download as
 	<canvas id="chart-qty"></canvas>
 </div>
 
-<div class="container">
+<section>
 <?= _res_to_table($res, $col_func) ?>
-</div>
+</section>
 
 <script>
 function fitToContainer(canvas){
