@@ -3,12 +3,6 @@
  * Show Outgoing Supplier List
  */
 
-$_ENV['title'] = 'License :: Top Clients';
-
-session_write_close();
-
-$show_void = intval($_GET['void']);
-
 $dbc = _dbc();
 
 $L = $dbc->fetchRow('SELECT * FROM license WHERE id = ?', [ $_GET['id'] ]);
@@ -16,20 +10,22 @@ if (empty($L['id'])) {
 	_exit_text('Invalid License', 400);
 }
 
-?>
+$_ENV['h1'] = sprintf('License :: <a href="/license/%s">%s</a> :: Clients', $L['id'], $L['name']);
+$_ENV['title'] = strip_tags($_ENV['h1']);
 
-<div class="container-fluid mt-2">
-<?= App\UI::license_info($L) ?>
-<?= App\UI::license_tabs($L) ?>
-</div>
+echo App\UI::license_tabs($L);
 
-<div class="container-fluid">
-<?php
+// Chart
 require_once(__DIR__ . '/clients-chart-stacked-column.php');
 ?>
-</div>
+
+
+<hr>
+
 
 <?php
+
+$show_void = intval($_GET['void']);
 
 $max = 100;
 
@@ -60,7 +56,6 @@ $arg = [
 $res = _select_via_cache($dbc, $sql, $arg);
 ?>
 
-<div class="container">
 <?php
 if ($show_void) {
 ?>
@@ -73,7 +68,7 @@ if ($show_void) {
 }
 ?>
 
-<table class="table table-sm">
+<table class="table table-sm table-hover">
 <thead class="thead-dark">
 <tr>
 	<th>Client</th>
@@ -89,10 +84,9 @@ foreach ($res as $rec) {
 		<td><a href="/license/<?= $rec['license_id'] ?>"><?= $rec['license_name'] ?></a> <small><?= $rec['license_code'] ?></small></td>
 		<td class="r"><?= $rec['c'] ?></td>
 		<td class="r"><?= $rec['rev'] ?></td>
-		<td class="r"><a href="/b2b/transfer?client=<?= $rec['license_id'] ?>&amp;vendor=<?= $L['id'] ?>"><i class="fas fa-exchange-alt"></i></a></td>
+		<td class="r"><a href="/b2b/transfer?client=<?= $rec['license_id'] ?>&amp;vendor=<?= $L['id'] ?>"><i class="fas fa-file-invoice-dollar"></i></a></td>
 	</tr>
 <?php
 }
 ?>
 </table>
-</div>

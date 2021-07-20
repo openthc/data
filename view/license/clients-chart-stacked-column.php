@@ -25,100 +25,70 @@ if (empty($res)) {
 	return(0);
 }
 
-// var_dump($res);
-// _res_to_table($res);
-$cht_data = _vlc_fold_to_cht_data($res);
-// var_dump($cht_data);
-// exit;
+$cht_data = [];
+$license_list = [];
+$license_rank = [];
+foreach ($res as $rec) {
+	$license_rank[ $rec['license_name'] ] = $license_rank[ $rec['license_name'] ] + $rec['full_price_sum'];
+	$cht_data[ $rec['created_at'] ][ $rec['license_name'] ] = $rec['full_price_sum'];
+}
+arsort($license_rank);
+$license_list = array_keys($license_rank);
+$license_list = array_slice($license_list, 0, floor(count($license_list) * 0.50));
+// $license_list[] = 'Other';
 
 ?>
 
-<div class="container-fluid mt-2">
-	<h2>Revenue, by Month, by Client</h2>
-	<div>
-		<div class="otd-chart" id="client-share-by-month"></div>
-	</div>
-</div>
-
-
-<script type="text/javascript">
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(function() {
-
-	var cht_data = google.visualization.arrayToDataTable(<?= json_encode($cht_data, JSON_NUMERIC_CHECK|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) ?>);
-
-	var cht_opts = {
-		axisTitlesPosition: 'in',
-		chartArea: {
-			left: '2%',
-			top: '2%',
-			width: '84%',
-			height: '92%',
-		},
-		// title: 'Product Sales',
-		isStacked: 'percent',
-		hAxis: null,
-		vAxis: null,
-		bar: { groupWidth: "100%"},
-		// legend: { position: "none" },
-	};
-
-	var C = new google.visualization.ColumnChart(document.getElementById('client-share-by-month'));
-	C.draw(cht_data, cht_opts);
-});
-</script>
-
+<section>
+<h2>Dollars per Client per Month</h2>
+<p>Only shows the top 25 clients, then groups the rest as <em>Other</em>.</p>
+<div class="chart-wrap">
+<table class="charts-css column multiple stacked show-labels hide-data">
+<thead>
+	<tr>
+		<th>Date</th>
+		<?php
+		foreach ($license_list as $l) {
+			printf('<th>%s</th>', $l);
+		}
+		?>
+		<th>Other</th>
+	</tr>
+</thead>
+<tbody>
 <?php
-function _vlc_fold_to_cht_data($res)
-{
-	$col_dt = 'created_at';
-	$col_g2 = 'license_name';
-	$col_val = 'full_price_sum';
+foreach ($cht_data as $cts => $rec) {
 
-	$col_list = [];
-	$tmp_data = [];
-	$lic_rank = [];
+	$max = array_sum($rec);
+	$used_pct = 0;
+	$used_sum = 0;
 
-	foreach ($res as $rec) {
+	echo '<tr>';
+	printf('<th>%s</th>', _date('m/y', $cts));
+	foreach ($license_list as $l) {
+		$pct = $rec[$l] / $max;
+		printf('<td style="--size:%0.8f;"><span class="tooltip">$%s (%d%%) with %s</span></td>'
+			, $pct
+			, number_format($rec[$l])
+			, $pct * 100
+			, $l
+		);
 
-		$t = strtotime($rec['created_at']);
-		$d = sprintf("Date(%d)", $t * 1000); // Format for JS
-
-		$tmp_data[$d][ $rec['license_name'] ] = $rec;
-
-		if (empty($lic_rank[$rec['license_name']])) {
-			$lic_rank[$rec['license_name']] = 0;
-		}
-
-		$lic_rank[$rec['license_name']] += $rec[$col_val];
-
+		$used_pct += $pct;
+		$used_sum += $rec[$l];
 	}
 
-	// Sort so the biggest value is at the bottom right of the grid
-	arsort($lic_rank);
-	// var_dump($lic_rank); exit;
+	printf('<td style="--size:%0.8f;"><span class="tooltip">$%s (%d%%) with %s</span></td>'
+		, 1 - $used_pct
+		, $max - $used_sum
+		, (1 - $used_pct) * 100
+		, 'Other'
+	);
 
-	$col_list = array_keys($lic_rank);
-	$col_list = array_slice($col_list, 0, 50);
-
-	$cht_data = [];
-	$cht_data[0] = [
-		[ 'label' => 'Date', 'type' => 'date' ],
-	];
-	foreach ($col_list as $x) {
-		$cht_data[0][] = $x;
-	}
-
-	foreach ($tmp_data as $d => $row_data) {
-		$row = [];
-		$row[] = $d;
-		foreach ($col_list as $c) {
-			$row[] = floatval($row_data[$c][$col_val]);
-		}
-		$cht_data[] = $row;
-	}
-
-	// _exit_text($cht_data);
-
-	return $cht_data;
+	echo '</tr>';
 }
+?>
+</tbody>
+</table>
+</div>
+</section>
