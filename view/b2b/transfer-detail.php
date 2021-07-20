@@ -144,7 +144,7 @@ foreach ($res as $rec) {
 
 	$guid = preg_replace('/^WA\w+\./', null, $rec['id']);
 	if (preg_match('/VOID/', $rec['stat'])) {
-		$guid = sprintf('<strong class="text-danger">%s</strong>', $guid);
+		$guid = sprintf('<strong class="text-danger" title="VOID Transaction">%s</strong>', $guid);
 	}
 
 	$u_price = 0;
