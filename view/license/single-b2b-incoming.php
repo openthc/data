@@ -36,8 +36,8 @@ if (count($res)) {
 	</div>
 	<p>Top <?= $max ?> suppliers, last ~6 months</p>
 
-	<table class="ui table">
-	<thead>
+	<table class="table table-sm">
+	<thead class="thead-dark">
 	<tr>
 		<th>Vendor</th>
 		<th class="r">Purchases</th>

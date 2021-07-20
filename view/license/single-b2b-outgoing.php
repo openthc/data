@@ -39,8 +39,8 @@ $res = _select_via_cache($dbc, $sql, [ $L['id'] ]);
 	<div style="flex: 1 1 auto;"><h2>B2B Outgoing</h2></div>
 	<div style="flex: 1 0 auto; text-align:right;">
 		<div class="btn-group btn-group-sm">
-			<a class="btn btn-outline-secondary" href="/license/clients?id=<?= $L['id'] ?>"> view more <i class="fas fa-arrow-right"></i></a>
-			<a class="btn btn-outline-secondary" href="/license/map?view=clients&amp;id=<?= $L['id'] ?>"><i class="fas fa-map"></i></a>
+			<a class="btn btn-outline-secondary" href="/license/<?= $L['id'] ?>/clients"> view more <i class="fas fa-arrow-right"></i></a>
+			<a class="btn btn-outline-secondary" href="/license/<?= $L['id'] ?>/map?view=clients"><i class="fas fa-map"></i></a>
 		</div>
 	</div>
 </div>
