@@ -33,7 +33,8 @@ function _dbc()
 			$cfg = \OpenTHC\Config::get('database');
 			$dbc = new \Edoceo\Radix\DB\SQL(sprintf('pgsql:host=%s;dbname=%s', $cfg['hostname'], $cfg['database']), $cfg['username'], $cfg['password']);
 		} catch (Exception $e) {
-			_exit_text(sprintf('Database Connection Error: "%s"', $e->getMessage()), 500);
+			_exit_text('Database Connection Error [ERR-036]', 503);
+			// _exit_text(sprintf('Database Connection Error: "%s"', $e->getMessage()), 500);
 		}
 	}
 
