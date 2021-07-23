@@ -9,13 +9,14 @@ $d = dirname($d);
 $d = dirname($d);
 require_once("$d/boot.php");
 
-$url_origin = $argv[1];
-
+$url_origin = strtok($argv[1], '?');
 
 // Get "all" pages
 $page_max = 2;
 for ($page_idx=1; $page_idx<=$page_max; $page_idx++) {
-	_box_download_from_page(sprintf('%s?page=%d', $url_origin, $page_idx));
+	$url = sprintf('%s?page=%d&sortColumn=name&sortDirection=ASC', $url_origin, $page_idx);
+	echo "# peek: $url\n";
+	_box_download_from_page($url);
 }
 
 
@@ -59,10 +60,8 @@ function _box_download_page_script($dom)
 
 		$x = trim($node->textContent);
 		if (preg_match('/^Box\.postStreamData/', $x)) {
-			// echo ">>>>$x####\n";
 			$json_text = str_replace('Box.postStreamData = ', '', $x);
 			$json_text = trim($json_text, ';');
-			// echo ">>>>$json_text####\n";
 			$json_data = json_decode($json_text, true);
 			_box_download_file_list($json_data);
 		}
@@ -77,27 +76,26 @@ function _box_download_page_script($dom)
 function _box_download_file_list($json_data)
 {
 	$base_data = $json_data['/app-api/enduserapp/shared-item'];
-	// print_r($base_data);
-	// print_r(array_keys($json_data['/app-api/enduserapp/shared-folder']['items']));
 	$item_data = $json_data['/app-api/enduserapp/shared-folder']['items'];
-	// print_r($json_data['/app-api/enduserapp/shared-folder']['items']);
 
 	foreach ($item_data as $file) {
 
+		echo "# Download {$file['name']}\n";
+
 		$url = sprintf('https://lcb.app.box.com/index.php?rm=box_download_shared_file&shared_name=%s&file_id=f_%s', $base_data['sharedName'], $file['id']);
-		// echo "Download: $url\n";
 
 		$req = _curl_init($url);
 		$res_body = curl_exec($req);
 		$res_info = curl_getinfo($req);
-		// print_r($res_info); exit;
 
 		if ('302' == $res_info['http_code']) {
 			$url = $res_info['redirect_url'];
-			$cmd = sprintf('curl %s --remote-name --remote-header-name --silent &', escapeshellarg($url));
-			echo "# Download {$file['name']}\n";
+			$cmd = sprintf('  curl %s --remote-name --remote-header-name --silent &', escapeshellarg($url));
 			echo "$cmd\n";
 		}
+
+		echo "\n";
+
 	}
 
 }
