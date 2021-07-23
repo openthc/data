@@ -27,7 +27,7 @@ SELECT ROW_NUMBER() OVER(ORDER BY sum(license_revenue_full.rev_amount_sum) DESC)
 FROM license_revenue_full
 WHERE month = :m AND license_type != :lt
 GROUP BY license_id, license_name, city, county
-ORDER BY 1
+ORDER BY rev, license_id
 LIMIT $limit_count * 2
 SQL;
 
@@ -42,8 +42,8 @@ SELECT ROW_NUMBER() OVER(ORDER BY license_revenue.rev_amount DESC) AS rank
 FROM license
 JOIN license_revenue ON license.id = license_revenue.license_id
 WHERE month = :m
-ORDER BY license_revenue.rev_amount DESC
-LIMIT $limit_count * 2
+ORDER BY license_revenue.rev_amount, license_id DESC
+-- LIMIT $limit_count * 2
 SQL;
 
 
@@ -125,20 +125,19 @@ array_walk($rev_license, function(&$v, $k) {
 	// $v['revenue_rank_mean'] = array_sum($v['rank_])
 });
 
-// uasort($rev_license, function($a, $b) {
-// 	return ($a['revenue_mean'] < $b['revenue_mean']);
-// });
+uasort($rev_license, function($a, $b) {
+	return ($a['revenue_mean'] < $b['revenue_mean']);
+});
 
-$rev_license = array_slice($rev_license, 0, $limit_count);
-
+// $rev_license = array_slice($rev_license, 0, $limit_count);
 
 // Put back in the right order
 $mon_list = array_reverse($mon_list);
 ?>
 
 <section>
-
-<p>Showing Top 50 for most recent month, with history - average per month, and sum of previous <?= $month_count ?> counts</p>
+<h2>Ranked License Data</h2>
+<p>Showing Dollars and <code>#Rank (Change)</code> and <code>Revenue Change Since Pevious Month%</code>, over previous six months with average and sum</p>
 
 <form>
 <div class="form-inline mb-2">
@@ -154,8 +153,9 @@ $mon_list = array_reverse($mon_list);
 </form>
 
 <table class="table table-sm">
-<thead>
+<thead class="thead-dark">
 	<tr>
+		<th>#</th>
 		<th>Name</th>
 		<?php
 		foreach ($mon_list as $mon) {
@@ -168,9 +168,12 @@ $mon_list = array_reverse($mon_list);
 </thead>
 <tbody>
 <?php
+$idx = 0;
 foreach ($rev_license as $lic) {
+	$idx++;
 ?>
 	<tr>
+		<td>#<?= $idx ?></td>
 		<td><a href="/license/<?= $lic['license_id'] ?>"><?= $lic['license_name'] ?></a>
 			<br><?= $lic['license_city'] ?>
 			<br><?= h($lic['license_county']) ?>
@@ -178,7 +181,12 @@ foreach ($rev_license as $lic) {
 		<?php
 		foreach ($mon_list as $mon) {
 			$m = $mon['month'];
-			$out = sprintf('$%s<br>#%d (%+d)<br>%s', number_format($lic['rank_list'][$m]['rev']), $lic['rank_list'][$m]['rank'], $lic['rank_list'][$m]['delta_rank'], $lic['rank_list'][$m]['rev_delta']);
+			$out = sprintf('$%s<br>#%d (%+d)<br>%s'
+				, number_format($lic['rank_list'][$m]['rev'])
+				, $lic['rank_list'][$m]['rank']
+				, $lic['rank_list'][$m]['delta_rank']
+				, $lic['rank_list'][$m]['rev_delta']
+			);
 			$out = str_replace(' (+0)', null, $out);
 			echo '<td class="c">';
 			echo $out;
