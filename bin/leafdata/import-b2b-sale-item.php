@@ -34,8 +34,8 @@ while ($rec = $csv->fetch()) {
 	}
 
 	$rec['qty'] = floatval($rec['qty']);
-	$rec['price'] = floatval($rec['price']);
 	$rec['received_qty'] = floatval($rec['received_qty']);
+	$rec['price'] = floatval($rec['price']);
 
 	// Skip Old
 	$d0 = new DateTime($rec['created_at']);
@@ -111,7 +111,7 @@ while ($rec = $csv->fetch()) {
 		'uom' => $rec['uom'],
 		'stat' => $stat,
 		'full_price' => $rec['price'],
-		'unit_price' => ($qty ? ($rec['price'] / $rec['qty']) : 0)
+		'unit_price' => ($qty ? ($rec['price'] / $qty) : 0)
 		// 'meta' => json_encode($rec),
 	);
 
