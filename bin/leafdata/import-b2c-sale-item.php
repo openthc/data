@@ -29,7 +29,6 @@ $csv = new CSV_Reader($f);
 
 $idx = 1;
 $max = _find_max($f, $csv);
-$min_date = new DateTime(DATE_ALPHA);
 
 while ($rec = $csv->fetch()) {
 
@@ -56,10 +55,6 @@ while ($rec = $csv->fetch()) {
 	}
 
 	$d0 = new DateTime($rec['created_at']);
-	if ($d0 < $min_date) {
-		continue;
-	}
-
 	$y0 = intval($d0->format('Y'));
 
 	$rec['unit_price'] = floatval($rec['unit_price']);

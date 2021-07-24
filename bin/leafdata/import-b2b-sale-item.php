@@ -21,7 +21,6 @@ $csv = new CSV_Reader($f);
 
 $idx = 1; // First Data row maps to '1'
 $max = _find_max($f, $csv);
-$min_date = new DateTime(DATE_ALPHA);
 
 while ($rec = $csv->fetch()) {
 
@@ -36,12 +35,6 @@ while ($rec = $csv->fetch()) {
 	$rec['qty'] = floatval($rec['qty']);
 	$rec['received_qty'] = floatval($rec['received_qty']);
 	$rec['price'] = floatval($rec['price']);
-
-	// Skip Old
-	$d0 = new DateTime($rec['created_at']);
-	if ($d0 < $min_date) {
-		continue;
-	}
 
 	$stat = array();
 

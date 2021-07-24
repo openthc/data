@@ -18,7 +18,6 @@ $dbc = _dbc();
 
 $idx = 1;
 $max = _find_max($f, $csv);
-$min_date = new DateTime(DATE_ALPHA);
 
 while ($rec = $csv->fetch()) {
 
@@ -33,11 +32,6 @@ while ($rec = $csv->fetch()) {
 
 	if (empty($rec['global_id'])) {
 		// _append_fail_log($idx, 'Missing Global ID', $rec);
-		continue;
-	}
-
-	$dt0 = new DateTime($rec['created_at']);
-	if ($dt0 < $min_date) {
 		continue;
 	}
 

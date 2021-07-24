@@ -25,7 +25,6 @@ $csv = new CSV_Reader($f);
 
 $idx = 1;
 $max = _find_max($f, $csv);
-$min_date = new DateTime(DATE_ALPHA);
 
 while ($rec = $csv->fetch()) {
 
@@ -51,12 +50,6 @@ while ($rec = $csv->fetch()) {
 	}
 	if (empty($date)) {
 		$date = $rec['created_at'];
-	}
-
-	// Skip Old
-	$d0 = new DateTime($date);
-	if ($d0 < $min_date) {
-		continue;
 	}
 
 	$stat = $rec['status'];

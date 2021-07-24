@@ -14,15 +14,7 @@ if (!is_file($f)) {
 
 $csv = new CSV_Reader($f);
 
-$idx = 1;
-$off = 0;
 $max = _find_max($f, $csv);
-
-// Seek to Work
-while ($idx < $off) {
-	$idx++;
-	$rec = $csv->fetch();
-}
 
 // Connect DB
 $dbc = _dbc();
@@ -38,15 +30,12 @@ $idx = 1;
 while ($rec = $csv->fetch()) {
 
 	$idx++;
-	if ($idx < $off) {
-		continue;
-	}
+	_show_progress($idx, $max);
 
 	$rec = array_combine($csv->key_list, $rec);
 
 	// Skip These?
 	if (empty($rec['global_id'])) {
-		// _append_fail_log($idx, 'Missing Global ID', $rec);
 		continue;
 	}
 
@@ -72,8 +61,6 @@ while ($rec = $csv->fetch()) {
 	} catch (Exception $e) {
 		_append_fail_log($idx, $e->getMessage(), $rec);
 	}
-
-	_show_progress($idx, $max);
 
 }
 

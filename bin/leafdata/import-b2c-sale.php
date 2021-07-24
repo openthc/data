@@ -18,7 +18,6 @@ $csv = new CSV_Reader($f);
 
 $idx = 1;
 $max = _find_max($f, $csv);
-$min_date = new DateTime(DATE_ALPHA);
 
 
 // Connect DB
@@ -57,11 +56,6 @@ while ($rec = $csv->fetch()) {
 
 	// Cleanup Dates
 	$rec = de_fuck_date_format($rec);
-
-	$d0 = new DateTime($rec['created_at']);
-	if ($d0 < $min_date) {
-		continue;
-	}
 
 	if (!empty($rec['deleted_at'])) {
 		$flag = $flag | 0x08000000;

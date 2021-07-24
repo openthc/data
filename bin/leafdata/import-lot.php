@@ -2,12 +2,6 @@
 <?php
 /**
  * Import Lot Data
- **
- ** File Size: 10031913776 bytes
- ** Records: 17156647 Records
- * Took 268m1.050s to IMport 17156594 records
- *
- ** Import 2019.243 : 21877568 rows in 288m24.485s
  */
 
 require_once(__DIR__ . '/boot.php');
@@ -22,8 +16,6 @@ $csv = new CSV_Reader($f);
 
 $idx = 1;
 $max = _find_max($f, $csv);
-$min_date = new DateTime(DATE_ALPHA);
-
 
 // Connect DB
 $dbc = _dbc();
@@ -37,7 +29,6 @@ $dbc_insert = $dbc->prepare($sql);
 $idx = 1;
 while ($rec = $csv->fetch()) {
 
-	$idx++;
 /*
 Array
 (
@@ -71,8 +62,12 @@ Array
 )
 */
 
+	$idx++;
+	_show_progress($idx, $max, $rec[1]);
+
 	if ($csv->key_size != count($rec)) {
-		_append_fail_log($idx, 'Field Count Issue', $rec);
+		$msg = sprintf('Field Count Issue: %d != %d', $csv->key_size, count($rec));
+		_append_fail_log($idx, $msg, $rec);
 		continue;
 	}
 
@@ -91,11 +86,6 @@ Array
 		if (empty($rec[$k])) {
 			unset($rec[$k]);
 		}
-	}
-
-	$dt0 = new DateTime($rec['created_at']);
-	if ($dt0 < $min_date) {
-		continue;
 	}
 
 	// Make sure we have the product
@@ -131,8 +121,6 @@ Array
 	// 		_append_fail_log($idx, $e->getMessage(), $rec);
 	// 	}
 	// }
-
-	_show_progress($idx, $max);
 
 }
 
