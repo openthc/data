@@ -135,12 +135,69 @@ array_walk($rev_license, function(&$v, $k) {
 $rev_license = array_slice($rev_license, 0, $limit_count);
 
 $mon_list = array_unique($mon_list);
-sort($mon_list);
-$mon_list = array_slice($mon_list, -6);
+rsort($mon_list);
+$mon_list = array_slice($mon_list, 0, 6);
 
 echo App\UI::revenue_nav_tabs();
 
 ?>
+
+<?php
+$Chart0_Config = [
+	'type' => 'bar',
+	'data' => [
+		'labels' => [],
+		'datasets' => [
+			0 => [
+				'label' => 'Revenue',
+				'backgroundColor' => 'green',
+				'borderColor' => 'green',
+				'yAxisID' => 'y1',
+				'data' => [],
+			],
+		],
+	],
+	'options' => [
+		'animations' => false,
+		'maintainAspectRatio' => false,
+		'plugins' => [
+			'legend' => false,
+		],
+		'scales' => [
+			'x' => [
+				'display' => false,
+			],
+			'y' => [
+				'position' => 'right',
+			]
+		]
+	]
+];
+
+$mon = $mon_list[0];
+$rev_license = array_slice($rev_license, 0, 50);
+foreach ($rev_license as $rec) {
+	$Chart0_Config['data']['labels'][] = $rec['name'];
+	$Chart0_Config['data']['datasets'][0]['data'][] = intval($rec['revenue_list'][$mon]);
+	// $Chart0_Config['data']['datasets'][1]['data'][] = intval($rec['r']);
+}
+?>
+<section>
+<h2>Shows Recent Month Revenue, Order by 6mo Average, Top 50</h2>
+<div class="chart-wrap">
+	<canvas id="revenue-license-chart0"></canvas>
+</div>
+</section>
+<script>
+var Chart0 = new Chart(document.getElementById('revenue-license-chart0'), <?= json_encode($Chart0_Config, JSON_HEX_AMP | JSON_HEX_APOS| JSON_HEX_QUOT| JSON_HEX_TAG | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) ?>);
+</script>
+
+
+
+
+
+
+
 
 <style>
 .dataTables_filter, .dataTables_info { display: none; }
@@ -195,7 +252,6 @@ foreach ($rev_license as $rev) {
 </tbody>
 </table>
 </div>
-
 
 <script>
 $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {

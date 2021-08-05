@@ -166,9 +166,6 @@ foreach ($res as $rec) {
 	$Chart0_Config['data']['datasets'][0]['data'][] = intval($rec['c']);
 	$Chart0_Config['data']['datasets'][1]['data'][] = intval($rec['r']);
 }
-echo '<pre>';
-var_dump($Chart0_Config);
-echo '</pre>';
 ?>
 <script>
 var Chart0 = new Chart(document.getElementById('revenue-chart0'), <?= json_encode($Chart0_Config, JSON_HEX_AMP | JSON_HEX_APOS| JSON_HEX_QUOT| JSON_HEX_TAG | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) ?>);

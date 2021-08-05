@@ -13,11 +13,10 @@ if (empty($limit_count)) {
 
 $dbc = _dbc();
 
-$res = $dbc->fetchRow('SELECT min(month) AS date_alpha, max(month) AS date_omega FROM license_revenue');
-// var_dump($res);
-// if (empty($res['date_omega'])) {
-// 	_exit_text('Revenue Reports not Available', 404);
-// }
+$sql = 'SELECT min(month) AS date_alpha, max(month) AS date_omega FROM license_revenue';
+$res = $dbc->fetchRow($sql);
+// $res = _select_via_cache($dbc, $sql);
+
 
 $mon0 = $res['date_alpha'];
 $mon1 = $res['date_omega'];
@@ -78,18 +77,26 @@ uasort($rev_company, function($a, $b) {
 	return ($a['revenue_mean'] < $b['revenue_mean']);
 });
 
-$rev_company = array_slice($rev_company, 0, $limit_count);
+// $rev_company = array_slice($rev_company, 0, $limit_count);
 // var_dump($rev_company); exit;
 
 $mon_list = array_unique($mon_list);
-sort($mon_list);
-$mon_list = array_slice($mon_list, -6);
+rsort($mon_list);
+$mon_list = array_slice($mon_list, 0, 6);
 
 echo App\UI::revenue_nav_tabs();
 
 ?>
 
-<p>Showing 1 - 50 of <?= $max_company ?></p>
+<!-- <p>Showing 1 - 50 of <?= $max_company ?></p> -->
+
+<section>
+<h2>Shows Recent Month Revenue, Order by 6mo Average, Top 50</h2>
+<div class="chart-wrap">
+	<canvas id="revenue-company-chart0"></canvas>
+</div>
+</section>
+
 
 <div class="table-responsive">
 <table class="table table-sm table-striped table-hover" id="company-revenue-list">
@@ -129,33 +136,46 @@ foreach ($rev_company as $rev) {
 </table>
 </div>
 
+<?php
+$Chart0_Config = [
+	'type' => 'bar',
+	'data' => [
+		'labels' => [],
+		'datasets' => [
+			0 => [
+				'label' => 'Revenue',
+				'backgroundColor' => 'green',
+				'borderColor' => 'green',
+				'yAxisID' => 'y1',
+				'data' => [],
+			],
+		],
+	],
+	'options' => [
+		'animations' => false,
+		'maintainAspectRatio' => false,
+		'plugins' => [
+			'legend' => false,
+		],
+		'scales' => [
+			'x' => [
+				'display' => false,
+			],
+			'y' => [
+				'position' => 'right',
+			]
+		]
+	]
+];
 
+$mon = $mon_list[0];
+$rev_company = array_slice($rev_company, 0, 50);
+foreach ($rev_company as $rec) {
+	$Chart0_Config['data']['labels'][] = $rec['name'];
+	$Chart0_Config['data']['datasets'][0]['data'][] = intval($rec['revenue_list'][$mon]);
+	// $Chart0_Config['data']['datasets'][1]['data'][] = intval($rec['r']);
+}
+?>
 <script>
-$(function() {
-	// Draw the Chart
-	google.charts.load('current', {'packages':['corechart']});
-	google.charts.setOnLoadCallback(function() {
-		var data = google.visualization.arrayToDataTable(<?= $cht_json ?>);
-
-		var options = {
-			title: 'Company Performance',
-			curveType: 'function',
-			legend: { position: 'none' }
-		};
-
-		var chart = new google.visualization.LineChart(document.getElementById(''));
-
-		chart.draw(data, options);
-	});
-
-	var CompanyTable = $('#company-revenue-list').DataTable({
-		info: false,
-		order: [],
-		paging: false,
-		processing: true,
-		searching: false,
-	});
-
-
-});
+var Chart0 = new Chart(document.getElementById('revenue-company-chart0'), <?= json_encode($Chart0_Config, JSON_HEX_AMP | JSON_HEX_APOS| JSON_HEX_QUOT| JSON_HEX_TAG | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) ?>);
 </script>
