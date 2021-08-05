@@ -8,9 +8,10 @@ require_once(__DIR__ . '/../../boot.php');
 function _find_license($lic6)
 {
 	$dbc = _dbc();
-	$sql = 'SELECT * FROM license WHERE code LIKE :l0 ORDER BY id';
+	$sql = 'SELECT * FROM license WHERE (code = :l0 OR code LIKE :l1) ORDER BY id';
 	$arg = [
-		':l0' => sprintf('_%s', $lic6)
+		':l0' => $lic6,
+		':l1' => sprintf('_%s', $lic6)
 	];
 	$chk = $dbc->fetchRow($sql, $arg);
 	return $chk;
@@ -38,7 +39,7 @@ function _revenue_record_insert($L, $date, $mode, $rev_sum, $tax_sum=0)
 	$arg = array($add['license_id'], $add['month'], $add['source'], $add['rev_amount']);
 	$chk = $dbc->fetchRow($sql, $arg);
 	if (empty($chk)) {
-		// echo '+';
+		echo '+';
 		$dbc->insert('license_revenue', $add);
 	} else {
 		echo '.';

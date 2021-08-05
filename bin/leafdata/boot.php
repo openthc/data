@@ -36,8 +36,17 @@ class CSV_Reader
 		$this->fh = fopen($f, 'r');
 		$this->sep = _fpeek_sep($this->fh);
 
+		$map_file = preg_replace('/\.\w+$/', '.map', $f);
+		if (is_file($map_file)) {
+			die("read Header from MAP!\n");
+		}
+
 		// Header Row
 		$this->key_list = fgetcsv($this->fh, 0, $this->sep);
+		if ('global_id' != $this->key_list[0]) {
+			die("\nInvalid First header Row in ($f)\n");
+		}
+
 		$this->key_size = count($this->key_list);
 	}
 
@@ -298,7 +307,7 @@ function _product_inflate($rec)
 }
 
 
-function _show_progress($idx, $max)
+function _show_progress($idx, $max, $msg=null)
 {
 	if ((0 == ($idx % 100000)) || ($idx == $max)) {
 
@@ -310,7 +319,8 @@ function _show_progress($idx, $max)
 
 		$dts = date(DateTime::RFC3339);
 
-		echo "$dts: $idx $pct% $rps/s\n";
+		$out = trim("$dts: $idx $pct% $rps/s $msg");
+		echo "$out\n";
 
 	}
 }
