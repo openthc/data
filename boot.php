@@ -16,8 +16,8 @@ define('DATE_ALPHA', '2019-06-01 00:00:00');
 define('DATE_OMEGA', '2021-06-01 00:00:00');
 
 require_once(APP_ROOT . '/vendor/autoload.php');
-require_once(APP_ROOT . '/lib/data.php');
-require_once(APP_ROOT . '/lib/export.php');
+// require_once(APP_ROOT . '/lib/data.php');
+// require_once(APP_ROOT . '/lib/export.php');
 
 \OpenTHC\Config::init(APP_ROOT);
 
@@ -34,7 +34,6 @@ function _dbc()
 			$dbc = new \Edoceo\Radix\DB\SQL(sprintf('pgsql:host=%s;dbname=%s', $cfg['hostname'], $cfg['database']), $cfg['username'], $cfg['password']);
 		} catch (Exception $e) {
 			_exit_text('Database Connection Error [ERR-036]', 503);
-			// _exit_text(sprintf('Database Connection Error: "%s"', $e->getMessage()), 500);
 		}
 	}
 
@@ -57,10 +56,13 @@ function render_view($c, $RES, $f)
 }
 
 
-function _select_via_cache($dbc, $sql, $arg)
+function _select_via_cache($dbc, $sql, $arg=null)
 {
-	$hash = sprintf('%s-%s', md5($sql), md5(json_encode($arg)));
-	$file = sprintf('%s/var/cache/sql/%s', APP_ROOT, $hash);
+	$file = sprintf('%s/var/query/%s/%s.json'
+		, APP_ROOT
+		, md5($sql)
+		, md5(json_encode($arg))
+	);
 
 	// Use Cache?
 	if (is_file($file)) {
@@ -68,21 +70,27 @@ function _select_via_cache($dbc, $sql, $arg)
 		if ($age < 1209600) { // 2 Weeks
 			$res = file_get_contents($file);
 			$res = json_decode($res, true);
+			$res = $res['res'];
 			return $res;
 		}
 	}
 
 	$res = $dbc->fetchAll($sql, $arg);
 	if (!empty($res)) {
-		file_put_contents($file, json_encode($res));
+
+		$path = dirname($file);
+		if (!is_dir($path)) {
+			mkdir($path, 0755, true);
+		}
+
+		file_put_contents($file, json_encode([
+			'sql' => $sql,
+			'arg' => $arg,
+			'res' => $res,
+		]));
+
 	}
 
-	// file_put_contents($file, json_encode(array(
-	// 	'sql' => $sql,
-	// 	'arg' => $arg,
-	// 	'err' => SQL::lastError(),
-	// 	'res' => $res,
-	// )));
 
 	return $res;
 

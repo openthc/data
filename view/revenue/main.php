@@ -20,11 +20,11 @@ case 'license':
 	switch ($_GET['lt']) {
 	case 'retail':
 		$lic_type = 'retail';
-		$sql_type = "WHERE license_type = 'R'";
+		$sql_type = "AND license_type = 'R'";
 		break;
 	case 'supply':
 		$lic_type = 'supply';
-		$sql_type = "WHERE license_type NOT IN ('R', 'X', 'Z') ";
+		$sql_type = "AND license_type NOT IN ('R', 'X', 'Z') ";
 		break;
 	}
 	break;
@@ -41,73 +41,65 @@ $sql = <<<EOS
 SELECT month AS m
 , count(DISTINCT $obj_type) AS c
 , sum(rev_amount_sum) AS r
-, sum(tax_amount_sum) AS t
 FROM license_revenue_full
+WHERE source IN ('lcb-v1', 'lcb-v2')
 $sql_type
 GROUP BY month
 ORDER BY month ASC
 EOS;
 
-//echo "<p>$sql</p>";
+// echo "<p>$sql</p>";
 
-$cht_data = array();
-$cht_data_ext = array();
-$cht_data[] = array('Month', $cht_type, 'Total Revenue');
-$cht_data_ext[] = array(
-	array('label' => 'Month', 'type' => 'date'),
-	array('label' => $cht_type, 'type' => 'number'),
-	array('label' => 'title1', 'type' => 'string'),
-	array('label' => 'text1', 'type' => 'string'),
-	array('label' => 'Total Revenue', 'type' => 'number'),
-	array('label' => 'title2', 'type' => 'string'),
-	array('label' => 'text2', 'type' => 'string'),
-);
-$cht_data_ext['2014-06-01'] = array('2014-06-01', 0, null, null, 0, null, null);
+// $cht_data = array();
+// $cht_data_ext = array();
+// $cht_data[] = array('Month', $cht_type, 'Total Revenue');
+// $cht_data_ext[] = array(
+// 	array('label' => 'Month', 'type' => 'date'),
+// 	array('label' => $cht_type, 'type' => 'number'),
+// 	array('label' => 'title1', 'type' => 'string'),
+// 	array('label' => 'text1', 'type' => 'string'),
+// 	array('label' => 'Total Revenue', 'type' => 'number'),
+// 	array('label' => 'title2', 'type' => 'string'),
+// 	array('label' => 'text2', 'type' => 'string'),
+// );
+// $cht_data_ext['2014-06-01'] = array('2014-06-01', 0, null, null, 0, null, null);
 
-$res = $dbc->fetchAll($sql);
-foreach ($res as $rec) {
-	$rec['c'] = floatval($rec['c']);
-	$rec['r'] = floatval($rec['r']);
-	$rec['t'] = floatval($rec['t']);
-	//$cht_data[] = array($rec['m'], $rec['c'], $rec['r'], $rec['t'], $rec['r'] / $rec['c']);
-	$cht_data[$rec['m']] = array($rec['m'], $rec['c'], $rec['r']); //, null);
-	$cht_data_ext[$rec['m']] = array($rec['m'], $rec['c'], null, null, $rec['r'] / 1000000, null, null);
-}
+// $res = $dbc->fetchAll($sql);
+$res = _select_via_cache($dbc, $sql);
+// foreach ($res as $rec) {
+// 	$rec['c'] = floatval($rec['c']);
+// 	$rec['r'] = floatval($rec['r']);
+// 	$rec['t'] = floatval($rec['t']);
+// 	//$cht_data[] = array($rec['m'], $rec['c'], $rec['r'], $rec['t'], $rec['r'] / $rec['c']);
+// 	$cht_data[$rec['m']] = array($rec['m'], $rec['c'], $rec['r']); //, null);
+// 	$cht_data_ext[$rec['m']] = array($rec['m'], $rec['c'], null, null, $rec['r'] / 1000000, null, null);
+// }
 //var_dump($cht_data);
 
-$cht_data_ext['2014-06-01'][2] = 'I502 Cannabis Sales Begins';
-$cht_data_ext['2015-06-01'][2] = 'First Year of Retail Operations';
-$cht_data_ext['2016-06-01'][2] = 'Second Year of Retail Operations';
-$cht_data_ext['2017-06-01'][2] = 'Third Year of Retail Operations';
-$cht_data_ext['2017-10-01'][2] = 'Most Companies/Licenses Reporting';
-$cht_data_ext['2017-10-01'][3] = 'October was the final month of BioTrack reporting';
-$cht_data_ext['2017-11-01'][2] = 'Spreadsheet Reporting Begins';
-$cht_data_ext['2017-11-01'][3] = '143 Companies/147 Licenses Disappeared';
-$cht_data_ext['2018-06-01'][2] = 'Fourth Year of Retail Operations';
-$cht_data_ext['2018-01-01'][2] = 'Valley of Contingency';
-$cht_data_ext['2018-01-01'][3] = 'Off by 384 Companies/394 Licenses, about 30% loss in three months, the same level as June 2016!';
-$cht_data_ext['2018-02-01'][2] = 'LeafData Launched';
-$cht_data_ext['2018-04-01'][5] = 'Data Anomaly'; // 5,6 are for the Red-Line
-$cht_data_ext['2018-04-01'][6] = 'Data Reporting from LCB has some very wild values in it';
-$cht_data_ext['2019-06-01'][2] = 'Fourth Year of Retail Operations';
+// $cht_data_ext['2014-06-01'][2] = 'I502 Cannabis Sales Begins';
+// $cht_data_ext['2015-06-01'][2] = 'First Year of Retail Operations';
+// $cht_data_ext['2016-06-01'][2] = 'Second Year of Retail Operations';
+// $cht_data_ext['2017-06-01'][2] = 'Third Year of Retail Operations';
+// $cht_data_ext['2017-10-01'][2] = 'Most Companies/Licenses Reporting';
+// $cht_data_ext['2017-10-01'][3] = 'October was the final month of BioTrack reporting';
+// $cht_data_ext['2017-11-01'][2] = 'Spreadsheet Reporting Begins';
+// $cht_data_ext['2017-11-01'][3] = '143 Companies/147 Licenses Disappeared';
+// $cht_data_ext['2018-06-01'][2] = 'Fourth Year of Retail Operations';
+// $cht_data_ext['2018-01-01'][2] = 'Valley of Contingency';
+// $cht_data_ext['2018-01-01'][3] = 'Off by 384 Companies/394 Licenses, about 30% loss in three months, the same level as June 2016!';
+// $cht_data_ext['2018-02-01'][2] = 'LeafData Launched';
+// $cht_data_ext['2018-04-01'][5] = 'Data Anomaly'; // 5,6 are for the Red-Line
+// $cht_data_ext['2018-04-01'][6] = 'Data Reporting from LCB has some very wild values in it';
+// $cht_data_ext['2019-06-01'][2] = 'Fourth Year of Retail Operations';
 // $cht_data_ext['2019-07-15'][2] = 'LeafData v1.37.5';
 
 
-$cht_json = json_encode(array_values($cht_data));
-$cht_json_ext = json_encode(array_values($cht_data_ext));
+// $cht_json = json_encode(array_values($cht_data));
+// $cht_json_ext = json_encode(array_values($cht_data_ext));
 
 echo App\UI::revenue_nav_tabs();
 
 ?>
-
-<!--
-<div class="card">
-	<div class="card-header"><h2>Active Companes and Monthly Revenue</h2></div>
-	<div class="card-body">
-		<div id="active-monthly-chart" style="height:480px;"></div>
-	</div>
-</div>
--->
 
 <section>
 <div class="card">
@@ -130,93 +122,54 @@ echo App\UI::revenue_nav_tabs();
 		  </li>
 		</ul>
 
-		<div>
-			<div class="otd-chart" id="active-monthly-chart-annotated"></div>
+		<div class="chart-wrap">
+			<canvas id="revenue-chart0"></canvas>
 		</div>
 
-		<p><?= $obj_name ?> count shown in blue, in absolute count. Revenue shown in red, factored in millions of dollars, second Y-axis.</p>
+		<p><?= $obj_name ?> count shown in red, in absolute count.
+		 Revenue shown in green, factored in millions of dollars, second Y-axis.
+		</p>
 	</div>
 </div>
 </section>
 
+<?php
+$Chart0_Config = [
+	'type' => 'line',
+	'data' => [
+		'labels' => [],
+		'datasets' => [
+			0 => [
+				'label' => 'Object Count',
+				'backgroundColor' => 'red',
+				'borderColor' => 'red',
+				'yAxisID' => 'y1',
+				'data' => [],
+			],
+			1 => [
+				'label' => 'Revenue',
+				'backgroundColor' => 'green',
+				'borderColor' => 'green',
+				'yAxisID' => 'y2',
+				'data' => [],
+			]
+		],
+	],
+	'options' => [
+		'animations' => false,
+		'maintainAspectRatio' => false,
+	]
+];
+
+foreach ($res as $rec) {
+	$Chart0_Config['data']['labels'][] = _date('m/y', $rec['m']);
+	$Chart0_Config['data']['datasets'][0]['data'][] = intval($rec['c']);
+	$Chart0_Config['data']['datasets'][1]['data'][] = intval($rec['r']);
+}
+echo '<pre>';
+var_dump($Chart0_Config);
+echo '</pre>';
+?>
 <script>
-$(function() {
-	// Draw the Chart
-	google.charts.load('current', {'packages':['corechart']});
-	google.charts.setOnLoadCallback(function() {
-
-		return(null);
-
-		var data = google.visualization.arrayToDataTable(<?= $cht_json ?>);
-
-		var options = {
-			title: 'Company Performance',
-			legend: { position: 'none' },
-			lineWidth: 4,
-			hAxis: {
-				logScale: true,
-			},
-			vAxes: {
-				0: {title: 'Active Companies'},
-				1: {title: 'Total Revenue'}
-			},
-			series: {
-				0: { targetAxisIndex: 0},
-				1: { targetAxisIndex: 1}
-			},
-		};
-
-		var chart = new google.visualization.LineChart(document.getElementById('active-monthly-chart'));
-
-		chart.draw(data, options);
-
-	});
-
-});
-</script>
-
-
-<script>
-$(function() {
-	// Draw the Chart
-	google.charts.load('current', {'packages':['annotationchart']});
-	google.charts.setOnLoadCallback(function() {
-
-		var src_data = <?= $cht_json_ext ?>;
-
-		// Convert to JS Date
-		var idx = 1; // Yes, skip first row
-		var max = src_data.length;
-		var d = null;
-		for (idx; idx < max; idx++) {
-			d = src_data[idx][0];
-			//console.log(d);
-			d = new Date(d + 'T00:00:00-08:00');
-			//console.log(d);
-			//d.setDate(2);
-			//d.setHours(23);
-			src_data[idx][0] = d;
-		}
-
-		var data = google.visualization.arrayToDataTable(src_data);
-		var options = {
-			title: 'Companies Reporting',
-			legend: { position: 'none' },
-			annotationsWidth: 15,
-			displayZoomButtons: false,
-			fill: 20,
-			scaleColumns: [0, 1],
-			scaleType: 'allmaximized',
-			thickness: 4,
-		};
-
-		var chart = new google.visualization.AnnotationChart(document.getElementById('active-monthly-chart-annotated'));
-
-		chart.draw(data, options);
-
-		$('#active-monthly-chart-annotated').removeClass('container');
-
-	});
-
-});
+var Chart0 = new Chart(document.getElementById('revenue-chart0'), <?= json_encode($Chart0_Config, JSON_HEX_AMP | JSON_HEX_APOS| JSON_HEX_QUOT| JSON_HEX_TAG | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) ?>);
 </script>
