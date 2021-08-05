@@ -84,7 +84,7 @@ foreach($xls->getSheetNames() as $wks_name) {
 			echo "ROW:$idx; Failed to Parse Date: $lic6, $x\n";
 		}
 
-		$date = date('Y-m-d', strtotime($date));
+		$date = date('Y-m-t', strtotime($date));
 
 		$rev_sum = trim($wks->getCell(sprintf('C%d', $idx))->getValue());
 		$tax_sum = trim($wks->getCell(sprintf('D%d', $idx))->getValue());
