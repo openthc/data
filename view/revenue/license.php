@@ -175,8 +175,8 @@ $Chart0_Config = [
 ];
 
 $mon = $mon_list[0];
-$rev_license = array_slice($rev_license, 0, 50);
-foreach ($rev_license as $rec) {
+$cht_license = array_slice($rev_license, 0, 50);
+foreach ($cht_license as $rec) {
 	$Chart0_Config['data']['labels'][] = $rec['name'];
 	$Chart0_Config['data']['datasets'][0]['data'][] = intval($rec['revenue_list'][$mon]);
 	// $Chart0_Config['data']['datasets'][1]['data'][] = intval($rec['r']);
@@ -191,13 +191,6 @@ foreach ($rev_license as $rec) {
 <script>
 var Chart0 = new Chart(document.getElementById('revenue-license-chart0'), <?= json_encode($Chart0_Config, JSON_HEX_AMP | JSON_HEX_APOS| JSON_HEX_QUOT| JSON_HEX_TAG | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) ?>);
 </script>
-
-
-
-
-
-
-
 
 <style>
 .dataTables_filter, .dataTables_info { display: none; }
