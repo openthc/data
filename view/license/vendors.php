@@ -37,15 +37,12 @@ FROM b2b_sale
 JOIN license ON b2b_sale.source_license_id = license.id
 WHERE b2b_sale.target_license_id = ? AND b2b_sale.stat IN ('open', 'ready-for-pickup', 'in-transit', 'received')
 AND execute_at >= now() - '12 months'::interval
-AND full_price > 0
 GROUP BY license.id, license.name
 ORDER BY 2 DESC
 LIMIT $max
 SQL;
 $arg = [ $L['id'] ];
-// $res = $dbc->fetchAll($sql, $arg);
 $res = _select_via_cache($dbc, $sql, $arg);
-// var_dump($res); exit;
 
 ?>
 
@@ -69,7 +66,7 @@ foreach ($res as $rec) {
 	<tr>
 		<td><a href="/license/<?= $rec['license_id'] ?>"><?= $rec['license_name'] ?></a> <small><?= $rec['license_code'] ?></small></td>
 		<td class="r"><?= $rec['c'] ?></td>
-		<td class="r"><?= $rec['rev'] ?></td>
+		<td class="r"><?= sprintf('%0.2f', $rec['rev']) ?></td>
 		<td class="r"><a href="/b2b/transfer?client=<?= $L['id'] ?>&amp;vendor=<?= $rec['license_id'] ?>"><i class="fas fa-file-invoice-dollar"></i></a></td>
 	</tr>
 <?php

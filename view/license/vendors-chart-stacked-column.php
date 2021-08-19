@@ -19,10 +19,11 @@ GROUP BY date_trunc('month', execute_at), license.id, license.name
 ORDER BY 2, 3
 SQL;
 $arg = [ $L['id'] ];
-// var_dump($arg);
 $res = _select_via_cache($dbc, $sql, $arg);
-// var_dump($res);
-// _res_to_table($res);
+if (empty($res)) {
+	return null;
+}
+
 $cht_data = [];
 $license_list = [];
 $license_rank = [];
