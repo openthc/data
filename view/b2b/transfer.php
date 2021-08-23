@@ -121,7 +121,7 @@ if ($show_void) {
 	<th class="r">Received</th>
 	<th class="r">Vendor &sum;$</th>
 	<th class="r">Vendor $/U</th>
-	<th class="r">Client $/#</th>
+	<th class="r">Vendor $/*</th>
 	<th class="r">Client $/U</th>
 </thead>
 <tbody>
@@ -139,8 +139,8 @@ foreach ($res_b2b as $rec) {
 		<td><a href="/b2b/product?vendor=<?= $L_Vendor['id'] ?>&amp;name=<?= rawurlencode($rec['product_name']) ?>"><?= h($rec['product_name']) ?></a></td>
 		<td class="r"><?= $rec['qty_tx'] ?></td>
 		<td class="r"><?= $rec['qty_rx'] ?></td>
-		<td class="r"><?= $rec['full_price'] ?></td>
 		<td class="r"><?= $rec['unit_price'] ?></td>
+		<td class="r"><?= number_format($rec['full_price']) ?></td>
 		<?php
 		if (!empty($res_b2c[ $rec['product_name'] ])) {
 			$b2c = $res_b2c[ $rec['product_name'] ];

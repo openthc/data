@@ -57,7 +57,7 @@ SQL;
 
 	}
 
-	echo '<div style="border: 2px solid #333; height: 320px;">';
+	echo '<div class="chart-wrap">';
 	echo '<table class="charts-css column multiple stacked show-data-on-hover show-heading show-labels">';
 	echo '<caption>Monthly Revenue (All) <a href="?stat=">show-live-only</a></caption>';
 	echo '<thead><tr><th scope="col">Date</th><th scope="col">VOID</th><th scope="col">Live</th></tr></thead>';
