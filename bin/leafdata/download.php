@@ -12,11 +12,15 @@ require_once("$d/boot.php");
 $url_origin = strtok($argv[1], '?');
 
 // Get "all" pages
-$page_max = 2;
+$page_max = 1;
 for ($page_idx=1; $page_idx<=$page_max; $page_idx++) {
+
 	$url = sprintf('%s?page=%d&sortColumn=name&sortDirection=ASC', $url_origin, $page_idx);
 	echo "# peek: $url\n";
-	_box_download_from_page($url);
+	$box_info = _box_download_from_page($url);
+
+	$page_max = $box_info['/app-api/enduserapp/shared-folder']['pageCount'];
+
 }
 
 
@@ -45,7 +49,9 @@ function _box_download_from_page($url_origin)
 	$dom = new DOMDocument('1.0', 'utf-8');
 	$dom->loadHTML($res_body);
 
-	_box_download_page_script($dom);
+	$ret = _box_download_page_script($dom);
+
+	return $ret;
 
 }
 
@@ -67,6 +73,8 @@ function _box_download_page_script($dom)
 		}
 
 	}
+
+	return $json_data;
 }
 
 
@@ -75,6 +83,9 @@ function _box_download_page_script($dom)
  */
 function _box_download_file_list($json_data)
 {
+	// echo __FUNCTION__ . "\n";
+	// var_dump(array_keys($json_data['/app-api/enduserapp/shared-folder']['items']));
+
 	$base_data = $json_data['/app-api/enduserapp/shared-item'];
 	$item_data = $json_data['/app-api/enduserapp/shared-folder']['items'];
 
@@ -92,6 +103,11 @@ function _box_download_file_list($json_data)
 			$url = $res_info['redirect_url'];
 			$cmd = sprintf('  curl %s --remote-name --remote-header-name --silent &', escapeshellarg($url));
 			echo "$cmd\n";
+			echo "sleep 1\n";
+		} else {
+			echo $url;
+			echo ' == ';
+			echo $res_info['http_code'];
 		}
 
 		echo "\n";
