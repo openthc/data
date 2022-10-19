@@ -2,6 +2,8 @@
 <?php
 /**
  * Import B2B Sale Items
+ *
+ * SPDX-License-Identifier: GPL-3.0-only
  */
 
 require_once(__DIR__ . '/boot.php');
@@ -99,8 +101,8 @@ while ($rec = $csv->fetch()) {
 		'b2b_sale_id' => $rec['inventory_transfer_id'],
 		'lot_id_source' => $rec['inventory_id'],
 		'lot_id_target' => $rec['received_inventory_id'],
-		'qom_tx' => $rec['qty'],
-		'qom_rx' => $rec['received_qty'],
+		'unit_count_tx' => $rec['qty'],
+		'unit_count_rx' => $rec['received_qty'],
 		'uom' => $rec['uom'],
 		'stat' => $stat,
 		'full_price' => $rec['price'],

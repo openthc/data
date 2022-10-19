@@ -1,4 +1,10 @@
 <?php
+/**
+ * Show B2B|B2C Outgoing for a License
+ *
+ * SPDX-License-Identifier: GPL-3.0-only
+ */
+
 ?>
 
 <h2>Product Sold</h2>
@@ -20,7 +26,7 @@ default:
 
 	// Stuff They Are Selling
 	$sql = <<<SQL
-SELECT sum(qom_tx) AS q, sum(full_price) AS p
+SELECT sum(unit_count_tx) AS q, sum(full_price) AS p
 FROM b2b_sale_item WHERE b2b_sale_id IN (SELECT id FROM b2b_sale WHERE source_license_id = :l0)
 LIMIT 100
 SQL;
