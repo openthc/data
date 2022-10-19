@@ -82,34 +82,6 @@ class CSV_Reader
 }
 
 
-// function _fopen_bom($f)
-// {
-// 	$fh = fopen($f, 'r');
-
-// 	$bom = fread($fh, 3);
-
-// 	$bom3 = bin2hex($bom);
-// 	if ('efbbbf' == $bom3) {
-// 		// UTF-8
-// 		return $fh;
-// 	}
-
-// 	$bom2 = substr($bom3, 0, 2);
-// 	if ('ffee' == $bom2) {
-// 		echo "Adding UTF-16 to UTF-8 Filter\n";
-// 		stream_filter_append($fh, 'convert.iconv.UTF-16/UTF-8');
-// 		return $fh;
-// 	}
-
-// 	// Hopfully it's ASCII
-
-// 	// echo "rewind ('$bom')\n";
-// 	fseek($fh, 0, SEEK_SET);
-
-// 	return $fh;
-
-// }
-
 
 function _fpeek_sep($fh)
 {
@@ -304,23 +276,4 @@ function _product_inflate($rec)
 
 	return $p;
 
-}
-
-
-function _show_progress($idx, $max, $msg=null)
-{
-	if ((0 == ($idx % 100000)) || ($idx == $max)) {
-
-		$pct = floor($idx / $max * 100);
-
-		$t1 = microtime(true);
-		$sec = $t1 - $_SERVER['REQUEST_TIME_FLOAT'];
-		$rps = floor($idx / $sec);
-
-		$dts = date(DateTime::RFC3339);
-
-		$out = trim("$dts: $idx $pct% $rps/s $msg");
-		echo "$out\n";
-
-	}
 }
