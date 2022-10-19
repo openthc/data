@@ -1,4 +1,3 @@
-#!/usr/bin/php
 <?php
 /**
  * Imports Sale Header then Sale Detail data
@@ -6,18 +5,13 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-$d = __DIR__;
-$d = dirname($d);
-$d = dirname($d);
-require_once("$d/boot.php");
-
 $dbc_main = _dbc();
 $cmd_main_b2b_insert = $dbc_main->prepare('INSERT INTO b2b_sale (id, source_license_id, target_license_id, execute_at, stat, meta) VALUES (:pk, :sl, :tl, :ct, :s0, :m0) ON CONFLICT DO NOTHING');
 $cmd_main_b2c_insert = $dbc_main->prepare('INSERT INTO b2c_sale (id, license_id, created_at, stat, meta) VALUES (:pk, :l0, :ct, :s0, :m0) ON CONFLICT DO NOTHING');
 
 
 // Import the Header Files
-$sale_header_list = glob('SaleHeader*.tsv');
+$sale_header_list = glob('SaleHeader_*.tsv');
 $dbc_b2temp = new \Edoceo\Radix\DB\SQL('sqlite:sale-header-cache.sqlite');
 try {
 	$dbc_b2temp->query('CREATE TABLE sale_header (id PRIMARY KEY, type TEXT)');
@@ -110,7 +104,7 @@ SQL;
 $cmd_main_b2c_item_insert = $dbc_main->prepare($sql);
 
 
-$sale_detail_list = glob('SalesDetail*.tsv');
+$sale_detail_list = glob('SalesDetail_*.tsv');
 foreach ($sale_detail_list as $sale_detail_file) {
 
 	echo "Import: {$sale_detail_file}\n";
@@ -126,11 +120,9 @@ foreach ($sale_detail_list as $sale_detail_file) {
 		$idx++;
 
 		// Most of the time this fails it's because of an embedded TAB in the ExternalId
-		if (count($csv_head) != count($row)) {
-			var_dump($idx);
-			print_r($csv_head);
-			print_r($row);
-			exit(0);
+		$row = _csv_row_map_check($csv_head, $row);
+		if (empty($row)) {
+			continue;
 		}
 
 		$row = array_combine($csv_head, $row);

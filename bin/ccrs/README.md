@@ -17,7 +17,7 @@ cd ../../source-data/
 ../bin/box-download.php '$BOX_URL' > x.sh
 bash x.sh
 ../bin/inflate.sh
-../bin/ccrs/import-$OBJECT.php
+../bin/ccrs/import.php $OBJECT | tee OUTPUT-import.txt
 ```
 
 ## Line Fixing

@@ -18,6 +18,6 @@ done
 for f in *.csv
 do
 	b=$(basename "$f" ".csv")
-	iconv --from-code UTF-16LE -to-code UTF-8 "$f" -o "$b.tsv"
+	iconv --from-code UTF-16LE --to-code UTF-8 "$f" -o "$b.tsv"
 	rm "$f"
 done
