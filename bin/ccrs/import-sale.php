@@ -125,6 +125,7 @@ foreach ($sale_detail_list as $sale_detail_file) {
 
 		$idx++;
 
+		// Most of the time this fails it's because of an embedded TAB in the ExternalId
 		if (count($csv_head) != count($row)) {
 			var_dump($idx);
 			print_r($csv_head);
