@@ -49,6 +49,17 @@ function _import_inventory($dbc_source, $dbc_target, $license_source, $license_t
 			$dbc_target->insert('inventory', $i1);
 		} else {
 			echo '.';
+			// echo sprintf('BT%08d', $x['productid']);
+			// echo "\n";
+			$p0 = $dbc_target->fetchOne('SELECT id FROM product WHERE guid = :g0', [
+				':g0' => sprintf('BT%08d', $x['productid'])
+			]);
+			if ($p0) {
+				$dbc_target->query('UPDATE inventory SET product_id = :p0 WHERE id = :i0', [
+					':i0' => $chk,
+					':p0' => $p0,
+				]);
+			}
 		}
 
 	}

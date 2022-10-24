@@ -17,7 +17,7 @@ function _import_product($dbc_source, $dbc_target, $license_source, $license_tar
 	SELECT *
 	FROM products
 	WHERE location = :l0
-	AND (deleted IS NULL OR deleted = 0)
+	-- AND (deleted IS NULL OR deleted = 0)
 	SQL;
 	$arg = [ ':l0' => $license_source['id'] ];
 	$res = $dbc_source->fetch($sql, $arg);
@@ -37,6 +37,7 @@ function _import_product($dbc_source, $dbc_target, $license_source, $license_tar
 				'product_type_id' => '018NY6XC00PR0DUCTTYPE00000', // \OpenTHC\CRE\BioTrack::typeMap($x['productcategory']),
 				'guid' => sprintf('BT%08d', $x['id']),
 				'name' => $x['name'],
+				'flag' => (empty($x['deleted']) ? 0 : 0x08000000),
 				'stub' => substr(_text_stub($x['name']),0, 128),
 				'created_at' => $x['created'] ?: $x['created_on'], // Two?
 				'meta' => json_encode([
