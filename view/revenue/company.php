@@ -84,7 +84,7 @@ $mon_list = array_unique($mon_list);
 rsort($mon_list);
 $mon_list = array_slice($mon_list, 0, 6);
 
-echo App\UI::revenue_nav_tabs();
+echo \OpenTHC\Data\UI::revenue_nav_tabs();
 
 ?>
 

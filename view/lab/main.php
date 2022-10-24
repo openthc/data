@@ -5,7 +5,7 @@
 
 $_ENV['h1'] = $_ENV['title'] = 'Lab Results';
 
-echo \App\UI::lab_tabs();
+echo \OpenTHC\Data\UI::lab_tabs();
 
 echo '<div class="mt-4">';
 require_once(__DIR__ . '/main-chart-result-count-column-stacked.php');

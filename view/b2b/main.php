@@ -5,7 +5,7 @@
 
 $_ENV['h1'] = $_ENV['title'] = 'B2B Sales';
 
-echo \App\UI::b2b_tabs();
+echo \OpenTHC\Data\UI::b2b_tabs();
 
 // Pie Chart of Deals
 $sql = <<<SQL

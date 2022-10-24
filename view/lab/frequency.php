@@ -5,7 +5,7 @@
 
 $_ENV['h1'] = $_ENV['title'] = 'Lab Result :: Frequency';
 
-echo \App\UI::lab_tabs();
+echo \OpenTHC\Data\UI::lab_tabs();
 
 $dbc = _dbc();
 

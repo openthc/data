@@ -29,7 +29,7 @@ LIMIT 25
 SQL;
 $res1 = _select_via_cache($dbc, $sql, $arg);
 
-echo App\UI::lab_tabs();
+echo \OpenTHC\Data\UI::lab_tabs();
 
 echo '<div class="row">';
 echo '<div class="col-md-6"><p>Count lots with WAATTEST records, at Retail, Top 25</p>';

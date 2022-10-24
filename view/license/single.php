@@ -13,7 +13,7 @@ if (empty($L['id'])) {
 $_ENV['h1'] = sprintf('License :: %s - %s', $L['name'], $L['code']);
 $_ENV['title'] = $_ENV['h1'];
 
-echo \App\UI::license_tabs($L);
+echo \OpenTHC\Data\UI::license_tabs($L);
 
 // Revenue Chart
 if ('*' == $_GET['stat']) {

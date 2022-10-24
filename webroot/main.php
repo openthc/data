@@ -1,6 +1,8 @@
 <?php
 /**
- * Data Site Front Controller
+ * Data Site Main Controller
+ *
+ * SPDX-License-Identifier: GPL-3.0-only
  */
 
 use Edoceo\Radix;

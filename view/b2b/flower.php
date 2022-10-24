@@ -48,7 +48,7 @@ foreach ($res as $rec) {
 }
 ?>
 
-<?= \App\UI::b2b_tabs(); ?>
+<?= \OpenTHC\Data\UI::b2b_tabs(); ?>
 
 <h2>Grade A :: Wholesale <small>flower / flower_lots</small></h2>
 <p>Lot Counts, Sent and Received Quantities, Dollars per Month</p>

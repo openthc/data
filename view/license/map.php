@@ -94,7 +94,7 @@ SQL;
 
 ?>
 
-<?= App\UI::license_tabs($L) ?>
+<?= \OpenTHC\Data\UI::license_tabs($L) ?>
 
 <div id="google-map" style="background: #999; border: 1px solid #333; height: 85vh; width: 100%;"></div>
 

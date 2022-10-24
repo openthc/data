@@ -6,7 +6,7 @@
 $_ENV['title'] = 'B2B :: Wholesale :: Edible';
 $_ENV['h1'] = $_ENV['title'];
 
-echo \App\UI::b2b_tabs();
+echo \OpenTHC\Data\UI::b2b_tabs();
 
 $dbc = _dbc();
 

@@ -33,7 +33,7 @@ $_ENV['title'] = $_ENV['h1'];
 	</div>
 </div>
 <div>
-<?= App\UI::b2b_transfer_tabs() ?>
+<?= \OpenTHC\Data\UI::b2b_transfer_tabs() ?>
 </div>
 
 

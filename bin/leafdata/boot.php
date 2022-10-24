@@ -1,9 +1,10 @@
 <?php
 /**
+ * LeafData Bootstrap
  *
+ * SPDX-License-Identifier: GPL-3.0-only
  */
 
-// App-Boot
 require_once(dirname(dirname(dirname(__FILE__))) . '/boot.php');
 
 function _find_max($f, $csv)

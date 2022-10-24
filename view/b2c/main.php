@@ -5,7 +5,7 @@
 
 $_ENV['h1'] = $_ENV['title'] = 'B2C';
 
-echo \App\UI::b2c_tabs();
+echo \OpenTHC\Data\UI::b2c_tabs();
 
 require_once(__DIR__ . '/index-chart.php');
 

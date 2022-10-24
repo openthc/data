@@ -1,9 +1,11 @@
 <?php
 /**
+ * UI Helpers
  *
+ * SPDX-License-Identifier: GPL-3.0-only
  */
 
-namespace App;
+namespace OpenTHC\Data;
 
 class UI
 {

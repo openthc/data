@@ -13,7 +13,7 @@ if (empty($L['id'])) {
 $_ENV['h1'] = sprintf('License :: %s :: Clients', h($L['name']));
 $_ENV['title'] = $_ENV['h1'];
 
-echo App\UI::license_tabs($L);
+echo \OpenTHC\Data\UI::license_tabs($L);
 
 // Chart
 require_once(__DIR__ . '/clients-chart-stacked-column.php');

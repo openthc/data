@@ -109,7 +109,7 @@ $res = _select_via_cache($dbc, $sql);
 // EOS;
 
 
-echo App\UI::revenue_nav_tabs();
+echo \OpenTHC\Data\UI::revenue_nav_tabs();
 
 ?>
 

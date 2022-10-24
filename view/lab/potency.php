@@ -35,7 +35,7 @@ if ('csv' == $_GET['o']) {
 	_res_to_csv($res, $csv_spec, 'Lab_Result_Potency.csv');
 }
 
-echo App\UI::lab_tabs();
+echo \OpenTHC\Data\UI::lab_tabs();
 echo '<p><a href="?o=csv">Download CSV</p>';
 
 _res_to_table($res);

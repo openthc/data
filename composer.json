@@ -4,12 +4,14 @@
 	"license": "GPL-3.0-only",
 	"autoload": {
 		"psr-4": {
-			"App\\": "./lib"
+			"OpenTHC\\Data\\": "./lib",
+			"OpenTHC\\Data\\Test\\": "./test"
 		}
 	},
 	"require": {
 		"edoceo/radix": "2021.0.0",
 		"openthc/common": "dev-master",
-		"phpoffice/phpspreadsheet": "1.23.0"
+		"openthc/cre-adapter": "dev-master",
+		"phpoffice/phpspreadsheet": "1.25.2"
 	}
 }
