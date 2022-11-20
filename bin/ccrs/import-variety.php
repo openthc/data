@@ -1,26 +1,27 @@
 <?php
 /**
- * Imports Product Data from CCRS
+ * Imports Variety from CCRS
  *
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
 $dbc_main = _dbc();
 $sql = <<<SQL
-INSERT INTO product (id, license_id, name, product_type, stat, package_type, package_size, package_unit, meta)
-VALUES (:p0, :l0, :n0, :t0, :s0, :pk_type, :pk_size, :pk_unit, :m0)
+INSERT INTO variety (id, license_id, name, type, stat, meta)
+VALUES (:p0, '018NY6XC00L1CENSE000000000', :n0, :t0, :s0, :m0)
 ON CONFLICT DO NOTHING
 SQL;
-$cmd_product_insert = $dbc_main->prepare($sql);
+$cmd_variety_insert = $dbc_main->prepare($sql);
+
 
 // Import the Header Files
-$source_file_list = glob('Product_*.tsv');
+$source_file_list = glob('Strains_*.tsv');
 foreach ($source_file_list as $source_file) {
 
 	echo "Import: {$source_file}\n";
 
 	$csv = new \OpenTHC\Data\CSV_Reader($source_file);
-	$csv_head = $csv->getHeader();
+	$csv_head = fgetcsv($fh, null, "\t");
 
 	$idx = 1;
 	$max = 1000000;
@@ -30,21 +31,16 @@ foreach ($source_file_list as $source_file) {
 
 		$idx++;
 
-		// Fail when Name or Description have TAB
 		$row = _csv_row_map_check($csv_head, $row);
 		if (empty($row)) {
 			continue;
 		}
 
-		$cmd_product_insert->execute([
-			':p0' => $row['PRODUCTID'],
-			':l0' => $row['LICENSEEID'],
-			':n0' => $row['NAME'],
-			':t0' => $row['INVENTORYTYPE'],
+		$cmd_variety_insert->execute([
+			':p0' => $row['StrainId'],
+			':n0' => $row['Name'],
+			':t0' => $row['StrainType'],
 			':s0' => ($row['ISDELETED'] == 'TRUE' ? 410 : 200),
-			':pk_type' => '-NOTSET-',
-			':pk_size' => floatval($row['UnitWeightGrams']),
-			':pk_unit' => 'g',
 			':m0' => json_encode($row)
 		]);
 

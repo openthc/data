@@ -113,9 +113,10 @@ foreach ($sale_detail_list as $sale_detail_file) {
 	$max = 1000000;
 	$_SERVER['REQUEST_TIME_FLOAT'] = microtime(true); // reset timer base for _show_progress()
 
-	$fh = _fopen_bom($sale_detail_file, 'r');
-	$csv_head = fgetcsv($fh, null, "\t");
-	while ($row = fgetcsv($fh, null, "\t")) {
+	$csv = new \OpenTHC\Data\CSV_Reader($source_file);
+	$csv_head = $csv->getHeader();
+
+	while ($row = $csv->fetch()) {
 
 		$idx++;
 
@@ -124,9 +125,6 @@ foreach ($sale_detail_list as $sale_detail_file) {
 		if (empty($row)) {
 			continue;
 		}
-
-		$row = array_combine($csv_head, $row);
-		$row['IsDeleted'] = strtoupper($row['IsDeleted']);
 
 		// Get Sales Detail
 		$chk = $dbc_b2temp->fetchRow('SELECT * FROM sale_header WHERE id = :s0', [
@@ -142,7 +140,7 @@ foreach ($sale_detail_list as $sale_detail_file) {
 					':lot' => $row['InventoryId'],
 					':uc' => $row['Quantity'],
 					':up' => $row['UnitPrice'],
-					':s0' => ($row['IsDeleted'] == 'TRUE' ? 410 : 200),
+					':s0' => ($row['ISDELETED'] == 'TRUE' ? 410 : 200),
 					':m0' =>json_encode($row),
 				]);
 				break;
@@ -153,7 +151,7 @@ foreach ($sale_detail_list as $sale_detail_file) {
 					':lot' => $row['InventoryId'],
 					':uc' => $row['Quantity'],
 					':up' => $row['UnitPrice'],
-					':s0' => ($row['IsDeleted'] == 'TRUE' ? 410 : 200),
+					':s0' => ($row['ISDELETED'] == 'TRUE' ? 410 : 200),
 					':m0' =>json_encode($row),
 				]);
 				break;
