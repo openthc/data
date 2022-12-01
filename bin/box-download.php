@@ -2,10 +2,11 @@
 <?php
 /**
  * @see https://community.box.com/t5/Platform-and-Development-Forum/Automatic-files-download-from-a-Folder/td-p/81514
+ *
+ * SPDX-License-Identifier: GPL-3.0-only
  */
 
 $d = __DIR__;
-$d = dirname($d);
 $d = dirname($d);
 require_once("$d/boot.php");
 
@@ -17,6 +18,7 @@ for ($page_idx=1; $page_idx<=$page_max; $page_idx++) {
 
 	$url = sprintf('%s?page=%d&sortColumn=name&sortDirection=ASC', $url_origin, $page_idx);
 	echo "# peek: $url\n";
+
 	$box_info = _box_download_from_page($url);
 
 	$page_max = $box_info['/app-api/enduserapp/shared-folder']['pageCount'];
