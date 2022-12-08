@@ -42,7 +42,6 @@ SELECT month AS m
 , count(DISTINCT $obj_type) AS c
 , sum(rev_amount_sum) AS r
 FROM license_revenue_full
-WHERE source IN ('lcb-v1', 'lcb-v2')
 $sql_type
 GROUP BY month
 ORDER BY month ASC
@@ -102,7 +101,6 @@ $res = _select_via_cache($dbc, $sql);
 // , count(DISTINCT $obj_type) AS c
 // , sum(rev_amount_sum) AS r
 // FROM license_revenue_full
-// WHERE source IN ('lcb-v1', 'lcb-v2', 'foia-live')
 // $sql_type
 // GROUP BY month
 // ORDER BY month ASC

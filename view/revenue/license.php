@@ -16,8 +16,8 @@ if (empty($limit_count)) {
 }
 
 $res = $dbc->fetchRow('SELECT min(month) AS date_alpha, max(month) AS date_omega FROM license_revenue');
-$mon0 = $res['date_alpha'];
-$mon1 = $res['date_omega'];
+$mon0 = $res['date_alpha'] ?: '2022-01-01';
+$mon1 = $res['date_omega'] ?: date('Y-m-d');
 $mon_list = [];
 
 $license_filter = null;
@@ -73,7 +73,6 @@ SELECT license.id
 FROM license
 JOIN license_revenue ON license.id = license_revenue.license_id
 WHERE license_revenue.month > '$mon1'::date - '$month_count months'::interval $license_filter
- AND license_revenue.source IN ('lcb-v1', 'lcb-v2')
 ORDER BY license_revenue.month DESC
 EOS;
 
