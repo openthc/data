@@ -112,8 +112,8 @@ Array
 	// @todo Move to a review script
 	// if (!empty($rec['lab_result_id'])) {
 	// 	try {
-	// 		$dbc->query('INSERT INTO lab_result_lot (lab_result_id, lot_id, type) VALUES (:lr0, :il1, :t0)', array(
-	// 			':lr0' => $rec['lab_result_id'],
+	// 		$dbc->query('INSERT INTO lab_report_lot (lab_report_id, lot_id, type) VALUES (:lr0, :il1, :t0)', array(
+	// 			':lr0' => $rec['lab_report_id'],
 	// 			':il1' => $rec['global_id'],
 	// 			':t0' => 'Lot Linkage',
 	// 		));

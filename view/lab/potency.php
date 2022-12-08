@@ -15,7 +15,7 @@ SELECT license_id
 , count(id) AS c
 , avg(thc) AS thc_avg
 , avg(cbd) AS cbd_avg
-FROM lab_result
+FROM lab_report
 WHERE created_at >= '2019-01-01'
  AND id LIKE 'WAL%'
 GROUP BY 1, 2
@@ -32,7 +32,7 @@ if ('csv' == $_GET['o']) {
 		'thc_avg' => 'THC Average',
 		'cbd_avg' => 'CBD Average',
 	];
-	_res_to_csv($res, $csv_spec, 'Lab_Result_Potency.csv');
+	_res_to_csv($res, $csv_spec, 'Lab_Report_Potency.csv');
 }
 
 echo \OpenTHC\Data\UI::lab_tabs();

@@ -163,7 +163,7 @@ while ($rec = $csv->fetch()) {
 			unset($add['deleted_at']);
 		}
 
-		$dbc->insert('lab_result', $add);
+		$dbc->insert('lab_report', $add);
 
 	} catch (Exception $e) {
 		 _append_fail_log($idx, $e->getMessage(), $rec);
@@ -183,7 +183,7 @@ while ($rec = $csv->fetch()) {
 	// Link Result to Sample_Lot+=Parent_Lot
 	if (!empty($rec['global_for_inventory_id'])) {
 		try {
-			$dbc->query('INSERT INTO lab_result_lot (lab_result_id, lot_id) VALUES (:lr0, :il1)', array(
+			$dbc->query('INSERT INTO lab_report_lot (lab_report_id, lot_id) VALUES (:lr0, :il1)', array(
 				':lr0' => $rec['global_id'],
 				':il1' => $rec['global_for_inventory_id'],
 			));
@@ -237,7 +237,7 @@ foreach ($map_type as $t0 => $t1) {
 			continue;
 	}
 
-	$sql = 'UPDATE lab_result SET type = :t1 WHERE type = :t0';
+	$sql = 'UPDATE lab_report SET type = :t1 WHERE type = :t0';
 	$arg = [
 			':t0' => $t0,
 			':t1' => $t1,
@@ -250,10 +250,10 @@ foreach ($map_type as $t0 => $t1) {
 
 // Update the License ID Source on Lab Result
 // $sql = <<<SQL
-// UPDATE lab_result
+// UPDATE lab_report
 //  SET source_license_id = substr(meta->>'global_for_inventory_id', 3, 7)
 // WHERE source_license_id IS NULL
 // SQL;
 
 // $sql = <<<SQL
-// UPDATE lab_result SET source_license_id = (SELECT id FROM license WHERE license.code = lab_result.source_license_id)
+// UPDATE lab_report SET source_license_id = (SELECT id FROM license WHERE license.code = lab_report.source_license_id)

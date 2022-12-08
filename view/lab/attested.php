@@ -18,9 +18,9 @@ $res_data = [];
 $sql = <<<SQL
 SELECT count(id) AS c
 , date_trunc('month', created_at) AS mon
-FROM lot_lab_result_retail_cache
-WHERE lab_result_id LIKE 'WAATTEST%'
- AND length(lab_result_id) = 16
+FROM lot_lab_report_retail_cache
+WHERE lab_report_id LIKE 'WAATTEST%'
+ AND length(lab_report_id) = 16
 GROUP BY 2
 ORDER BY 2
 SQL;
@@ -33,9 +33,9 @@ foreach ($res as $rec) {
 $sql = <<<SQL
 SELECT count(id) AS c
 , date_trunc('month', created_at) AS mon
-FROM lot_lab_result_retail_cache
-WHERE meta->>'lab_result_id' LIKE 'WAATTEST%'
- AND length(meta->>'lab_result_id') = 17
+FROM lot_lab_report_retail_cache
+WHERE meta->>'lab_report_id' LIKE 'WAATTEST%'
+ AND length(meta->>'lab_report_id') = 17
 GROUP BY 2
 ORDER BY 2
 SQL;
@@ -47,8 +47,8 @@ foreach ($res as $rec) {
 $sql = <<<SQL
 SELECT count(id) AS c
 , date_trunc('month', created_at) AS mon
-FROM lot_lab_result_retail_cache
-WHERE meta->>'lab_result_id' NOT LIKE 'WAATTEST%'
+FROM lot_lab_report_retail_cache
+WHERE meta->>'lab_report_id' NOT LIKE 'WAATTEST%'
 GROUP BY 2
 ORDER BY 2
 SQL;

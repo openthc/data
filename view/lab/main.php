@@ -46,7 +46,7 @@ return(0);
 
 
 $sql = <<<SQL
-SELECT type AS result_type, count(id) AS result_count from lab_result group by type order by 2 DESC;
+SELECT type AS result_type, count(id) AS result_count from lab_report group by type order by 2 DESC;
 SQL;
 //
 //  count  |                        type
@@ -85,12 +85,12 @@ $sql = <<<SQL
 select license_id AS lab_global_id
 , license.code AS lab_license_code
 , license.name AS lab_name
-, count(lab_result.id) AS lab_result_count
-FROM lab_result
-JOIN license ON lab_result.license_id = license.id
+, count(lab_report.id) AS lab_report_count
+FROM lab_report
+JOIN license ON lab_report.license_id = license.id
 WHERE license.code LIKE 'L%'
 GROUP BY license_id, license.code, license.name
-ORDER BY lab_result_count DESC
+ORDER BY lab_report_count DESC
 SQL;
 
 //$res = $dbc->fetch_all($sql);

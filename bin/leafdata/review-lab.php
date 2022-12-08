@@ -9,9 +9,9 @@
 // FROM lot WHERE (id LIKE 'WAG%' OR id LIKE 'WAJ%' OR id LIKE 'WAM%') AND created_at >= '2019-01-01';
 
 $sql = <<<SQL
-CREATE TABLE lot_lab_result_retail_cache (
+CREATE TABLE lot_lab_report_retail_cache (
 	id varchar(26) primary key,
-	lab_result_id varchar(26),
+	lab_report_id varchar(26),
 	license_origin varchar(26),
 	license_retail varchar(26),
 	product_id_origin varchar(26),
@@ -25,7 +25,7 @@ echo "$sql\n";
 // $dbc->query($sql);
 
 $sql = <<<SQL
-INSERT INTO lot_lab_result_retail_cache (id, lab_result_id, license_origin, license_retail, created_at, meta)
+INSERT INTO lot_lab_report_retail_cache (id, lab_report_id, license_origin, license_retail, created_at, meta)
 SELECT
  id
  , meta->>'lab_result_id'
@@ -48,7 +48,7 @@ echo "$sql\n";
 // updated_at        | timestamp with time zone |           |          |
 // license_retail    | text                     |           |          |
 // license_source    | text                     |           |          |
-// lab_result_id     | text                     |           |          |
+// lab_report_id     | text                     |           |          |
 // meta              | jsonb                    |           |          |
 // supply_product_id | character varying(26)    |           |          |
 // retail_product_id | character varying(26)    |           |          |
@@ -56,9 +56,9 @@ echo "$sql\n";
 
 
 $sql = <<<SQL
-CREATE TABLE lab_result_supply_cache (
+CREATE TABLE lab_report_supply_cache (
 	id varchar(26) primary key,
-	lab_result_id varchar(26),
+	lab_report_id varchar(26),
 	license_origin varchar(26),
 	license_retail varchar(26),
 	product_id_origin varchar(26),

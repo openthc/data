@@ -17,24 +17,24 @@ $d1->add(new DateInterval('P6M'));
 
 /*
 SELECT "license__via__license_id"."name" AS "name", count(*) AS "count"
-FROM "public"."lab_result"
-LEFT JOIN "public"."license" "license__via__license_id" ON "public"."lab_result"."license_id" = "license__via__license_id"."id"
-WHERE (("public"."lab_result"."id" like 'WAL%')
-   AND CAST("public"."lab_result"."created_at" AS date) > CAST('2019-01-01T00:00:00.000Z'::timestamp AS date) AND CAST("public"."lab_result"."created_at" AS date) < CAST('2019-07-01T00:00:00.000Z'::timestamp AS date))
+FROM "public"."lab_report"
+LEFT JOIN "public"."license" "license__via__license_id" ON "public"."lab_report"."license_id" = "license__via__license_id"."id"
+WHERE (("public"."lab_report"."id" like 'WAL%')
+   AND CAST("public"."lab_report"."created_at" AS date) > CAST('2019-01-01T00:00:00.000Z'::timestamp AS date) AND CAST("public"."lab_report"."created_at" AS date) < CAST('2019-07-01T00:00:00.000Z'::timestamp AS date))
 GROUP BY "license__via__license_id"."name"
 ORDER BY "license__via__license_id"."name" ASC
 */
 
 $sql = <<<SQL
 SELECT license.name AS lab_name
-, count(lab_result.id) AS lab_result_count
-FROM lab_result
-JOIN license ON lab_result.license_id = license.id
-JOIN lab_result_lot ON lab_result.id = lab_result_lot.lab_result_id
-JOIN lot ON lab_result_lot.lot_id = lot.id
-WHERE lab_result.created_at >= :dt0 AND lab_result.created_at <= :dt1
+, count(lab_report.id) AS lab_report_count
+FROM lab_report
+JOIN license ON lab_report.license_id = license.id
+JOIN lab_report_lot ON lab_report.id = lab_report_lot.lab_report_id
+JOIN lot ON lab_report_lot.lot_id = lot.id
+WHERE lab_report.created_at >= :dt0 AND lab_report.created_at <= :dt1
 GROUP BY license.name
-ORDER BY lab_result_count DESC
+ORDER BY lab_report_count DESC
 SQL;
 
 $dbc = _dbc();
@@ -50,7 +50,7 @@ $cht_data = [];
 $cht_data[] = [ 'License Name', 'Count' ];
 
 foreach ($res as $rec) {
-	$cht_data[] = [ $rec['lab_name'], $rec['lab_result_count'] ];
+	$cht_data[] = [ $rec['lab_name'], $rec['lab_report_count'] ];
 }
 
 ?>

@@ -16,7 +16,7 @@ $dbc = _dbc();
 $sql = <<<SQL
 SELECT count(id) AS c,
   date_trunc('month', created_at) AS created_at
-FROM lab_result
+FROM lab_report
 WHERE created_at >= :dt0
   AND id NOT LIKE 'WAATTESTE%'
 GROUP BY 2
@@ -71,7 +71,7 @@ $sql = <<<SQL
 SELECT count(id) AS c
 	, date_trunc('month', created_at) AS created_at
 	, type AS product_type
-FROM lab_result
+FROM lab_report
 WHERE created_at >= :dt0
   AND id NOT LIKE 'WAATTESTE%'
 GROUP BY 2, 3

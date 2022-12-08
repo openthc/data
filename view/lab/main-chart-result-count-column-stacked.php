@@ -8,15 +8,15 @@ $dbc = _dbc();
 
 // Lab Market Share
 $sql = <<<SQL
-SELECT date_trunc('month', CAST("public"."lab_result"."created_at" AS timestamp)) AS "created_at"
+SELECT date_trunc('month', CAST("public"."lab_report"."created_at" AS timestamp)) AS "created_at"
 , "license__via__license_id"."name" AS "license_name"
 , count(*) AS "count"
-FROM "public"."lab_result"
-LEFT JOIN "public"."license" "license__via__license_id" ON "public"."lab_result"."license_id" = "license__via__license_id"."id"
-WHERE ("public"."lab_result"."id" like 'WAL%')
-AND lab_result.created_at >= :dt0 AND lab_result.created_at <= :dt1
-GROUP BY date_trunc('month', CAST("public"."lab_result"."created_at" AS timestamp)), "license__via__license_id"."name"
-ORDER BY date_trunc('month', CAST("public"."lab_result"."created_at" AS timestamp)) ASC, "license__via__license_id"."name" ASC
+FROM "public"."lab_report"
+LEFT JOIN "public"."license" "license__via__license_id" ON "public"."lab_report"."license_id" = "license__via__license_id"."id"
+WHERE ("public"."lab_report"."id" like 'WAL%')
+AND lab_report.created_at >= :dt0 AND lab_report.created_at <= :dt1
+GROUP BY date_trunc('month', CAST("public"."lab_report"."created_at" AS timestamp)), "license__via__license_id"."name"
+ORDER BY date_trunc('month', CAST("public"."lab_report"."created_at" AS timestamp)) ASC, "license__via__license_id"."name" ASC
 SQL;
 
 $arg = [
