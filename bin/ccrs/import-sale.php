@@ -84,7 +84,6 @@ foreach ($sale_header_list as $sale_header_file) {
 
 }
 
-
 /**
  * Sale Details
  */
@@ -113,7 +112,7 @@ foreach ($sale_detail_list as $sale_detail_file) {
 	$max = 1000000;
 	$_SERVER['REQUEST_TIME_FLOAT'] = microtime(true); // reset timer base for _show_progress()
 
-	$csv = new \OpenTHC\Data\CSV_Reader($source_file);
+	$csv = new \OpenTHC\Data\CSV_Reader($sale_detail_file);
 	$csv_head = $csv->getHeader();
 
 	while ($row = $csv->fetch()) {
@@ -121,7 +120,7 @@ foreach ($sale_detail_list as $sale_detail_file) {
 		$idx++;
 
 		// Most of the time this fails it's because of an embedded TAB in the ExternalId
-		$row = _csv_row_map_check($csv_head, $row);
+		$row = _csv_row_map_check($csv_head, $row, $idx);
 		if (empty($row)) {
 			continue;
 		}
@@ -134,24 +133,24 @@ foreach ($sale_detail_list as $sale_detail_file) {
 		switch ($chk['type']) {
 			case 'RecreationalRetail':  // B2C Table
 			case 'RecreationalMedical': // B2C Table
-				$cmd_main_b2c_item_insert->execute([
-					':pk' => 'SaleDetailId',
-					':b2c' => $row['SaleHeaderId'],
-					':lot' => $row['InventoryId'],
-					':uc' => $row['Quantity'],
-					':up' => $row['UnitPrice'],
-					':s0' => ($row['ISDELETED'] == 'TRUE' ? 410 : 200),
-					':m0' =>json_encode($row),
-				]);
+				// $cmd_main_b2c_item_insert->execute([
+				// 	':pk' => $row['SaleDetailId'],
+				// 	':b2c' => $row['SaleHeaderId'],
+				// 	':lot' => $row['InventoryId'],
+				// 	':uc' => $row['Quantity'],
+				// 	':up' => $row['UnitPrice'],
+				// 	':s0' => ($row['IsDeleted'] == 'TRUE' ? 410 : 200),
+				// 	':m0' =>json_encode($row),
+				// ]);
 				break;
 			case 'Wholesale':
 				$cmd_main_b2b_item_insert->execute([
-					':pk' => 'SaleDetailId',
+					':pk' => $row['SaleDetailId'],
 					':b2b' => $row['SaleHeaderId'],
 					':lot' => $row['InventoryId'],
 					':uc' => $row['Quantity'],
 					':up' => $row['UnitPrice'],
-					':s0' => ($row['ISDELETED'] == 'TRUE' ? 410 : 200),
+					':s0' => ($row['IsDeleted'] == 'TRUE' ? 410 : 200),
 					':m0' =>json_encode($row),
 				]);
 				break;

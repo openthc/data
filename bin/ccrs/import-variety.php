@@ -31,7 +31,7 @@ foreach ($source_file_list as $source_file) {
 
 		$idx++;
 
-		$row = _csv_row_map_check($csv_head, $row);
+		$row = _csv_row_map_check($csv_head, $row, $idx);
 		if (empty($row)) {
 			continue;
 		}

@@ -7,14 +7,15 @@
 
 $dbc_main = _dbc();
 $sql = <<<SQL
-INSERT INTO product (id, license_id, name, product_type, stat, package_type, package_size, package_unit, meta)
-VALUES (:p0, :l0, :n0, :t0, :s0, :pk_type, :pk_size, :pk_unit, :m0)
-ON CONFLICT DO NOTHING
+INSERT INTO license (id, code, name, meta)
+VALUES (:i0, :c0, :n0, :m0)
+ON CONFLICT (id)
+DO UPDATE SET code = :c0, name = :n0, meta = :m0
 SQL;
-$cmd_product_insert = $dbc_main->prepare($sql);
+$cmd_license_insert = $dbc_main->prepare($sql);
 
 // Import the Header Files
-$source_file_list = glob('Product_*.tsv');
+$source_file_list = glob('Licensee_*.tsv');
 foreach ($source_file_list as $source_file) {
 
 	echo "Import: {$source_file}\n";
@@ -36,15 +37,10 @@ foreach ($source_file_list as $source_file) {
 			continue;
 		}
 
-		$cmd_product_insert->execute([
-			':p0' => $row['PRODUCTID'],
-			':l0' => $row['LICENSEEID'],
+		$cmd_license_insert->execute([
+			':i0' => $row['LICENSEEID'],
+			':c0' => $row['LICENSENUMBER'],
 			':n0' => $row['NAME'],
-			':t0' => $row['INVENTORYTYPE'],
-			':s0' => ($row['ISDELETED'] == 'TRUE' ? 410 : 200),
-			':pk_type' => '-NOTSET-',
-			':pk_size' => floatval($row['UnitWeightGrams']),
-			':pk_unit' => 'g',
 			':m0' => json_encode($row)
 		]);
 
