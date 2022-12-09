@@ -15,13 +15,18 @@ foreach ($zip_file_list as $zip_file) {
 	$zip->open($zip_file);
 	$zip_stat = $zip->statIndex(0);
 	// print_r($zip_stat);
-	// $out_file = basename($zip_stat['name']);
-	// $zip->extractTo($out_file, $zip_stat['name']);
-	// $out_name = preg_match('/\\(.+)$/', $zip_stat['name'], $m) ? $m[1] : '';
+
 	$output_csv = sprintf('%s.csv', basename($zip_file, '.zip'));
 	$output_tsv = sprintf('%s.tsv', basename($zip_file, '.zip'));
-	$source_res = $zip->getStream($zip_stat['name']);
-	// $source_res = $zip->getStreamIndex(0);
+
+	// Try to make smarter names
+	if (preg_match('/(\w+_)(\d+)\.csv$/', $zip_stat['name'], $m)) {
+		$output_csv = sprintf('%s%03d.csv', $m[1], $m[2]);
+		$output_tsv = sprintf('%s%03d.tsv', $m[1], $m[2]);
+	}
+
+	$source_res = $zip->getStream($zip_stat['name']); // @note PHP 7.x
+	// $source_res = $zip->getStreamIndex(0); // @note only in PHP 8.0+
 	$target_res = fopen($output_csv, 'w');
 	if ( ! stream_copy_to_stream($source_res, $target_res) ) {
 		echo "Failed to Extract $output_csv\n";
