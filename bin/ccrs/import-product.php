@@ -37,11 +37,11 @@ foreach ($source_file_list as $source_file) {
 		}
 
 		$cmd_product_insert->execute([
-			':p0' => $row['PRODUCTID'],
-			':l0' => $row['LICENSEEID'],
-			':n0' => $row['NAME'],
-			':t0' => $row['INVENTORYTYPE'],
-			':s0' => ($row['ISDELETED'] == 'TRUE' ? 410 : 200),
+			':p0' => $row['ProductId'],
+			':l0' => $row['LicenseeId'],
+			':n0' => $row['Name'],
+			':t0' => $row['InventoryType'],
+			':s0' => ($row['IsDeleted'] == 'TRUE' ? 410 : 200),
 			':pk_type' => '-NOTSET-',
 			':pk_size' => floatval($row['UnitWeightGrams']),
 			':pk_unit' => 'g',

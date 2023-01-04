@@ -26,14 +26,17 @@ SQL;
 $cmd_inventory_insert = $dbc_main->prepare($sql);
 
 // Import the Header Files
-$source_file_list = array_slice($argv, 2);
+$source_file_list = glob('Inventory_*.tsv');
 foreach ($source_file_list as $source_file) {
 
 	echo "Import: {$source_file}\n";
 
 	$csv = new \OpenTHC\Data\CSV_Reader($source_file);
-	// LicenseeId	InventoryId	StrainId	AreaId	ProductId	InventoryIdentifier	InitialQuantity	QuantityOnHand	TotalCost	IsMedical	ExternalIdentifier	IsDeleted	CreatedBy	CreatedDate	UpdatedBy	updatedDate
 	$csv_head = $csv->getHeader();
+	// fix a case-typo on LCB column name
+	if ($csv_head[15] == 'updatedDate') {
+		$csv_head[15] = 'UpdatedDate';
+	}
 
 	$idx = 1;
 	$max = 1000000;
@@ -49,18 +52,19 @@ foreach ($source_file_list as $source_file) {
 			continue;
 		}
 
+		// @todo should be InventoryId so it can link to sales detail?
 		$ins = [
-			':i0' => $row['EXTERNALIDENTIFIER'],
-			':l0' => $row['LICENSEEID'],
-			':p0' => $row['PRODUCTID'],
-			':v0' => $row['STRAINID'],
-			':s0' => $row['AREAID'],
-			':ct' => $row['CREATEDDATE'],
-			':ut' => $row['UPDATEDDATE'] ?: null,
+			':i0' => $row['ExternalIdentifier'],
+			':l0' => $row['LicenseeId'],
+			':p0' => $row['ProductId'],
+			':v0' => $row['StrainId'],
+			':s0' => $row['AreaId'],
+			':ct' => $row['CreatedDate'],
+			':ut' => $row['UpdatedDate'] ?: null,
 			':dt' => null,
-			':s1' => ($row['ISDELETED'] == 'TRUE' ? 410 : 200),
-			':f1' => ($row['ISMEDICAL'] == 'TRUE' ? 0x02 : 0),
-			':q0' => $row['QUANTITYONHAND'],
+			':s1' => ($row['IsDeleted'] == 'TRUE' ? 410 : 200),
+			':f1' => ($row['IsMedical'] == 'TRUE' ? 0x02 : 0),
+			':q0' => $row['QuantityOnHand'],
 			':m0' => json_encode($row)
 		];
 		// print_r($ins);

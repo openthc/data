@@ -38,9 +38,9 @@ foreach ($source_file_list as $source_file) {
 		}
 
 		$cmd_license_insert->execute([
-			':i0' => $row['LICENSEEID'],
-			':c0' => $row['LICENSENUMBER'],
-			':n0' => $row['NAME'],
+			':i0' => $row['LicenseeId'],
+			':c0' => $row['LicenseNumber'],
+			':n0' => $row['Name'],
 			':m0' => json_encode($row)
 		]);
 
