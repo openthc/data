@@ -15,6 +15,6 @@
 		"edoceo/radix": "2021.0.0",
 		"openthc/common": "dev-master",
 		"openthc/cre-adapter": "dev-master",
-		"phpoffice/phpspreadsheet": "1.25.2"
+		"phpoffice/phpspreadsheet": "1.28.0"
 	}
 }
