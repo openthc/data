@@ -12,6 +12,7 @@
 		}
 	},
 	"require": {
+		"docopt/docopt": "1.0.4",
 		"edoceo/radix": "2021.0.0",
 		"openthc/common": "dev-master",
 		"openthc/cre-adapter": "dev-master",
