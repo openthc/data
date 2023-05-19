@@ -44,9 +44,21 @@ class CSV_Reader
 	/**
 	 * Fetch Next Record
 	 */
-	function fetch()
+	function fetch($as='plain')
 	{
-		return fgetcsv($this->fh, 0, $this->sep);
+		$ret = fgetcsv($this->fh, 0, $this->sep);
+		if ( ! empty($ret)) {
+			switch ($as) {
+				case 'array':
+					$ret = array_combine($this->csv_head, $ret);
+					break;
+				case 'object':
+					// Object?
+			}
+		}
+
+		return $ret;
+
 	}
 
 	/**
