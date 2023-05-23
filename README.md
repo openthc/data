@@ -1,11 +1,24 @@
 # Data
 
 An Open Data Portal.
-This tool is designed to import data directly from BioTrack, LeafData or METRC into a common schema.
+This tool is designed to import data from BioTrack, GrowFlow, LeafData or METRC into a common schema.
 Then you can run reports on this data-set.
 
 
-## Loading Akerna/MJFreeway/MJPlatform/LeafData Data
+## Loading BioTrack
+
+We can load BioTrack data from either the API, CSV or SQL data.
+
+```
+./bin/import.php \
+	--source-type=BioTrack-API \
+	--source=$SOURCE_URI
+	--object=crop \
+	--output=OUTPUT_PATH
+```
+
+
+## Loading Akerna/LeafData/MJFreeway/MJPlatform Data
 
 Get the ZIP files or Table Dumps from LeafData.
 Put the LeafData CSV/Zip files in some origin directory (`./source-data/leafdata`).
@@ -17,10 +30,24 @@ And clean up when all the way done.
 See `./bin/leafdata/extract.sh` for an automated process.
 
 
+## Loading GrowFlow
+
+The scripts in lib/Import/GrowFlow can import from the CSV exports or from collected HAR files.
+
+```
+./bin/import.php \
+	--source=source-data/More_Vegging_Plants_export.csv  \
+	--source-type=GrowFlow-CSV \
+	--object=crop \
+	--output=OUTPUT
+```
+
+
 ### BOM, UTF-16
 
 Sometimes the files are like this.
-Some of the files are UTF-16-LE
+Some of the files are UTF-16-LE.
+Our pre-processing scripts will normalise them.
 
 * https://www.dave-baker.com/2017/10/03/converting-a-utf-16-csv-to-utf-8-in-php/
 * http://www.craiglotter.co.za/2010/03/07/how-to-convert-an-utf-16-file-to-an-utf-8-file-using-php/
@@ -36,12 +63,6 @@ iconv -f UTF-16LE -t UTF-8 <filename> -o <new-filename>
 
 The files may be delivered as `zip`, and internally they are labeled as `csv` files.
 They may use a comma, they may use a TAB.
-
-
-### Importing
-
-Use `./bin/leafdata.sh`.
-I usually let it do one at a time, and time that request.
 
 
 ----
