@@ -1,13 +1,2 @@
-#
-# Hello Robots
-#
-
 user-agent: *
-
-disallow: /b2b
-disallow: /b2c
-disallow: /company
-disallow: /license
-disallow: /inventory
-disallow: /manifest
-disallow: /profile
+disallow: /
