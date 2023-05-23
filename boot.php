@@ -61,19 +61,16 @@ function _fopen_bom($f)
 		return $fh;
 	}
 
-	var_dump($bom);
-	exit;
-
-	$bom2 = substr($bom3, 0, 4);
-	if ('ffee' == $bom2) {
-		echo "Adding UTF-16 to UTF-8 Filter\n";
-		stream_filter_append($fh, 'convert.iconv.UTF-16/UTF-8');
-		return $fh;
-	}
+	// $bom2 = substr($bom3, 0, 4);
+	// if ('ffee' == $bom2) {
+	// 	echo "Adding UTF-16 to UTF-8 Filter\n";
+	// 	stream_filter_append($fh, 'convert.iconv.UTF-16/UTF-8');
+	// 	return $fh;
+	// }
 
 	// Hopfully it's ASCII
 	// echo "rewind ('$bom')\n";
-	// fseek($fh, 0, SEEK_SET);
+	fseek($fh, 0, SEEK_SET);
 
 	return $fh;
 
