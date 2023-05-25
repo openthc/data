@@ -103,9 +103,11 @@ function _box_download_file_list($json_data)
 
 		if ('302' == $res_info['http_code']) {
 			$url = $res_info['redirect_url'];
-			$cmd = sprintf('  curl %s --remote-name --remote-header-name --silent &', escapeshellarg($url));
+			$cmd = sprintf('curl %s --remote-name --remote-header-name --silent >/dev/null 2>&1 &', escapeshellarg($url));
 			echo "$cmd\n";
 			echo "sleep 1\n";
+			shell_exec($cmd);
+			sleep(1);
 		} else {
 			echo $url;
 			echo ' == ';
