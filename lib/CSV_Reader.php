@@ -68,10 +68,6 @@ class CSV_Reader
 	{
 		// Seek to Start?
 		$row = $this->fetch();
-		array_walk($row, function(&$v) {
-			$v = strtoupper($v);
-		});
-
 		$this->csv_head = $row;
 
 		return $row;

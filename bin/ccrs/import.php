@@ -58,11 +58,11 @@ function _csv_row_map_check($csv_head, $row, $idx) : ?array
 	}
 
 	$row = array_combine($csv_head, $row);
-	if (isset($row['ISDELETED'])) {
-		$row['ISDELETED'] = strtoupper($row['ISDELETED']);
+	if (isset($row['IsDeleted'])) {
+		$row['IsDeleted'] = strtoupper($row['IsDeleted']);
 	}
-	if (isset($row['ISMEDICAL'])) {
-		$row['ISMEDICAL'] = strtoupper($row['ISMEDICAL']);
+	if (isset($row['IsMedical'])) {
+		$row['IsMedical'] = strtoupper($row['IsMedical']);
 	}
 
 
