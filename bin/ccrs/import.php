@@ -19,7 +19,6 @@ switch ($argv[1]) {
 		require_once(__DIR__ . '/import-sale.php');
 		break;
 	case 'inventory':
-	case 'lot':
 		require_once(__DIR__ . '/import-inventory.php');
 		break;
 	case 'license':
