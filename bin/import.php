@@ -14,6 +14,7 @@ $source_type_list = [
 	'BioTrack-API',
 	'BioTrack-SQL',
 	'CCRS-TSV',
+	'Cultivera-XLSX',
 	'GrowFlow-CSV',
 	'GrowFlow-HAR',
 	'Metrc-API',
@@ -29,8 +30,22 @@ switch ($cli_args['--source-type']) {
 	case 'CCRS-TSV':
 		// require_once(APP_ROOT . '/lib/Import/Metrc.php');
 		break;
+	case 'CULTIVERA-XLSX':
+
+		$importer = new OpenTHC\Data\Import\Cultivera([
+			'object' => $cli_args['--object'],
+			'output' => $cli_args['--output'],
+			'source' => [
+				'file' => $cli_args['--source'],
+				'type' => 'xlsx',
+			]
+		]);
+
+		$importer->import();
+
+		break;
+
 	case 'GROWFLOW-CSV':
-		// require_once(APP_ROOT . '/lib/Import/GrowFlow.php');
 		$importer = new OpenTHC\Data\Import\GrowFlow([
 			'object' => $cli_args['--object'],
 			'source' => [

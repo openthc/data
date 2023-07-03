@@ -32,7 +32,7 @@ See `./bin/leafdata/extract.sh` for an automated process.
 
 ## Loading GrowFlow
 
-The scripts in lib/Import/GrowFlow can import from the CSV exports or from collected HAR files.
+The scripts in lib/Import/GrowFlow can import from the `CSV` exports or from collected `HAR` files.
 
 ```
 ./bin/import.php \
@@ -42,6 +42,17 @@ The scripts in lib/Import/GrowFlow can import from the CSV exports or from colle
 	--output=OUTPUT
 ```
 
+## Loading Cultivera
+
+The scripts in lib/Import/Cultivera can import from the `XLSX` exports.
+
+```
+./bin/import.php \
+	--source=source-data/Inventory.xlsx  \
+	--source-type=Cultivera-XLSX \
+	--object=inventory \
+	--output=OUTPUT
+```
 
 ### BOM, UTF-16
 
