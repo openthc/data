@@ -82,8 +82,8 @@ class HAR extends \OpenTHC\Data\Import\Base
 				case 'GET/https://api-wa.cultiverapro.com/api/v1/product/all-strains':
 
 					if ($e['has_json']) {
-						$res_src = json_decode($e['response']['content']['text'], true);
-						$this->output_variety($res_src);
+						$res = json_decode($e['response']['content']['text'], true);
+						$this->output_variety($res);
 					}
 
 					break;
@@ -121,26 +121,34 @@ class HAR extends \OpenTHC\Data\Import\Base
 	{
 		foreach ($res as $src) {
 
+			// echo "PRODUCT: " . $src['ProductName'] . "\n";
+			// continue;
+			// var_dump($src); exit;
+
 			$out = [];
 			$out['id'] = $src['Barcode'];
+			// AltTSID
+			$out['license'] = [
+				'id' => '',
+				'code' => $src['Location'],
+			];
 			$out['section'] = [
 				'id' => $src['RoomId'],
 				'name' => $src['Room'],
 			];
-			$out['variety'] = [];
+			$out['variety'] = [
+				'id' => '',
+				'name' => (preg_match('/ \-(.+?)\-/', $src['ProductName'], $m) ? trim($m[1]) : '-orphan-')
+			];
 			$out['product'] = [
 				'name' => $src['ProductName'],
 				'type' => [
 					'id' => '',
 					'name' => $src['InventoryTypeName'],
+					'code' => $src['InventoryTypeCode'], // BioTrack Type Code
 				]
 			];
 			$out['qty'] = $src['RemainingQuantity'];
-			// $out[''] = $src[''];
-
-			// Location == License Code
-			// InventoryTypeCode == BioTrack Type Code
-			// Inventory Type Name
 
 			// HasQaResult
 			// Thc
