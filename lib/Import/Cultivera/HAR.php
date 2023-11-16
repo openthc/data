@@ -136,9 +136,13 @@ class HAR extends \OpenTHC\Data\Import\Base
 				'id' => $src['RoomId'],
 				'name' => $src['Room'],
 			];
+			// Variety is In the Product Name
+			// Sometimes between "-" and "-" chars (eg: "Product - Variety - Other")
+			// Sometimes just after the "-" eg: "Product - Variety"
+			// Spacing around the "-" is not consistent.
 			$out['variety'] = [
 				'id' => '',
-				'name' => (preg_match('/ \-(.+?)\-/', $src['ProductName'], $m) ? trim($m[1]) : '-orphan-')
+				'name' => (preg_match('/ \-(.+?)(\-|$)/', $src['ProductName'], $m) ? trim($m[1]) : '-orphan-')
 			];
 			$out['product'] = [
 				'name' => $src['ProductName'],
