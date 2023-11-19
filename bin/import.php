@@ -30,6 +30,17 @@ switch ($cli_args['--source-type']) {
 	case 'CCRS-TSV':
 		// require_once(APP_ROOT . '/lib/Import/Metrc.php');
 		break;
+	case 'CULTIVERA-HAR':
+
+		$importer = new  \OpenTHC\Data\Import\Cultivera\HAR([
+			'source' => [
+				'file' => $cli_args['--source'],
+			],
+			'output' => $cli_args['--output']
+		]);
+		$importer->output();
+
+		break;
 	case 'CULTIVERA-XLSX':
 
 		$importer = new OpenTHC\Data\Import\Cultivera([
