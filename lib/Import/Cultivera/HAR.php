@@ -46,8 +46,7 @@ class HAR extends \OpenTHC\Data\Import\Base
 			// 	exit;
 			// }
 
-			$vp = sprintf('%s/%s', $e['request']['method'], $e['request']['url']);
-			echo "REQ: $vp = {$e['response']['content']['mimeType']}\n";
+			$vp = sprintf('%s%s', $e['request']['method'], parse_url($e['request']['url'], PHP_URL_PATH));
 			if ('application/json' == $e['response']['content']['mimeType']) {
 				if ( ! empty($e['response']['content']['text'])) {
 
@@ -62,15 +61,16 @@ class HAR extends \OpenTHC\Data\Import\Base
 
 				}
 			}
+			echo "REQ: $vp = {$e['response']['content']['mimeType']} " . strlen($e['response']['content']['text']) . "\n";
 
 			switch ($vp) {
-				case 'GET/https://api-wa.cultiverapro.com/api/v1/facility/all-inventory-rooms':
-				case 'GET/https://api-wa.cultiverapro.com/api/v1/facility/all-plant-rooms?name=':
-				case 'GET/https://api-wa.cultiverapro.com/api/v1/facility/all-rooms/':
-				case 'GET/https://api-wa.cultiverapro.com/api/v1/facility/get-roomsummary':
-				case 'GET/https://api-wa.cultiverapro.com/api/v1/facility/get-roomtypes':
-				case 'GET/https://api-wa.cultiverapro.com/api/v1/facility/get-subroom-types/':
-				case 'GET/https://api-wa.cultiverapro.com/api/v1/facility/producer-inventory-rooms':
+				case 'GET/api/v1/facility/all-inventory-rooms':
+				case 'GET/api/v1/facility/all-plant-rooms?name=':
+				case 'GET/api/v1/facility/all-rooms/':
+				case 'GET/api/v1/facility/get-roomsummary':
+				case 'GET/api/v1/facility/get-roomtypes':
+				case 'GET/api/v1/facility/get-subroom-types/':
+				case 'GET/api/v1/facility/producer-inventory-rooms':
 
 					if ($e['has_json']) {
 						$res = json_decode($e['response']['content']['text'], true);
@@ -79,7 +79,7 @@ class HAR extends \OpenTHC\Data\Import\Base
 
 					break;
 
-				case 'GET/https://api-wa.cultiverapro.com/api/v1/product/all-strains':
+				case 'GET/api/v1/product/all-strains':
 
 					if ($e['has_json']) {
 						$res = json_decode($e['response']['content']['text'], true);
@@ -88,7 +88,26 @@ class HAR extends \OpenTHC\Data\Import\Base
 
 					break;
 
-				case 'POST/https://api-wa.cultiverapro.com/api/v1/product/get-product-batches/':
+				case 'GET/api/v1/product/get-product-batch-detail':
+
+					// Should Inflate the Product or Inventory Record?
+					if ($e['has_json']) {
+						$res = json_decode($e['response']['content']['text'], true);
+						$this->output_inventory_update($res);
+					}
+
+					break;
+
+				case 'POST/api/v1/inventory/get-qa-test-results':
+
+					if ($e['has_json']) {
+						$res = json_decode($e['response']['content']['text'], true);
+						$this->output_lab_result($res);
+					}
+
+					break;
+
+				case 'POST/api/v1/product/get-product-batches/':
 
 					if ($e['has_json']) {
 						$res = json_decode($e['response']['content']['text'], true);
@@ -97,7 +116,7 @@ class HAR extends \OpenTHC\Data\Import\Base
 
 					break;
 
-				case 'POST/https://api-wa.cultiverapro.com/api/v1/product/products':
+				case 'POST/api/v1/product/products':
 
 					if ($e['has_json']) {
 						$res = json_decode($e['response']['content']['text'], true);
@@ -107,8 +126,8 @@ class HAR extends \OpenTHC\Data\Import\Base
 					break;
 			}
 
-			// case 'https://api-wa.cultiverapro.com/api/v1/grow/get-grow-cycles':
-			// case 'https://api-wa.cultiverapro.com/api/v1/plants/plants':
+			// case 'api/v1/grow/get-grow-cycles':
+			// case 'api/v1/plants/plants':
 
 		}
 
@@ -121,9 +140,11 @@ class HAR extends \OpenTHC\Data\Import\Base
 	{
 		foreach ($res as $src) {
 
-			// echo "PRODUCT: " . $src['ProductName'] . "\n";
-			// continue;
-			// var_dump($src); exit;
+			// if ('20046037838758729' == $src['Barcode']) {
+			// 	var_dump($src);
+			// 	exit;
+			// }
+
 
 			$out = [];
 			$out['id'] = $src['Barcode'];
@@ -136,13 +157,10 @@ class HAR extends \OpenTHC\Data\Import\Base
 				'id' => $src['RoomId'],
 				'name' => $src['Room'],
 			];
-			// Variety is In the Product Name
-			// Sometimes between "-" and "-" chars (eg: "Product - Variety - Other")
-			// Sometimes just after the "-" eg: "Product - Variety"
-			// Spacing around the "-" is not consistent.
+
 			$out['variety'] = [
 				'id' => '',
-				'name' => (preg_match('/ \-(.+?)(\-|$)/', $src['ProductName'], $m) ? trim($m[1]) : '-orphan-')
+				'name' => '-orphan-',
 			];
 			$out['product'] = [
 				'name' => $src['ProductName'],
@@ -153,6 +171,25 @@ class HAR extends \OpenTHC\Data\Import\Base
 				]
 			];
 			$out['qty'] = $src['RemainingQuantity'];
+
+
+			// Variety is In the Product Name
+			// Sometimes between "-" and "-" chars (eg: "Product - Variety - Other")
+			// Sometimes just after the "-" eg: "Product - Variety"
+			// Sometimes not at all (so we don't do magic on this case)
+			// Spacing around the "-" is not consistent.
+			if (preg_match('/^(\w.+?)\-(.+?)\-(.+)$/', $source_data->product->name, $m)) {
+				$out['variety']['name'] = trim($m[2]);
+				$out['product']['name'] = sprintf('%s - %s', trim($m[1]), trim($m[3]));
+			} elseif (preg_match('/^(\w.+?)\-(.+?)$/', $source_data->product->name, $m)) {
+				// $source_data->product->name = trim($m[1]);
+				$out['variety']['name'] = trim($m[2]);
+				$out['product']['name'] = trim($m[1]);
+			}
+			// if (preg_match('/^(\w.+?)\-(.+?)(\-|$)/', $src['ProductName'], $m)) {
+			// 	$out['variety']['name'] = trim($m[2]);
+			// 	$out['product']['name'] = trim($m[1]);
+			// }
 
 			// HasQaResult
 			// Thc
@@ -165,6 +202,84 @@ class HAR extends \OpenTHC\Data\Import\Base
 			file_put_contents($f, json_encode($out, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 		}
 
+	}
+
+	function output_inventory_update($res)
+	{
+		$out = [];
+
+		$f = sprintf('%s/inventory-%s.json', $this->_output_path, $res['BatchSummary']['Barcode']);
+		if (is_file($f)) {
+			$out = [];
+			$out = file_get_contents($f);
+			$out = json_decode($out, true);
+		}
+
+		// BatchQaParentList
+		// QaSampleList
+		if ( ! empty($res['QaSampleList'])) {
+			if (empty($out['lab_sample'])) {
+				$out['lab_sample'] = [];
+			}
+			foreach ($res['QaSampleList'] as $qas) {
+				$out['lab_sample'][] = [
+					'id' => $qas['TSID'],
+					'created_at' => $qas['DateCreated'],
+					'license_id_lab' => $qas['LabName'],
+				];
+			}
+		}
+
+		// BatchDirectParentList
+		// BatchChildrenList
+		if ( ! empty($res['BatchChildrenList'])) {
+			// Child Lots?
+		}
+
+		$out['meta'] = [];
+		$out['meta']['@source'] = $res;
+
+		// AdjustmentList
+		$d = json_encode($out, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+		file_put_contents($f, $d);
+
+	}
+
+	function output_lab_result($res)
+	{
+		foreach ($res['Data'] as $src) {
+
+			$f = sprintf('%s/lab_result-%09d.json', $this->_output_path, $src['Id']);
+			$d = json_encode($src, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+			$out = [];
+			$out['id'] = $src['LabTestTSID'];
+			$out['coa'] = $src['COAPath'];
+			$out['stat'] = $src['Status'];
+			$out['sample'] = [
+				'id' => $src['SampleId'],
+				'source' => [
+					'id' => $src['QaParentId']
+				]
+			];
+			$out['variety'] = [
+				'name' => $src['Strain']
+			];
+			$out['meta'] = [
+				'@source' => $src,
+			];
+			$out['lab_metric_list'] = [];
+			$out['lab_metric_list']['018NY6XC00LM49CV7QP9KM9QH9'] = $src['THC'];
+			$out['lab_metric_list']['018NY6XC00LMB0JPRM2SF8F9F2'] = $src['THCA'];
+			$out['lab_metric_list']['018NY6XC00LMK7KHD3HPW0Y90N'] = $src['CBD'];
+			$out['lab_metric_list']['018NY6XC00LMENDHEH2Y32X903'] = $src['CBDA'];
+			$out['lab_metric_list']['018NY6XC00V7ACCY94MHYWNWRN'] = $src['Total'];
+
+			$d = json_encode($out, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+			file_put_contents($f, $d);
+		}
 	}
 
 	/**
