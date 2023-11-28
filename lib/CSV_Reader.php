@@ -13,6 +13,7 @@ class CSV_Reader
 	private $sep;
 
 	public $csv_head;
+	public $csv_file;
 
 	public $key_list;
 	public $key_size = 0;
