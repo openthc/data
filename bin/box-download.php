@@ -85,9 +85,6 @@ function _box_download_page_script($dom)
  */
 function _box_download_file_list($json_data)
 {
-	// echo __FUNCTION__ . "\n";
-	// var_dump(array_keys($json_data['/app-api/enduserapp/shared-folder']['items']));
-
 	$base_data = $json_data['/app-api/enduserapp/shared-item'];
 	$item_data = $json_data['/app-api/enduserapp/shared-folder']['items'];
 
@@ -106,8 +103,8 @@ function _box_download_file_list($json_data)
 			$cmd = sprintf('curl %s --remote-name --remote-header-name --silent >/dev/null 2>&1 &', escapeshellarg($url));
 			echo "$cmd\n";
 			echo "sleep 1\n";
-			shell_exec($cmd);
-			sleep(1);
+			// shell_exec($cmd);
+			// sleep(1);
 		} else {
 			echo $url;
 			echo ' == ';
