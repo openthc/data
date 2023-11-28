@@ -30,6 +30,13 @@ And clean up when all the way done.
 See `./bin/leafdata/extract.sh` for an automated process.
 
 
+# Loading CCRS
+
+Get the ZIP file dumps from the LCB and store them in something like `./source-data-YYYY-MM-DD`.
+Use the `box-download.php` helper.
+Then, from that source-data directory run `../bin/ccrs/import.php [OBJECT] | OUTPUT-[OBJECT].txt`
+
+
 ## Loading GrowFlow
 
 The scripts in lib/Import/GrowFlow can import from the `CSV` exports or from collected `HAR` files.
@@ -44,7 +51,7 @@ The scripts in lib/Import/GrowFlow can import from the `CSV` exports or from col
 
 ## Loading Cultivera
 
-The scripts in lib/Import/Cultivera can import from the `XLSX` exports.
+The scripts in lib/Import/Cultivera can import from the `HAR` or `XLSX` exports.
 
 ```
 ./bin/import.php \
