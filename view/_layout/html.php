@@ -13,6 +13,8 @@ $body_class_list = [];
 $m1_mode = preg_match('/^(open|mini|shut)$/', $_COOKIE['m1'], $m) ? $m[1] : 'open';
 $body_class_list[] = sprintf('m1-%s', $m1_mode);
 
+$path = strtok($_SERVER['REQUEST_URI'], '?');
+
 
 $tool_menu_item = function($head, $link)
 {
@@ -113,7 +115,7 @@ h1, h2, h3, h4, h5, h6 {
 			$menu['id'] = 'menu-' . trim(preg_replace('/[^\w]+/', '-', $menu['link']), '-');
 		}
 
-		$menu['pick'] = ($menu['link'] == substr(Radix::$path, 0, strlen($menu['link']))) ? ' active' : '';
+		$menu['pick'] = ($menu['link'] == substr($path, 0, strlen($menu['link']))) ? ' active' : '';
 
 		if (preg_match('/^(<i.+i>)(.+)$/', $menu['name'], $m)) {
 			$menu['icon'] = $m[1];
