@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 /**
- * Imports X from CCRS
+ * Import CCRS TSV files
  *
  * SPDX-License-Identifier: GPL-3.0-only
  */
@@ -13,7 +13,10 @@ require_once("$d/boot.php");
 
 switch ($argv[1]) {
 	case 'b2b':
+		require_once(__DIR__ . '/import-b2b.php');
+		break;
 	case 'b2c':
+	case 'b2x':
 	case 'sale':
 		// Same File
 		require_once(__DIR__ . '/import-sale.php');
@@ -26,6 +29,9 @@ switch ($argv[1]) {
 		break;
 	case 'product':
 		require_once(__DIR__ . '/import-product.php');
+		break;
+	case 'section':
+		require_once(__DIR__ . '/import-section.php');
 		break;
 	case 'variety':
 		require_once(__DIR__ . '/import-variety.php');

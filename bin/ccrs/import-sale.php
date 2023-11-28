@@ -6,9 +6,9 @@
  */
 
 $dbc_main = _dbc();
-$cmd_main_b2b_insert = $dbc_main->prepare('INSERT INTO b2b_sale (pk, id, source_license_id, target_license_id, execute_at, stat, meta) VALUES (:pk, :s0, :sl, :tl, :ct, :s0, :m0) ON CONFLICT DO NOTHING');
-$cmd_main_b2c_insert = $dbc_main->prepare('INSERT INTO b2c_sale (pk, id, license_id, created_at, stat, meta) VALUES (:pk, :s0, :l0, :ct, :s0, :m0) ON CONFLICT DO NOTHING');
-$cmd_main_b2x_insert = $dbc_main->prepare('INSERT INTO b2x_sale (pk, id, type) VALUES (:pk, :s0, :t0) ON CONFLICT DO NOTHING');
+$cmd_main_b2b_insert = $dbc_main->prepare('INSERT INTO b2b_sale (id, id1, source_license_id, target_license_id, execute_at, stat, meta) VALUES (:id0, :id1, :sl, :tl, :ct, :s0, :m0) ON CONFLICT DO NOTHING');
+$cmd_main_b2c_insert = $dbc_main->prepare('INSERT INTO b2c_sale (id, id1, license_id, created_at, stat, meta) VALUES (:id0, :id1, :l0, :ct, :s0, :m0) ON CONFLICT DO NOTHING');
+$cmd_main_b2x_insert = $dbc_main->prepare('INSERT INTO b2x_sale (id, id1, type) VALUES (:id0, :id1, :t0) ON CONFLICT DO NOTHING');
 
 // Import the Header Files
 $sale_header_list = [];
@@ -34,7 +34,8 @@ foreach ($sale_header_list as $sale_header_file) {
 		}
 
 		$cmd_main_b2x_insert->execute([
-			':i0' => $row['SaleHeaderId'],
+			':id0' => $row['SaleHeaderId'],
+			':id1' => $row['ExternalIdentifier'],
 			':t0' => $row['SaleType'],
 		]);
 
@@ -43,7 +44,8 @@ foreach ($sale_header_list as $sale_header_file) {
 				case 'RecreationalRetail':  // B2C Table
 				case 'RecreationalMedical': // B2C Table
 					$rec = [
-						':pk' => $row['SaleHeaderId'],
+						':id0' => $row['SaleHeaderId'],
+						':id1' => $row['ExternalIdentifier'],
 						':l0' => $row['LicenseeId'],
 						':ct' => $row['SaleDate'],
 						':s0' => ($row['IsDeleted'] == 'TRUE' ? 410 : 200),
@@ -59,7 +61,8 @@ foreach ($sale_header_list as $sale_header_file) {
 						continue 2;
 					}
 					$rec = [
-						':pk' => $row['SaleHeaderId'],
+						':id0' => $row['SaleHeaderId'],
+						':id1' => $row['ExternalIdentifier'],
 						':sl' => $row['LicenseeId'],
 						':tl' => $row['SoldToLicenseeId'],
 						':ct' => $row['SaleDate'],
