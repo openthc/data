@@ -8,8 +8,8 @@
 $dbc_main = _dbc();
 $sql = <<<SQL
 INSERT INTO inventory (
-pk
-,id
+id
+,id1
 ,license_id
 ,product_id
 ,variety_id
@@ -21,7 +21,7 @@ pk
 ,flag
 ,qty
 ,meta
-) VALUES (:pk, :i0, :l0, :p0, :v0, :s0, :ct, :ut, :dt, :s1, :f1, :q0, :m0)
+) VALUES (:id0, :id1, :l0, :p0, :v0, :s0, :ct, :ut, :dt, :s1, :f1, :q0, :m0)
 ON CONFLICT DO NOTHING
 SQL;
 $cmd_inventory_insert = $dbc_main->prepare($sql);
@@ -55,8 +55,8 @@ foreach ($source_file_list as $source_file) {
 
 		// @todo should be InventoryId so it can link to sales detail?
 		$ins = [
-			':pk' => $row['InventoryId'],
-			':i0' => $row['ExternalIdentifier'],
+			':id0' => $row['InventoryId'],
+			':id1' => $row['ExternalIdentifier'],
 			':l0' => $row['LicenseeId'],
 			':p0' => $row['ProductId'],
 			':v0' => $row['StrainId'],

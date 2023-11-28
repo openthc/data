@@ -7,8 +7,8 @@
 
 $dbc_main = _dbc();
 $sql = <<<SQL
-INSERT INTO product (pk, id, license_id, name, product_type, stat, package_type, package_size, package_unit, meta)
-VALUES (:pk, :p0, :l0, :n0, :t0, :s0, :pk_type, :pk_size, :pk_unit, :m0)
+INSERT INTO product (id, id1, license_id, name, product_type, stat, package_type, package_size, package_unit, meta)
+VALUES (:id0, :id1, :l0, :n0, :t0, :s0, :pk_type, :pk_size, :pk_unit, :m0)
 ON CONFLICT DO NOTHING
 SQL;
 $cmd_product_insert = $dbc_main->prepare($sql);
@@ -37,8 +37,8 @@ foreach ($source_file_list as $source_file) {
 		}
 
 		$cmd_product_insert->execute([
-			':pk' => $row['ProductId'],
-			':p0' => $row['ExternalIdentifier'],
+			':id0' => $row['ProductId'],
+			':id1' => $row['ExternalIdentifier'],
 			':l0' => $row['LicenseeId'],
 			':n0' => $row['Name'],
 			':t0' => $row['InventoryType'],
