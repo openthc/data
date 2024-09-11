@@ -1,15 +1,66 @@
 # Data
 
-An Open Data Portal.
+An Open Data Portal for Cannabis and tools for Converting and Importing said data.
+
 This tool is designed to import data from BioTrack, GrowFlow, LeafData or METRC into a common schema.
-Then you can run reports on this data-set.
+Then you can run reports on this data-set using a front-end tool like [Metabase](https://www.metabase.com/)
+ or [Apache Superset](https://superset.apache.org/).
+
+## Converting CSV
+
+OpenTHC has defined some "standard" CSV file Headers to use for data importing.
+Typically, one can use existing software exports, update their header column names and then convert/import.
+The names are not case sensitive.
+
+```
+Section_GUID
+Section_Name
+Section_Type
+Variety_GUID
+Variety_Name
+Variety_Type
+Product_GUID
+Product_Name
+Product_Type
+Package_Unit_Weight
+Package_Unit_Volume
+Inventory_GUID
+Inventory_Name
+Crop_GUID
+Crop_Name
+Plant_GUID
+Plant_Name
+```
+
+Crop and Plant are the same thing; we have both names to help thing about their usage uniquely.
+A Crop is an identifier for one or more plants (or a whole field) but Plant explicitly means just a single plant.
+
+Then just convert the objects out of the source document.
+
+```shell
+/bin/cli.php convert \
+	--output-path output-data/convert-example/
+	--source-file=./source-data/Inventory.csv --source-type=product-csv
+
+/bin/cli.php convert \
+	--output-path output-data/convert-example/
+	--source-file=./source-data/Inventory.csv --source-type=section-csv
+
+/bin/cli.php convert \
+	--output-path output-data/convert-example/
+	--source-file=./source-data/Inventory.csv --source-type=variety-csv
+
+/bin/cli.php convert \
+	--output-path output-data/convert-example/
+	--source-file=./source-data/Inventory.csv --source-type=inventory-csv
+```
 
 
 ## Loading BioTrack
 
 We can load BioTrack data from either the API, CSV or SQL data.
 
-```
+```shell
 ./bin/import.php \
 	--source-type=BioTrack-API \
 	--source=$SOURCE_URI
@@ -30,7 +81,7 @@ And clean up when all the way done.
 See `./bin/leafdata/extract.sh` for an automated process.
 
 
-# Loading CCRS
+## Loading CCRS
 
 Get the ZIP file dumps from the LCB and store them in something like `./source-data-YYYY-MM-DD`.
 Use the `box-download.php` helper.
@@ -41,25 +92,27 @@ Then, from that source-data directory run `../bin/ccrs/import.php [OBJECT] | OUT
 
 The scripts in lib/Import/GrowFlow can import from the `CSV` exports or from collected `HAR` files.
 
-```
+```shell
 ./bin/import.php \
 	--source=source-data/More_Vegging_Plants_export.csv  \
 	--source-type=GrowFlow-CSV \
 	--object=crop \
-	--output=OUTPUT
+	--output=OUTPUT_PATH
 ```
+
 
 ## Loading Cultivera
 
 The scripts in lib/Import/Cultivera can import from the `HAR` or `XLSX` exports.
 
-```
+```shell
 ./bin/import.php \
 	--source=source-data/Inventory.xlsx  \
 	--source-type=Cultivera-XLSX \
 	--object=inventory \
-	--output=OUTPUT
+	--output=OUTPUT_PATH
 ```
+
 
 ### BOM, UTF-16
 
@@ -166,5 +219,4 @@ Strains on Sales
 ## Business Intelligence Tools
 
 * [eBay TSV Tools](https://github.com/eBay/tsv-utils)
-* Metabase
 * [Poli](https://news.ycombinator.com/item?id=20507592)

@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenTHC HTML Layout v2
+ * OpenTHC HTML Layout
  */
 
 use Edoceo\Radix;
@@ -63,8 +63,8 @@ $echo_session_flash = function()
 <meta name="viewport" content="initial-scale=1, user-scalable=yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#069420">
-<link rel="stylesheet" crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==">
-<link rel="stylesheet" crossorigin="anonymous" href="https://cdn.openthc.com/bootstrap/4.4.1/bootstrap.css" integrity="sha256-L/W5Wfqfa0sdBNIKN9cG6QA5F2qx4qICmU2VgLruv9Y=">
+<link rel="stylesheet" crossorigin="anonymous" href="/vendor/fontaweomse/css/all.min.css">
+<link rel="stylesheet" crossorigin="anonymous" href="/vendor/bootstrap/bootstrap.min.css">
 <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/charts.css@0.9.0/dist/charts.min.css">
 <!-- <link rel="stylesheet" crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/css/dataTables.bootstrap4.min.css" integrity="sha256-F+DaKAClQut87heMIC6oThARMuWne8+WzxIDT7jXuPA="> -->
 <link rel="stylesheet" href="https://cdn.openthc.com/css/www/0.0.2/main.css" crossorigin="anonymous">
@@ -158,14 +158,15 @@ h1, h2, h3, h4, h5, h6 {
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js" integrity="sha256-VeNaFBVDhoX3H+gJ37DpT/nTuZTdjYro9yBruHjVmoQ=" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha256-fzFFyH01cBVPYzl16KT40wqjhgPtq6FFUB6ckN2+GGw=" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/bootstrap.bundle.min.js"></script>
 <!-- @deprecated moment, can use browser built-ins now? -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/jquery.dataTables.min.js" integrity="sha256-t5ZQTZsbQi8NxszC10CseKjJ5QeMw5NINtOXQrESGSU=" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/dataTables.bootstrap4.min.js" integrity="sha256-hJ44ymhBmRPJKIaKRf3DSX5uiFEZ9xB/qx8cNbJvIMU=" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha512-hDWGyh+Iy4Mr9AHOzUP2+Y0iVPn/BwxxaoSleEjH/i1o4EVTF/sh0/A1Syii8PWOae+uPr+T/KHwynoebSuAhw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.min.js" integrity="sha512-5vwN8yor2fFT9pgPS9p9R7AszYaNn0LkQElTXIsZFCL7ucT8zDCAqlQXDdaqgA1mZP47hdvztBMsIoFxq/FyyQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/js/app.js"></script>
 <script>
 var Clippy;
 $(function() {
@@ -196,24 +197,11 @@ $(function() {
 			c = c.replace(a[i], '');
 		}
 		c += (' ' + `m1-${mode1}`);
-		document.body.setAttribute('class', c);
+		document.body.setAttribute('class', c.trim());
 		document.body.dataset.menuLeftMode = mode1;
 
 		document.cookie = `m1=${mode1};path=/;samesite=strict;secure`;
 
-	});
-
-	// Time View
-	$('.time-from-now').each(function(i, n) {
-		var t0 = n.textContent;
-		var t1 = moment(t0).fromNow();
-		n.textContent = t1;
-	});
-
-	$('.time-to-now').each(function(i, n) {
-		var t0 = n.textContent;
-		var t1 = moment(t0).toNow();
-		n.textContent = t1;
 	});
 
 	Clippy = new ClipboardJS('.click2copy');
@@ -230,22 +218,10 @@ $(function() {
 
 </script>
 <?php
-// JS
-if (is_file(APP_ROOT . '/webroot/js/app.js')) {
-	echo '<script src="/js/app.js?v=' . APP_VER . '"></script>';
-} else {
-	// What JS goes Here?
-}
-
 $buf = Layout::getScript();
 if (!empty($buf)) {
 	echo "\n$buf\n";
 }
-
-if (!empty($this->foot_script)) {
-	echo $this->foot_script;
-}
-
 ?>
 </body>
 </html>
