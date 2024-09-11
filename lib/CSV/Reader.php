@@ -5,9 +5,9 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-namespace OpenTHC\Data;
+namespace OpenTHC\Data\CSV;
 
-class CSV_Reader
+class Reader
 {
 	private $fh;
 	private $sep;
@@ -23,6 +23,10 @@ class CSV_Reader
 	 */
 	function __construct($csv_file, $arg=[])
 	{
+		if ( ! is_file($csv_file)) {
+			throw new \Exception("Source File '{$csv_file}' Not Found [DCR-027]");
+		}
+
 		$this->csv_file = $csv_file;
 
 		$this->fh = _fopen_bom($this->csv_file, 'r'); // fopen($f, 'r');
@@ -69,6 +73,12 @@ class CSV_Reader
 	{
 		// Seek to Start?
 		$row = $this->fetch();
+
+		// Convert to Uppercase
+		array_walk($row, function(&$v, $k) {
+			$v = mb_strtoupper($v);
+		});
+
 		$this->csv_head = $row;
 
 		return $row;
