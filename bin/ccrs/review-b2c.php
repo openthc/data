@@ -31,7 +31,12 @@ while ($res_select->rowCount() > 0) {
 
 		// item_count, unit_count
 
-		$sql = 'SELECT sum(coalesce(unit_count, 0) * coalesce(unit_price, 0)) AS full_price, sum(unit_count) AS full_count FROM b2c_sale_item WHERE b2c_sale_id = :b0';
+		$sql = <<<SQL
+		SELECT sum(coalesce(unit_count, 0) * coalesce(unit_price, 0)) AS full_price
+		  , sum(unit_count) AS full_count
+		FROM b2c_sale_item
+		WHERE b2c_sale_id = :b0
+		SQL;
 		$arg = [
 			':b0' => $b2c_sale['id']
 		];
@@ -40,8 +45,8 @@ while ($res_select->rowCount() > 0) {
 
 		$dbc->query('UPDATE b2c_sale SET full_price = :fp1, unit_count = :uc1 WHERE id = :b0', [
 			':b0' => $b2c_sale['id'],
-			':fp1' => $sum['full_price'],
-			':uc1' => $sum['unit_count'],
+			':fp1' => floatval($sum['full_price']),
+			':uc1' => floatval($sum['unit_count']),
 		]);
 
 	}
