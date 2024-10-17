@@ -51,8 +51,8 @@ CREATE TABLE public.b2b_sale (
 CREATE TABLE public.b2b_sale_item (
     id character varying(26) NOT NULL,
     b2b_sale_id character varying(26),
-    lot_id_source character varying(26),
-    lot_id_target character varying(26),
+    inventory_id_source character varying(26),
+    inventory_id_target character varying(26),
     unit_count_tx numeric(16,3),
     unit_count_rx numeric(16,3),
     unit_price numeric(16,4),
@@ -63,10 +63,29 @@ CREATE TABLE public.b2b_sale_item (
 
 
 --
--- Name: lot; Type: TABLE;
+-- Name: b2b_sale_item_full; Type: TABLE;
 --
 
-CREATE TABLE public.lot (
+CREATE TABLE public.b2b_sale_item_full (
+    id character varying(26),
+    source_license_id character varying(26),
+    target_license_id character varying(26),
+    shipped_at timestamp without time zone,
+    inventory_id character varying(26),
+    product_type character varying(256),
+    product_name character varying(256),
+    variety_name character varying(256),
+    unit_price numeric(16,4),
+    unit_count numeric(16,4),
+    unit_weight numeric(16,4)
+);
+
+
+--
+-- Name: inventory; Type: TABLE;
+--
+
+CREATE TABLE public.inventory (
     id character varying(26) NOT NULL,
     license_id character varying(26) NOT NULL,
     product_id character varying(26) NOT NULL,
@@ -121,7 +140,7 @@ CREATE TABLE public.b2c_sale (
 CREATE TABLE public.b2c_sale_item (
     id character varying(26) NOT NULL,
     b2c_sale_id character varying(26) NOT NULL,
-    lot_id character varying(26) NOT NULL,
+    inventory_id character varying(26) NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone,
@@ -206,12 +225,12 @@ CREATE TABLE public.lab_report_ext (
 
 
 --
--- Name: lab_report_lot; Type: TABLE;
+-- Name: inventory_lab_report; Type: TABLE;
 --
 
-CREATE TABLE public.lab_report_lot (
+CREATE TABLE public.inventory_lab_report (
+    inventory_id character varying(26) NOT NULL,
     lab_report_id character varying(26) NOT NULL,
-    lot_id character varying(26) NOT NULL,
     type character varying(32)
 );
 
@@ -277,7 +296,7 @@ CREATE TABLE public.license_revenue (
 --
 
 CREATE TABLE public.product_license_name (
-    lot_count bigint,
+    inventory_count bigint,
     license_id character varying(26),
     name character varying(256)
 );
@@ -342,11 +361,11 @@ ALTER TABLE ONLY public.lab_report_ext
 
 
 --
--- Name: lab_report_lot lab_report_lot_pkey; Type: CONSTRAINT;
+-- Name: inventory_lab_report inventory_lab_report_pkey; Type: CONSTRAINT;
 --
 
-ALTER TABLE ONLY public.lab_report_lot
-    ADD CONSTRAINT lab_report_lot_pkey PRIMARY KEY (lot_id, lab_report_id);
+ALTER TABLE ONLY public.inventory_lab_report
+    ADD CONSTRAINT inventory_lab_report_pkey PRIMARY KEY (inventory_id, lab_report_id);
 
 
 --
@@ -382,11 +401,11 @@ ALTER TABLE ONLY public.license_revenue
 
 
 --
--- Name: lot lot_pkey; Type: CONSTRAINT;
+-- Name: inventory inventory_pkey; Type: CONSTRAINT;
 --
 
-ALTER TABLE ONLY public.lot
-    ADD CONSTRAINT lot_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.inventory
+    ADD CONSTRAINT inventory_pkey PRIMARY KEY (id);
 
 
 --
