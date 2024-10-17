@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e373cdfdbc4f7cd5dae47231e7c11ccf",
+    "content-hash": "18b9b46dd5977778787ddc157ddc905d",
     "packages": [
         {
             "name": "brick/math",
@@ -204,16 +204,16 @@
         },
         {
             "name": "composer/ca-bundle",
-            "version": "1.5.1",
+            "version": "1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "063d9aa8696582f5a41dffbbaf3c81024f0a604a"
+                "reference": "48a792895a2b7a6ee65dd5442c299d7b835b6137"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/063d9aa8696582f5a41dffbbaf3c81024f0a604a",
-                "reference": "063d9aa8696582f5a41dffbbaf3c81024f0a604a",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/48a792895a2b7a6ee65dd5442c299d7b835b6137",
+                "reference": "48a792895a2b7a6ee65dd5442c299d7b835b6137",
                 "shasum": ""
             },
             "require": {
@@ -223,8 +223,8 @@
             },
             "require-dev": {
                 "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^8 || ^9",
                 "psr/log": "^1.0 || ^2.0 || ^3.0",
-                "symfony/phpunit-bridge": "^4.2 || ^5",
                 "symfony/process": "^4.0 || ^5.0 || ^6.0 || ^7.0"
             },
             "type": "library",
@@ -260,7 +260,7 @@
             "support": {
                 "irc": "irc://irc.freenode.org/composer",
                 "issues": "https://github.com/composer/ca-bundle/issues",
-                "source": "https://github.com/composer/ca-bundle/tree/1.5.1"
+                "source": "https://github.com/composer/ca-bundle/tree/1.5.2"
             },
             "funding": [
                 {
@@ -276,7 +276,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-08T15:28:20+00:00"
+            "time": "2024-09-25T07:49:53+00:00"
         },
         {
             "name": "docopt/docopt",
@@ -1707,15 +1707,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openthc/common.git",
-                "reference": "9a5609e5f86e22c2ccd9506dec9302294b0622ba"
+                "reference": "0867b1c62e82f4a86f2abc0ece910196155c67ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openthc/common/zipball/9a5609e5f86e22c2ccd9506dec9302294b0622ba",
-                "reference": "9a5609e5f86e22c2ccd9506dec9302294b0622ba",
+                "url": "https://api.github.com/repos/openthc/common/zipball/0867b1c62e82f4a86f2abc0ece910196155c67ae",
+                "reference": "0867b1c62e82f4a86f2abc0ece910196155c67ae",
                 "shasum": ""
             },
             "require": {
+                "docopt/docopt": "1.0.5",
                 "edoceo/radix": "2021.0.0",
                 "erusev/parsedown-extra": "0.8.1",
                 "ext-curl": "*",
@@ -1763,7 +1764,7 @@
                 "issues": "https://github.com/openthc/common/issues",
                 "source": "https://github.com/openthc/common/tree/main"
             },
-            "time": "2024-09-11T20:09:00+00:00"
+            "time": "2024-10-08T02:34:53+00:00"
         },
         {
             "name": "openthc/cre-adapter",
@@ -1771,12 +1772,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openthc/cre-adapter.git",
-                "reference": "8a1f9540275ce2179a99b9b9bdf803c6866e8fc4"
+                "reference": "78052cc4b3f4484d22ae136b9821780cb1c86eb9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openthc/cre-adapter/zipball/8a1f9540275ce2179a99b9b9bdf803c6866e8fc4",
-                "reference": "8a1f9540275ce2179a99b9b9bdf803c6866e8fc4",
+                "url": "https://api.github.com/repos/openthc/cre-adapter/zipball/78052cc4b3f4484d22ae136b9821780cb1c86eb9",
+                "reference": "78052cc4b3f4484d22ae136b9821780cb1c86eb9",
                 "shasum": ""
             },
             "require": {
@@ -1810,7 +1811,7 @@
                 "issues": "https://github.com/openthc/cre-adapter/issues",
                 "source": "https://github.com/openthc/cre-adapter/tree/main"
             },
-            "time": "2024-08-28T18:56:24+00:00"
+            "time": "2024-10-15T18:20:22+00:00"
         },
         {
             "name": "phplang/scope-exit",
@@ -1862,16 +1863,16 @@
         },
         {
             "name": "phpoffice/phpspreadsheet",
-            "version": "1.29.1",
+            "version": "1.29.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-                "reference": "59ee38f7480904cd6487e5cbdea4d80ff2758719"
+                "reference": "3a5a818d7d3e4b5bd2e56fb9de44dbded6eae07f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/59ee38f7480904cd6487e5cbdea4d80ff2758719",
-                "reference": "59ee38f7480904cd6487e5cbdea4d80ff2758719",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/3a5a818d7d3e4b5bd2e56fb9de44dbded6eae07f",
+                "reference": "3a5a818d7d3e4b5bd2e56fb9de44dbded6eae07f",
                 "shasum": ""
             },
             "require": {
@@ -1961,9 +1962,9 @@
             ],
             "support": {
                 "issues": "https://github.com/PHPOffice/PhpSpreadsheet/issues",
-                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.29.1"
+                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.29.2"
             },
-            "time": "2024-09-03T00:55:32+00:00"
+            "time": "2024-09-29T07:04:47+00:00"
         },
         {
             "name": "pimple/pimple",
@@ -2742,16 +2743,16 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v5.4.41",
+            "version": "v5.4.44",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "6d29dd9340b372fa603f04e6df4dd76bb808591e"
+                "reference": "76c3818964e9d32be3862c9318ae3ba9aa280ddc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/6d29dd9340b372fa603f04e6df4dd76bb808591e",
-                "reference": "6d29dd9340b372fa603f04e6df4dd76bb808591e",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/76c3818964e9d32be3862c9318ae3ba9aa280ddc",
+                "reference": "76c3818964e9d32be3862c9318ae3ba9aa280ddc",
                 "shasum": ""
             },
             "require": {
@@ -2789,7 +2790,7 @@
             "description": "Provides basic utilities for the filesystem",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/filesystem/tree/v5.4.41"
+                "source": "https://github.com/symfony/filesystem/tree/v5.4.44"
             },
             "funding": [
                 {
@@ -2805,7 +2806,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-28T09:36:24+00:00"
+            "time": "2024-09-16T14:52:48+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -3288,16 +3289,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v5.4.40",
+            "version": "v5.4.44",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "deedcb3bb4669cae2148bc920eafd2b16dc7c046"
+                "reference": "1b9fa82b5c62cd49da8c9e3952dd8531ada65096"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/deedcb3bb4669cae2148bc920eafd2b16dc7c046",
-                "reference": "deedcb3bb4669cae2148bc920eafd2b16dc7c046",
+                "url": "https://api.github.com/repos/symfony/process/zipball/1b9fa82b5c62cd49da8c9e3952dd8531ada65096",
+                "reference": "1b9fa82b5c62cd49da8c9e3952dd8531ada65096",
                 "shasum": ""
             },
             "require": {
@@ -3330,7 +3331,7 @@
             "description": "Executes commands in sub-processes",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v5.4.40"
+                "source": "https://github.com/symfony/process/tree/v5.4.44"
             },
             "funding": [
                 {
@@ -3346,7 +3347,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-05-31T14:33:22+00:00"
+            "time": "2024-09-17T12:46:43+00:00"
         }
     ],
     "packages-dev": [],
