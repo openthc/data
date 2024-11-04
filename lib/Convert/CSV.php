@@ -69,6 +69,9 @@ class CSV
 		$source_data = new \OpenTHC\Data\CSV\Reader($this->file);
 		$source_head = $source_data->getHeader();
 
+		$chk_list = [];
+		// Add List of Headers that MUST be present
+
 		if ( ! in_array('PRODUCT_NAME', $source_head)) {
 			throw new \Exception("Cannot Convert w/o Product Name [DCC-062]");
 		}
@@ -78,7 +81,7 @@ class CSV
 
 			$x = [];
 			$x['id'] = $row['INVENTORY_GUID'];
-			$x['qty'] = $row['QUANTITY'];
+			$x['qty'] = $row['UNIT_COUNT'];  // UNIT_COUNT_INITITAL _CURRENT
 			$x['product'] = [
 				'id' => $row['PRODUCT_GUID'],
 				'name' => $row['PRODUCT_NAME'],
@@ -214,20 +217,21 @@ class CSV
 			throw new \Exception("Cannot Convert w/o Variety Name [DCC-141]");
 		}
 
+		// Collect Objects
 		$obj_list = [];
 		while ($row = $source_data->fetch('array')) {
 
 			$s = [];
 			$s['id'] = $row['VARIETY_GUID'];
 			$s['name'] = $row['VARIETY_NAME'];
-			$s['type'] = $row['VARIETY_TYPE'] ?: 'INVENTORY';
+			$s['type'] = $row['VARIETY_TYPE'] ?: 'HYBRID';
 
 			$k = implode('.', array_values($s));
 			$obj_list[$k] = $s;
 
 		}
 
-		// var_dump($section_list);
+		// Write Objects
 		foreach ($obj_list as $k => $o) {
 
 			if (empty($o['id'])) {
