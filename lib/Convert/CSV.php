@@ -42,6 +42,10 @@ class CSV
 		$this->output_path = $output_path;
 
 		switch ($this->type) {
+		case 'CROP':
+		case 'PLANT':
+			return $this->convertCrop();
+			break;
 		case 'INVENTORY':
 			return $this->convertInventory();
 			break;
@@ -60,6 +64,47 @@ class CSV
 
 	}
 
+	/**
+	 * Convert Crop into OpenTHC Object Type
+	 */
+	function convertCrop()
+	{
+		$source_data = new \OpenTHC\Data\CSV\Reader($this->file);
+		$source_head = $source_data->getHeader();
+
+		$obj_list = [];
+		while ($row = $source_data->fetch('array')) {
+
+			echo '.';
+
+			$x = [];
+			$x['id'] = $row['CROP_GUID'];
+			$x['qty'] = $row['UNIT_COUNT'];  // UNIT_COUNT_INITITAL _CURRENT
+			$x['section'] = [
+				'id' => $row['SECTION_GUID'],
+				'name' => $row['SECTION_NAME']
+			];
+			$x['variety'] = [
+				'id' => $row['VARIETY_GUID'],
+				'name' => $row['VARIETY_NAME']
+			];
+
+			$k = implode('.', array_values($x));
+			$obj_list[$k] = $x;
+
+		}
+
+		foreach ($obj_list as $k => $o) {
+
+			if (empty($o['id'])) {
+				$o['id'] = $this->createId($k);
+			}
+
+			$this->writeObject('crop', $o);
+
+		}
+
+	}
 
 	/**
 	 * Convert Inventory into OpenTHC Object Type
@@ -69,11 +114,16 @@ class CSV
 		$source_data = new \OpenTHC\Data\CSV\Reader($this->file);
 		$source_head = $source_data->getHeader();
 
+		// List of Headers that MUST be present
 		$chk_list = [];
-		// Add List of Headers that MUST be present
-
-		if ( ! in_array('PRODUCT_NAME', $source_head)) {
-			throw new \Exception("Cannot Convert w/o Product Name [DCC-062]");
+		$chk_list['INVENTORY_GUID'];
+		$chk_list['VARIETY_NAME'];
+		$chk_list['PRODUCT_NAME'];
+		$chk_list['UNIT_COUNT'];
+		foreach ($chk_list as $chk) {
+			if ( ! in_array($chk, $source_head)) {
+				throw new \Exception("Cannot Convert; Header '{$chk}' Missing [DCC-062]");
+			}
 		}
 
 		$obj_list = [];
@@ -119,6 +169,7 @@ class CSV
 		foreach ($obj_list as $k => $o) {
 
 			if (empty($o['id'])) {
+				$o['@k'] = $k;
 				$o['id'] = $this->createId($k);
 			}
 
