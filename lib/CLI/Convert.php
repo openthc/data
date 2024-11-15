@@ -51,30 +51,22 @@ class Convert
 	function execute()
 	{
 		switch ($this->source_type) {
+		case 'CROP-CSV':
+		case 'PLANT-CSV':
 		case 'INVENTORY-CSV':
-			$converter = new \OpenTHC\Data\Convert\CSV($this->source_file, $this->source_type);
-			return $converter->convert($this->output_path);
-			break;
 		case 'PRODUCT-CSV':
-			$converter = new \OpenTHC\Data\Convert\CSV($this->source_file, $this->source_type);
-			return $converter->convert($this->output_path);
-			break;
 		case 'SECTION-CSV':
-			$converter = new \OpenTHC\Data\Convert\CSV($this->source_file, $this->source_type);
-			return $converter->convert($this->output_path);
-			break;
 		case 'VARIETY-CSV':
 			$converter = new \OpenTHC\Data\Convert\CSV($this->source_file, $this->source_type);
 			return $converter->convert($this->output_path);
 			break;
+		case 'XLS':
+		case 'PROFILE-XLS':
+			$converter = new \OpenTHC\Data\Convert\XLS($this->source_file, $this->output_path);
+			return $converter->convert();
+			break;
 		default:
 			throw new \Exception("Invalid Source Type '{$this->source_type}' [DCC-059]");
 		}
-		// echo "DO SOMETHIGN?\n";
-
-		// sub class
-		// $sub = new ??
-		// return $sub->execute();
 	}
-
 }

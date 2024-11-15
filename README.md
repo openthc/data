@@ -7,6 +7,25 @@ Then you can run reports on this data-set using a front-end tool like [Metabase]
  or [Apache Superset](https://superset.apache.org/).
 
 
+## Converting XLS
+
+If the source data is in XLS, first convert it into CSV.
+Then those files can be processed into JSON.
+
+```shell
+./bin/cli.php convert \
+	--source-type XLS \
+	--source-file ./path-to-some-file.xls \
+	--output-path ./path-to-directory/
+```
+
+If the XLS files worksheet headers are not conforming to the OpenTHC/CSV specification edit them before conversion.
+It may also be useful to remove columns that are not significant.
+
+Other data may also need to be cleaned up, setting the proper product weights.
+Removing rows that duplicate (eg Plants in Inventory and in a Plants worksheet).
+
+
 ## Converting CSV
 
 OpenTHC has defined some "standard" CSV file Headers to use for data importing.
@@ -27,8 +46,12 @@ Package_Unit_Weight
 Package_Unit_Volume
 Inventory_GUID
 Inventory_Name
+Inventory_Unit_Count_Current | Inventory_Unit_Count | Unit_Count
+Inventory_Unit_Count_Initial | Unit_Count_Initial
 Crop_GUID
 Crop_Name
+Crop_Unit_Count_Current | Crop_Unit_Count | Unit_Count
+Crop_Unit_Count_Initial | Unit_Count_Initial
 Plant_GUID
 Plant_Name
 ```
