@@ -75,10 +75,8 @@ class CSV
 		$obj_list = [];
 		while ($row = $source_data->fetch('array')) {
 
-			echo '.';
-
 			$x = [];
-			$x['id'] = $row['CROP_GUID'];
+			$x['id'] = $row['CROP_GUID'] ?: $row['PLANT_GUID'];
 			$x['qty'] = $row['UNIT_COUNT'];  // UNIT_COUNT_INITITAL _CURRENT
 			$x['section'] = [
 				'id' => $row['SECTION_GUID'],
@@ -89,18 +87,7 @@ class CSV
 				'name' => $row['VARIETY_NAME']
 			];
 
-			$k = implode('.', array_values($x));
-			$obj_list[$k] = $x;
-
-		}
-
-		foreach ($obj_list as $k => $o) {
-
-			if (empty($o['id'])) {
-				$o['id'] = $this->createId($k);
-			}
-
-			$this->writeObject('crop', $o);
+			$this->writeObject('crop', $x);
 
 		}
 
@@ -161,19 +148,7 @@ class CSV
 			// By TYPE Do Something?
 			// $x['qty_initial'] =
 
-			$k = implode('.', array_values($x));
-			$obj_list[$k] = $x;
-
-		}
-
-		foreach ($obj_list as $k => $o) {
-
-			if (empty($o['id'])) {
-				$o['@k'] = $k;
-				$o['id'] = $this->createId($k);
-			}
-
-			$this->writeObject('inventory', $o);
+			$this->writeObject('inventory', $x);
 
 		}
 
@@ -206,14 +181,8 @@ class CSV
 
 		}
 
-		foreach ($product_list as $k => $p) {
-
-			if (empty($p['id'])) {
-				$p['id'] = $this->createId($k);
-			}
-
+		foreach ($product_list as $p) {
 			$this->writeObject('product', $p);
-
 		}
 
 	}
@@ -231,7 +200,7 @@ class CSV
 			throw new \Exception("Cannot Convert w/o Section Name [DCC-046]");
 		}
 
-		$section_list = [];
+		$obj_list = [];
 		while ($row = $source_data->fetch('array')) {
 
 			$s = [];
@@ -240,17 +209,13 @@ class CSV
 			$s['type'] = $row['SECTION_TYPE'] ?: 'INVENTORY';
 
 			$k = implode('.', array_values($s));
-			$section_list[$k] = $s;
+			$obj_list[$k] = $s;
 
 		}
 
 		// var_dump($section_list);
-		foreach ($section_list as $section_key => $s) {
-
-			if (empty($s['id'])) {
-				$s['id'] = $this->createId($section_key);
-			}
-			$this->writeObject('section', $s);
+		foreach ($obj_list as $o) {
+			$this->writeObject('section', $o);
 		}
 
 	}
@@ -284,10 +249,6 @@ class CSV
 
 		// Write Objects
 		foreach ($obj_list as $k => $o) {
-
-			if (empty($o['id'])) {
-				$o['id'] = $this->createId($k);
-			}
 			$this->writeObject('variety', $o);
 		}
 
@@ -319,6 +280,11 @@ class CSV
 	 */
 	protected function writeObject($obj_type, $obj_data)
 	{
+		$k = implode('.', array_values($obj_data));
+		if (empty($obj_data['id'])) {
+			$obj_data['id'] = $this->createId($k);
+		}
+
 		$output_file = sprintf('%s/%s-%s.json', $this->output_path, $obj_type, $obj_data['id']);
 		$output_data = json_encode($obj_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
