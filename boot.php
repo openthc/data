@@ -7,7 +7,7 @@
 
 define('APP_ROOT', dirname(__FILE__));
 define('APP_SALT', sha1(__FILE__ . 'change-this-value'));
-define('APP_BUILD', '420.22.120');
+define('APP_BUILD', '420.24.232');
 
 openlog('openthc-data', LOG_ODELAY|LOG_PID, LOG_LOCAL0);
 

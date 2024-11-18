@@ -2,6 +2,7 @@
 	"name": "openthc/data",
 	"description": "OpenTHC Data",
 	"license": "GPL-3.0-only",
+	"version": "420.24.232",
 	"autoload": {
 		"exclude-from-classmap": [
 			"vendor/erusev/parsedown-extra/test"
