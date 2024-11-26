@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "12758e299ed38dbae16757635b655dd9",
+    "content-hash": "d7f0fe2e5c5f913cde38f3e5ac22fe21",
     "packages": [
         {
             "name": "brick/math",
@@ -1813,12 +1813,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openthc/common.git",
-                "reference": "5ba6dbe5cb32501fb4a146f335fbc96b2e59e7ed"
+                "reference": "1c8750e1ddaa523a466f03c74aa61da689e2ca61"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openthc/common/zipball/5ba6dbe5cb32501fb4a146f335fbc96b2e59e7ed",
-                "reference": "5ba6dbe5cb32501fb4a146f335fbc96b2e59e7ed",
+                "url": "https://api.github.com/repos/openthc/common/zipball/1c8750e1ddaa523a466f03c74aa61da689e2ca61",
+                "reference": "1c8750e1ddaa523a466f03c74aa61da689e2ca61",
                 "shasum": ""
             },
             "require": {
@@ -1872,7 +1872,7 @@
                 "issues": "https://github.com/openthc/common/issues",
                 "source": "https://github.com/openthc/common/tree/main"
             },
-            "time": "2024-11-15T18:36:55+00:00"
+            "time": "2024-11-23T19:03:13+00:00"
         },
         {
             "name": "openthc/cre-adapter",
@@ -2021,16 +2021,16 @@
         },
         {
             "name": "phpoffice/phpspreadsheet",
-            "version": "1.29.2",
+            "version": "1.29.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-                "reference": "3a5a818d7d3e4b5bd2e56fb9de44dbded6eae07f"
+                "reference": "727cb704d5479fe4ddc291497ee471c4ec08f1b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/3a5a818d7d3e4b5bd2e56fb9de44dbded6eae07f",
-                "reference": "3a5a818d7d3e4b5bd2e56fb9de44dbded6eae07f",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/727cb704d5479fe4ddc291497ee471c4ec08f1b6",
+                "reference": "727cb704d5479fe4ddc291497ee471c4ec08f1b6",
                 "shasum": ""
             },
             "require": {
@@ -2120,9 +2120,9 @@
             ],
             "support": {
                 "issues": "https://github.com/PHPOffice/PhpSpreadsheet/issues",
-                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.29.2"
+                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.29.5"
             },
-            "time": "2024-09-29T07:04:47+00:00"
+            "time": "2024-11-22T05:57:44+00:00"
         },
         {
             "name": "pimple/pimple",
