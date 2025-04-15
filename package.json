@@ -1,28 +1,28 @@
 {
-  "name": "@openthc/data",
-  "version": "420.24.232",
-  "description": "OpenTHC Data Processing",
-  "main": "main.js",
-  "directories": {
-    "lib": "lib",
-    "test": "test"
-  },
-  "dependencies": {
-    "@fortawesome/fontawesome-free": "6.6.0",
-    "bootstrap": "5.3.3",
-    "jquery": "3.7.1"
-  },
-  "scripts": {
-    "test": "test.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/openthc/data.git"
-  },
-  "author": "OpenTHC, Inc.",
-  "license": "NONE",
-  "bugs": {
-    "url": "https://github.com/openthc/data/issues"
-  },
-  "homepage": "https://github.com/openthc/data#readme"
+	"name": "@openthc/data",
+	"version": "420.24.232",
+	"description": "OpenTHC Data Processing",
+	"main": "main.js",
+	"directories": {
+		"lib": "lib",
+		"test": "test"
+	},
+	"dependencies": {
+		"@fortawesome/fontawesome-free": "6.7.2",
+		"bootstrap": "5.3.3",
+		"jquery": "3.7.1"
+	},
+	"scripts": {
+		"test": "test.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/openthc/data.git"
+	},
+	"author": "OpenTHC, Inc.",
+	"license": "NONE",
+	"bugs": {
+		"url": "https://github.com/openthc/data/issues"
+	},
+	"homepage": "https://github.com/openthc/data#readme"
 }
