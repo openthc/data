@@ -9,6 +9,12 @@ namespace OpenTHC\Data\CLI;
 
 class Convert
 {
+	private $output_path = '';
+
+	private $source_file = '';
+
+	private $source_type = '';
+
 	/**
 	 *
 	 */
