@@ -9,6 +9,8 @@ namespace OpenTHC\Data\CLI;
 
 class Import
 {
+	protected $cli_args;
+
 	protected $source_file;
 
 	protected $source_type;
@@ -23,10 +25,10 @@ class Import
 		OpenTHC Data Import Tool
 
 		Usage:
-			cre-ccrs [options] --source=<FILE> --source-type=<TYPE> --object=<TYPE> --output=<FILE>
+			cre-ccrs [options] --source-file=<FILE> --source-type=<TYPE> --object=<TYPE> --output=<FILE>
 
 		Options:
-			--source=<FILE>
+			--source-file=<FILE>
 			--source-type=<TYPE>
 			--object=<LIST>
 			--output=<FILE>
@@ -37,10 +39,11 @@ class Import
 			'help' => true,
 			'optionsFirst' => true,
 		]);
-		$cli_args = $res->args;
+		$this->cli_args = $res->args;
 
-		$this->source_file = $cli_args['--source-file'];
-		$this->source_type = strtoupper($cli_args['--source-type']);
+		$this->source_file = $this->cli_args['--source-file'];
+
+		$this->source_type = strtoupper($this->cli_args['--source-type']);
 
 	}
 
@@ -58,6 +61,21 @@ class Import
 		];
 
 		switch ($this->source_type) {
+		case 'BAMBOO-XLSX':
+
+			$importer = new \OpenTHC\Data\Import\Bamboo([
+				'object' => $this->cli_args['--object'],
+				'output' => $this->cli_args['--output'],
+				'source' => [
+					'file' => $this->cli_args['--source-file'],
+					'type' => 'xlsx',
+				]
+			]);
+
+			$importer->import();
+
+			break;
+
 		case 'BIOTRACK-API':
 			// require_once(APP_ROOT . '/lib/Import/Metrc.php');
 			break;
@@ -69,22 +87,22 @@ class Import
 			break;
 		case 'CULTIVERA-HAR':
 
-			$importer = new  \OpenTHC\Data\Import\Cultivera\HAR([
+			$importer = new \OpenTHC\Data\Import\Cultivera\HAR([
 				'source' => [
-					'file' => $cli_args['--source'],
+					'file' => $this->cli_args['--source'],
 				],
-				'output' => $cli_args['--output']
+				'output' => $this->cli_args['--output']
 			]);
 			$importer->output();
 
 			break;
 		case 'CULTIVERA-XLSX':
 
-			$importer = new OpenTHC\Data\Import\Cultivera([
-				'object' => $cli_args['--object'],
-				'output' => $cli_args['--output'],
+			$importer = new \OpenTHC\Data\Import\Cultivera([
+				'object' => $this->cli_args['--object'],
+				'output' => $this->cli_args['--output'],
 				'source' => [
-					'file' => $cli_args['--source'],
+					'file' => $this->cli_args['--source-file'],
 					'type' => 'xlsx',
 				]
 			]);
@@ -94,16 +112,16 @@ class Import
 			break;
 
 		case 'GROWFLOW-CSV':
-			$importer = new OpenTHC\Data\Import\GrowFlow([
-				'object' => $cli_args['--object'],
+			$importer = new \OpenTHC\Data\Import\GrowFlow([
+				'object' => $this->cli_args['--object'],
 				'source' => [
 					'type' => 'csv',
-					'file' => $cli_args['--source'],
+					'file' => $this->cli_args['--source-file'],
 				],
 			]);
 			// $exporter = new \OpenTHC\Data\Export\JSON([
 			// 	'type' => 'json',
-			// 	'ouptut' => $cli_args['--output'],
+			// 	'ouptut' => $this->cli_args['--output'],
 			// ]);
 			// $importer->setExporter($exporter);
 			$importer->import();
@@ -120,16 +138,16 @@ class Import
 			require_once(APP_ROOT . '/lib/Import/Metrc.php');
 			break;
 		case 'CSV':
-			$importer = new OpenTHC\Data\Convert\CSV([
-				'object' => $cli_args['--object'],
+			$importer = new \OpenTHC\Data\Convert\CSV([
+				'object' => $this->cli_args['--object'],
 				'source' => [
 					'type' => 'csv',
-					'file' => $cli_args['--source'],
+					'file' => $this->cli_args['--source-file'],
 				],
 			]);
 			break;
 		default:
-			echo "Unexpected Source Type: '{$cli_args['--source-type']}'\n";
+			echo "Unexpected Source Type: '{$this->cli_args['--source-type']}'\n";
 			exit(1);
 		}
 
